@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXGroup section */
-		308EC0701A09383200F116B0 = {
+		30C10A861A093948000B0360 = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -16,51 +16,51 @@
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		308EC0751A09383200F116B0 /* game_demo */ = {
+		30C10A8B1A093948000B0360 /* demo_game */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "$(ACTION)";
-			buildConfigurationList = 308EC0781A09383200F116B0 /* Build configuration list for PBXLegacyTarget "game_demo" */;
+			buildConfigurationList = 30C10A8E1A093948000B0360 /* Build configuration list for PBXLegacyTarget "demo_game" */;
 			buildPhases = (
 			);
 			buildToolPath = /Users/kellysmile27/Python/evenniaevn/bin/python;
 			dependencies = (
 			);
-			name = game_demo;
+			name = demo_game;
 			passBuildSettingsInEnvironment = 1;
-			productName = game_demo;
+			productName = demo_game;
 		};
 /* End PBXLegacyTarget section */
 
 /* Begin PBXProject section */
-		308EC0711A09383200F116B0 /* Project object */ = {
+		30C10A871A093948000B0360 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Lu Yijun";
 				TargetAttributes = {
-					308EC0751A09383200F116B0 = {
+					30C10A8B1A093948000B0360 = {
 						CreatedOnToolsVersion = 6.0.1;
 					};
 				};
 			};
-			buildConfigurationList = 308EC0741A09383200F116B0 /* Build configuration list for PBXProject "game_demo" */;
+			buildConfigurationList = 30C10A8A1A093948000B0360 /* Build configuration list for PBXProject "demo_game" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 308EC0701A09383200F116B0;
+			mainGroup = 30C10A861A093948000B0360;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				308EC0751A09383200F116B0 /* game_demo */,
+				30C10A8B1A093948000B0360 /* demo_game */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin XCBuildConfiguration section */
-		308EC0761A09383200F116B0 /* Debug */ = {
+		30C10A8C1A093948000B0360 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -100,7 +100,7 @@
 			};
 			name = Debug;
 		};
-		308EC0771A09383200F116B0 /* Release */ = {
+		30C10A8D1A093948000B0360 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -134,7 +134,7 @@
 			};
 			name = Release;
 		};
-		308EC0791A09383200F116B0 /* Debug */ = {
+		30C10A8F1A093948000B0360 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUGGING_SYMBOLS = YES;
@@ -146,7 +146,7 @@
 			};
 			name = Debug;
 		};
-		308EC07A1A09383200F116B0 /* Release */ = {
+		30C10A901A093948000B0360 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				OTHER_CFLAGS = "";
@@ -158,24 +158,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		308EC0741A09383200F116B0 /* Build configuration list for PBXProject "game_demo" */ = {
+		30C10A8A1A093948000B0360 /* Build configuration list for PBXProject "demo_game" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				308EC0761A09383200F116B0 /* Debug */,
-				308EC0771A09383200F116B0 /* Release */,
+				30C10A8C1A093948000B0360 /* Debug */,
+				30C10A8D1A093948000B0360 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		308EC0781A09383200F116B0 /* Build configuration list for PBXLegacyTarget "game_demo" */ = {
+		30C10A8E1A093948000B0360 /* Build configuration list for PBXLegacyTarget "demo_game" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				308EC0791A09383200F116B0 /* Debug */,
-				308EC07A1A09383200F116B0 /* Release */,
+				30C10A8F1A093948000B0360 /* Debug */,
+				30C10A901A093948000B0360 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 308EC0711A09383200F116B0 /* Project object */;
+	rootObject = 30C10A871A093948000B0360 /* Project object */;
 }
