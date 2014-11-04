@@ -1,0 +1,261 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-29 00:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/commands/cmdhandler.py:325
+msgid "There were multiple matches."
+msgstr ""
+
+#: src/commands/cmdhandler.py:353
+#, python-format
+msgid "Command '%s' is not available."
+msgstr ""
+
+#: src/commands/cmdhandler.py:358
+#, python-format
+msgid " Maybe you meant %s?"
+msgstr ""
+
+#: src/commands/cmdhandler.py:358
+msgid "or"
+msgstr ""
+
+#: src/commands/cmdhandler.py:360
+msgid " Type \"help\" for help."
+msgstr ""
+
+#: src/commands/cmdparser.py:159
+#, python-format
+msgid "Could not find '%s'."
+msgstr ""
+
+#: src/commands/cmdparser.py:180
+msgid "location"
+msgstr ""
+
+#: src/commands/cmdparser.py:181
+msgid " (carried)"
+msgstr ""
+
+#: src/commands/cmdparser.py:261
+msgid " (channel)"
+msgstr ""
+
+#: src/commands/cmdsethandler.py:127
+#, python-format
+msgid "Error loading cmdset '%s': %s."
+msgstr ""
+
+#: src/commands/cmdsethandler.py:131
+#, python-format
+msgid ""
+"Error in loading cmdset: No cmdset class '%(classname)s' in %(modulepath)s."
+msgstr ""
+
+#: src/commands/cmdsethandler.py:136
+#, python-format
+msgid "SyntaxError encountered when loading cmdset '%s': %s."
+msgstr ""
+
+#: src/commands/cmdsethandler.py:140
+#, python-format
+msgid "Compile/Run error when loading cmdset '%s': %s."
+msgstr ""
+
+#: src/commands/cmdsethandler.py:150
+msgid ""
+"\n"
+" (See log for details.)"
+msgstr ""
+
+#: src/commands/cmdsethandler.py:217
+#, python-format
+msgid "custom %(mergetype)s on cmdset '%(merged_on)s'"
+msgstr ""
+
+#: src/commands/cmdsethandler.py:220
+#, python-format
+msgid " <Merged %(mergelist)s (%(mergetype)s, prio %(prio)i)>: %(current)s"
+msgstr ""
+
+#: src/commands/cmdsethandler.py:228
+#, python-format
+msgid " <%(key)s (%(mergetype)s, prio %(prio)i, %(permstring)s)>: %(keylist)s"
+msgstr ""
+
+#: src/commands/cmdsethandler.py:302 src/commands/cmdsethandler.py:335
+msgid "Only CmdSets can be added to the cmdsethandler!"
+msgstr ""
+
+#: src/locks/lockhandler.py:219
+#, python-format
+msgid "Lock: lock-function '%s' is not available."
+msgstr ""
+
+#: src/locks/lockhandler.py:232
+#, python-format
+msgid "Lock: definition '%s' has syntax errors."
+msgstr ""
+
+#: src/locks/lockhandler.py:236
+#, python-format
+msgid ""
+"LockHandler on %(obj)s: access type '%(access_type)s' changed from "
+"'%(source)s' to '%(goal)s' "
+msgstr ""
+
+#: src/locks/lockhandler.py:276
+#, python-format
+msgid "Lock: '%s' contains no colon (:)."
+msgstr ""
+
+#: src/locks/lockhandler.py:280
+#, python-format
+msgid "Lock: '%s' has no access_type (left-side of colon is empty)."
+msgstr ""
+
+#: src/locks/lockhandler.py:283
+#, python-format
+msgid "Lock: '%s' has mismatched parentheses."
+msgstr ""
+
+#: src/locks/lockhandler.py:286
+#, python-format
+msgid "Lock: '%s' has no valid lock functions."
+msgstr ""
+
+#: src/objects/models.py:614
+#, python-format
+msgid "Couldn't perform move ('%s'). Contact an admin."
+msgstr ""
+
+#: src/objects/models.py:624
+msgid "The destination doesn't exist."
+msgstr ""
+
+#: src/objects/models.py:738
+#, python-format
+msgid "Could not find default home '(#%d)'."
+msgstr ""
+
+#: src/objects/models.py:754
+msgid "Something went wrong! You are dumped into nowhere. Contact an admin."
+msgstr ""
+
+#: src/objects/models.py:826
+#, python-format
+msgid "Your character %s has been destroyed."
+msgstr ""
+
+#: src/players/models.py:422
+msgid "Player being deleted."
+msgstr ""
+
+#: src/scripts/scripthandler.py:45
+#, python-format
+msgid ""
+"\n"
+" '%(key)s' (%(next_repeat)s/%(interval)s, %(repeats)s repeats): %(desc)s"
+msgstr ""
+
+#: src/scripts/scripts.py:156
+#, python-format
+msgid ""
+"Script %(key)s(#%(dbid)s) of type '%(cname)s': at_repeat() error '%(err)s'."
+msgstr ""
+
+#: src/scripts/scripts.py:510
+msgid "This is an empty placeholder script."
+msgstr ""
+
+#: src/scripts/scripts.py:518
+msgid "This is a generic storage container."
+msgstr ""
+
+#: src/scripts/scripts.py:526
+msgid "Checks sessions so they are live."
+msgstr ""
+
+#: src/scripts/scripts.py:547
+msgid "Restrains size of idmapper cache."
+msgstr ""
+
+#: src/scripts/scripts.py:563
+msgid "Validates all scripts regularly."
+msgstr ""
+
+#: src/scripts/scripts.py:578
+msgid "Updates the channel handler"
+msgstr ""
+
+#: src/server/initial_setup.py:75
+msgid "This is User #1."
+msgstr ""
+
+#: src/server/initial_setup.py:85
+msgid "Limbo"
+msgstr ""
+
+#: src/server/portal/imc2.py:167
+#, python-format
+msgid "Whois reply from %(origin)s: %(msg)s"
+msgstr ""
+
+#: src/server/portal/imc2.py:175
+#, python-format
+msgid "{c%(sender)s@%(origin)s{n {wpages (over IMC):{n %(msg)s"
+msgstr ""
+
+#: src/server/portal/imc2.py:193
+msgid "IMC2 server rejected connection."
+msgstr ""
+
+#: src/server/portal/imc2.py:201
+msgid "IMC2: Autosetup response found."
+msgstr ""
+
+#: src/server/sessionhandler.py:242
+#, python-format
+msgid "Connection dropped: %s %s (%s)"
+msgstr ""
+
+#: src/server/sessionhandler.py:279
+msgid " ... Server restarted."
+msgstr ""
+
+#: src/server/sessionhandler.py:343
+#, python-format
+msgid "Logged in: %s %s (%s)"
+msgstr ""
+
+#: src/server/sessionhandler.py:367
+#, python-format
+msgid "Logged out: %s %s (%s)"
+msgstr ""
+
+#: src/server/sessionhandler.py:387
+msgid "You have been disconnected."
+msgstr ""
+
+#: src/server/sessionhandler.py:400
+msgid "Logged in from elsewhere. Disconnecting."
+msgstr ""
+
+#: src/server/sessionhandler.py:418
+msgid "Idle timeout exceeded, disconnecting."
+msgstr ""

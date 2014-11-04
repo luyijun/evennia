@@ -369,20 +369,19 @@ class CmdUnconnectedEncoding(MuxCommand):
         Sets the encoding.
         """
 
-        if self.session is None:
-            return
+        session = self.caller
 
         if 'clear' in self.switches:
             # remove customization
-            old_encoding = self.session.encoding
+            old_encoding = session.encoding
             if old_encoding:
                 string = "Your custom text encoding ('%s') was cleared." % old_encoding
             else:
                 string = "No custom encoding was set."
-            self.session.encoding = "utf-8"
+            session.encoding = "utf-8"
         elif not self.args:
             # just list the encodings supported
-            pencoding = self.session.encoding
+            pencoding = session.encoding
             string = ""
             if pencoding:
                 string += "Default encoding: {g%s{n (change with {w@encoding <encoding>{n)" % pencoding
@@ -395,9 +394,9 @@ class CmdUnconnectedEncoding(MuxCommand):
             # change encoding
             old_encoding = self.session.encoding
             encoding = self.args
-            self.session.encoding = encoding
+            session.encoding = encoding
             string = "Your custom text encoding was changed from '%s' to '%s'." % (old_encoding, encoding)
-        self.caller.msg(string.strip())
+        session.msg(string.strip())
 
 
 def _create_player(session, playername, password,

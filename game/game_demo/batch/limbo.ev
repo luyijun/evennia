@@ -1,0 +1,22 @@
+#------------------------------------------------------------
+# Set Chinese Limbo
+#
+# This is simple welcome text introducing the tutorial.
+#------------------------------------------------------------
+# Set encoding to utf-8
+@encoding utf-8
+#
+# We start from limbo. Remember that every command in the batchfile
+# -must- be separated by at least one comment-line.
+@tel #2
+#
+# rename limbo to Chinese name
+#
+@name limbo = 起点;limbo
+#
+# Describe limbo in Chinese.
+#
+@desc
+ 欢迎您来到{wEvennia{n的演示游戏！
+#
+

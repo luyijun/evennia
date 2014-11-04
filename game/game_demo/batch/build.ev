@@ -1,0 +1,1191 @@
+#
+# Evennia batchfile - tutorial_world
+#
+# Griatch 2011
+#
+# This batchfile sets up a starting tutorial area for Evennia.
+#
+# This uses the custom script parents and code snippets found in the
+# same folder as this script; Note that we are not using any
+# modifications of the default player character at all (so you don't
+# have to change anything in any settings files). We also don't modify
+# any of the default command functions (except in states). So bear in
+# mind that the full flexibility of Evennia is not used to its maximum
+# potential here.
+#
+# To load this file, place yourself in Limbo (room #2) and load the
+# file as user #1 with
+#
+#     @batchprocess game_demo.batch.build
+#
+# If you give the /interactive switch you can step through the
+# build process command for command.
+#
+# The area we are building looks like this:
+#
+#     ? 03,04
+#     |
+# +---+----+    +-------------------+    +--------+   +--------+
+# |        |    |                   |    |gate    |   |corner  |
+# | cliff  +----+   05 bridge       +----+  09    +---+   11   |
+# |   02   |    |                   |    |        |   |        |
+# +---+----+    +---------------+---+    +---+----+   +---+----+
+#     |    \                    |            |   castle   |
+#     |     \  +--------+  +----+---+    +---+----+   +---+----+
+#     |      \ |under-  |  |ledge   |    |wall    |   |court-  |
+#     |       \|ground  +--+  06    |    |  10    +---+yard    |
+#     |        |   07   |  |        |    |        |   |   12   |
+#     |        +--------+  +--------+    +--------+   +---+----+
+#     |                \                                  |
+#    ++---------+       \  +--------+    +--------+   +---+----+
+#    |intro     |        \ |cell    |    |trap/       |temple  |
+# o--+   01     |         \|  08    +----+  fall  |   |   13   |
+#    |          |          |        |   /|   15   |   |        |
+#    +----+-----+          +--------+  / +--+-+-+-+   +---+----+
+#         |                           /     | | |         |
+#    +----+-----+          +--------+/   +--+-+-+---------+----+
+#    |outro     |          |tomb    |    |antechamber          |
+# o--+   17     +----------+  16    |    |       14            |
+#    |          |          |        |    |                     |
+#    +----------+          +--------+    +---------------------+
+#
+# There are a few ways we could have gone about building this layout;
+# one is to do all the digging in one go first, then go back and add
+# all the details. The advantage of this is that the area is
+# already there and you can more easily jump ahead in the build file
+# to the detail work when you want to update things later. In this
+# file we will however build and design it all in sequence; room by
+# room. This makes it easier to keep an overview of what is going on
+# in each room, tie things to parents, etc.  When building your own
+# world you might want to separate your world into a lot more
+# individual batch files (maybe one for just a few rooms) for easy
+# handling. The numbers mark the order of construction and also the
+# unique alias-ids given to each room, to allow safe teleporting and
+# linking between them.
+#
+#------------------------------------------------------------
+# Starting to build the tutorial
+#
+# This is simple welcome text introducing the tutorial.
+#------------------------------------------------------------
+# Set encoding to utf-8
+@encoding utf-8
+#
+# We start from limbo. Remember that every command in the batchfile
+# -must- be separated by at least one comment-line.
+@tel #2
+#
+# Build the intro room (don't forget to also connect the outro room to this later)
+#
+# Note the unique id tut#XX we give each room. One empty line results in a
+# line-break in the game, whereas two lines create a new
+# paragraph. The length of the lines in the batchfile does not matter,
+# in-game they will fill the lines to the width as defined by the
+# player's client.
+#
+@dig 简介;Intro;tut#01
+ : game.game_demo.objects.rooms.IntroRoom
+#
+# Open an exit to tutorial. We don't do this in the @dig
+# command since we want to describe the exit.
+#
+@open 进入游戏;start;tutorial;tut;intro = tut#01
+#
+# describe the tutorial exit
+#
+@desc tutorial =
+ 这将开始{gEvennia{n的教程，会用一个小的单人游戏来展示服务器的一些特性。
+#
+# now we actually go to the tutorial
+#
+tutorial
+#
+# ... and describe it.
+#
+@desc
+ {g欢迎来到Evennia的演示游戏！{n
+
+ 该游戏包含了一个小的单人探险区域。各种房间能够展示Evennia系统一些功能和
+ 特性。
+
+ 想要融入这个小型探险任务的氛围，可以想象你是一名寻求声望和财富的探险家。
+ 你听到了一个关于海岸边废旧城堡的传闻。如果这是真的，在城堡深处埋葬着善战
+ 的公主和她那强大的魔法武器——一件价值连城的战利品。这当然是一个你无法拒绝
+ 的冒险的机会！
+
+ 你在狂风暴雨中抵达了海岸边，你站在一片荒野中，傍边就是高高的岩石海岸，任
+ 狂风暴雨呼啸着吹打上你的脸庞……
+
+#
+# Show that the tutorial command works ...
+#
+@set here/tutorial_info =
+ This is the tutorial command. Use it in various rooms to see what's
+ technically going on and what you could try in each room. The intro
+ room assigns some properties to your character, like a simple
+ "health" property used when fighting. Other rooms and puzzles might
+ do the same. Leaving the tutorial world through any of the normal
+ exit rooms will clean away all such temporary properties.
+
+ If you play this scenario as superuser, you will see a big red
+ warning.  This warning is generated in the intro-rooms Typeclass.
+
+#------------------------------------------------------------
+#
+# Outro room
+#
+# Called from the Intro room; this is a shortcut out of the
+# tutorial. There is another outro room at the end showing more text.
+# This is the only room we don't give a unique id.
+#------------------------------------------------------------
+#
+@dig/teleport 离开游戏;Leaving Tutorial
+ : game.game_demo.objects.rooms.OutroRoom
+ = 离开游戏;exit tutorial;exit;back, 重新开始;start again;start
+#
+@desc
+ 你过早退出了Evennia游戏，请稍后再回来哦！
+#
+@open 退出;exit = #2
+# This text is what the @tutorial command finds and displays.
+@set here/tutorial_info =
+ This outro room cleans up properties on the character that was set by
+ the tutorial.
+#
+# Step back to intro room so we can build from there.
+#
+start
+#------------------------------------------------------------
+#
+# The cliff
+#
+#------------------------------------------------------------
+#
+# This room inherits from a Typeclass called WeatherRoom. It regularly
+# and randomly shows some weather effects. Note how we can spread the
+# command's arguments over more than one line for easy reading.  we
+# also make sure to create plenty of aliases for the room and
+# exits. Note the alias tut#02: this unique identifier can be used
+# later in the script to always find the way back to this room (for
+# example by teleporting and similar). This is necessary since there
+# is no way of knowing what dbref a given room will get in the
+# database.
+#
+@dig/teleport 海边的悬崖;Cliff by the sea;cliff;tut#02
+ : game.game_demo.objects.rooms.WeatherRoom
+ = 开始探险;begin adventure;begin;start
+#
+# We define the tutorial message seen when the using the tutorial command
+#
+ @set here/tutorial_info =
+ Weather room
+
+ This room inherits from a parent called WeatherRoom. It runs on a
+ timer-Script that allows various weather-related messages to appear
+ at irregular intervals.
+#
+@desc
+ 你站在高高地海岸线边，俯瞰着远处下方波涛汹涌的大海。你周围的土地上覆盖着
+ 低矮的灰绿色小草，被风雨压倒在地面上。在内陆，是一大片广袤而又黑暗的荒野，
+ 只零星地散布着些低矮的树木和灌木丛。
+
+ 在东面，你能看见城堡废墟的残败轮廓。它坐落在海中一处没有和海岸相连的峻峭
+ 悬崖上，唯一能通向城堡的看来只有一条古老的悬索桥，位于东面的不远处。
+#
+# This is the well you will come back up from if you end up in the underground.
+#
+@create/drop 旧井;Old well;well
+#
+@desc well =
+ 一口废旧的老井就在离小路不远处远处。井阑上的石头都已塌陷了，但仍有一根链
+ 条挂在井口，看上去很不安全。这可能是很久以前的居住者遗留下来的。
+#
+# It's important to lock the well object or players will be able to
+# pick it up and put it in their pocket ...
+#
+@lock well = get:false()
+#
+# By setting the lock_msg attribute there will be a nicer error message if people
+# try to pick up the well.
+#
+@set well/get_err_msg =
+ 你用一只脚推了推井边的沉重石头，但凭一己之力，你根本无法移动它（而且你能
+ 把这堆石头怎么样呢？开个自己的采石场？）。
+#
+@set well/tutorial_info =
+ This is a normal object, locked with get:false() so that Players
+ cannot pick it up. Since the get_err property is set, you get a
+ customized error message when trying to pick it up.
+#
+@create/drop 木牌;Wooden sign;sign : game.game_demo.objects.objects.Readable
+#
+@desc sign =
+ 在向东的小路尽头有一块木牌。标牌后面是海岸边固定悬索桥的锚，悬索桥陆地和
+ 将荒凉峭壁上的城堡废墟连接了起来。这个标牌并不像其他东西一样古老，它上面
+ 的文字清晰可辨。
+#
+@lock sign = get:false()
+#
+@set sign/get_err_msg = 这块标牌牢牢地固定在地上。
+#
+@set sign/readable_text =
+ 当心！桥不安全！
+#
+@set sign/tutorial_info =
+ This is a readable object, of the Typeclass
+ game.game_demo.objects.objects.Readable. The sign has a cmdset
+ defined on itself, containing only one command, namely 'read'. This
+ command is what allows you to 'read sign'. Doing so returns the
+ contents of an attribute containing the information on the sign.
+#
+# Mood-setting objects to look at
+#
+@create/drop 远处的废墟;ruin (in the distance);castle;ruin
+#
+@desc ruin =
+ 你可以依稀辨出离岩石海岸有一点距离的城堡废墟的轮廓。曾经巍峨的塔楼已经坍
+ 塌，风雨交加的天空映衬着它锯齿般的形状。废墟矗立在悬崖高处，将它与陆地连
+ 接起来的只有在你东面不远处的古老悬索桥。
+#
+@lock ruin = get:false()
+#
+@set ruin/get_err_msg =
+ 虽然从远处看显的城堡很小，但你仍然无法伸手抓起它，把它放进你的口袋。
+#
+@set ruin/tutorial_info =
+ This is just a normal object, dropped in the room and setting the
+ mood. This is an easy solution, but in a real game one would probably
+ want to modify the look command to be able to see various 'scenery'-
+ like property on the room itself rather than creating faux
+ game-objects like this.
+#
+@create/drop 远处的海;The sea (in the distance);sea;ocean
+#
+@desc sea =
+ 灰色的大海一直向东延伸到目光的尽头。在你的下方，海浪猛烈地拍打着悬崖。在
+ 宽广荒芜的内陆与大海交界的地方，是由垂直参差的石头组成的单调而高耸的海岸
+ 线。
+
+ 也许这块地方曾经很漂亮，但现在持续的暴风雨摧毁了一切，把它变成了灰暗贫瘠
+ 的荒地。
+#
+@lock sea = get:false()
+#
+@set sea/get_err_msg = 没有人能拿走大海，只有大海能拿走你。
+#
+@set sea/tutorial_info =
+ This is just a normal object, dropped in the room and setting the
+ mood. This is an easy solution, but in a real game one would probably
+ want to modify the look command to be able to see various 'scenery'-
+ like property on the room itself rather than creating faux
+ game-objects like this.
+
+# Set a climbable object for discovering a hidden exit
+#
+@create/drop 盘根错节的老树;gnarled old trees;tree;trees;gnarled : game.game_demo.objects.objects.Climbable
+#
+@desc trees =
+ 只有最强壮的树才在荒野的边缘生存了下来。它们黑色的根深深扎入悬崖，在海风
+ 的不断击打下与周围黑暗阴郁的景象融为了一体。
+#
+@lock trees = get:false()
+#
+@set trees/get_err_msg =
+ 这片古树已经经受了数百年风雨的考验，你在短时间内是不可能把它们移走的。
+#
+@set trees/tutorial_info =
+ These are climbable objects; they make for a small puzzle for
+ accessing a hidden exit. Climbing the trees allows the
+ Climbable typeclass to assign a attribute on the character
+ that an exit is then looking for.
+#
+# The text to echo to player if trying 'climb tree'
+#
+@set tree/climb_text =
+ 经过一些努力，你爬上了一棵老树。
+
+ 树枝又湿又滑，但足以承受你的重量。借着站得高的优势，你能看得又远又广。
+
+ 事实上，你注意到在这些树的北面不远处，有{Y一片淡黄色的光{n。它看上去像
+ 是座房子。从这个角度，你可以辨认出一条通向那里的{w小路{n，但在站在地面
+ 上却无法分辨出来。
+
+ 你又爬了下来。
+
+#------------------------------------------------------------
+#
+# Outside Evennia Inn (hidden path)
+#
+#------------------------------------------------------------
+
+#
+# We dig the room without moving to it.
+#
+@dig 在Evennia客栈外面;Outside Evennia Inn;outside inn;tut#03
+ : game.game_demo.objects.rooms.WeatherRoom
+ = 北面的小路;northern path;north;n;path,回到悬崖;back to cliff;back;cliff;south;s
+#
+# Lock exit from view/traverse until we climbed that tree (which is
+# when last_climbed get assigned).
+#
+@lock north = view:attr(last_climbed) ; traverse:attr(last_climbed)
+#
+@desc north =
+ 这是一条难以看清的小路从雨水吹打的草地上延伸出去。它似乎环绕着北面的树。
+ 如果没有从上面看到它，你可能永远也不会注意到它。
+#
+@set north/tutorial_info =
+ This exit is locked with a lock string that looks like this:
+
+   view:attr(last_climbed); traverse:attr(last_climbed)
+
+ This checks if Character has an attribute last_climbed assigned in
+ order to be displayed and traversed. This attribute is set by the
+ trees when they are climbed.
+#
+# Now that the exit is prepared, move to outside inn
+#
+north
+#
+@desc
+ 你站在一座坚固的木头平房外面。光线透过关闭着的放风板照射出来。门上的招牌
+ 在风中吱吱作响。上面写着：{cEvennia客栈{n，在它四周环绕着某着蛇的图案。你听
+ 见门里传来笑声、歌声和大声地说话声。
+
+#------------------------------------------------------------
+#
+# The Evennia Inn (hidden path)
+#
+#------------------------------------------------------------
+#
+@dig/teleport Evennia客栈;The Evennia Inn;evennia inn;inn;tut#04
+ : game.game_demo.objects.rooms.TutorialRoom
+ = 进入;enter;in,离开;leave;out
+#
+@desc
+ 一进入Evennia客栈便是一间大房间，里面放满了桌子。吧台沿着着东墙摆着，里
+ 面的架子上满是各种酒瓶酒桶。酒保正忙着拿麦芽酒招呼欢快而喧闹的顾客，他们
+ 的声响几乎要把雷声都盖下去了。在这片可怕的荒野上，这是个难得的充满温暖和
+ 欢笑的地方。
+
+ 很快你就拿着啤酒和当地人聊上了。你的视线落在了角落的一个{w桶{n上，它上面
+ 插着几把生锈的武器。旁边的牌子写着：{w随便拿{n。一位顾客笑着告诉你，这是
+ 一些愚蠢的探险者留下的，他们都是在你之前来挑战这片废墟的……
+#
+@set here/tutorial_info =
+ Nothing special about this room, only a bonus place to potentially go
+ for chatting with other online players. Oh, and don't forget to grab
+ a blade if you don't already have one. The weapons are locked so that
+ you cannot take more than one. (only three blades are available in
+ this location and they won't get refilled until a player goes to the
+ outro room, so the barrel might be empty - if it's any comfort, the
+ weapons in there won't help much against what is waiting in the ruin
+ anyway ...)
+#
+# Create the weapons to be held by the barrel.
+#
+@create/drop 生锈的剑;rusty old sword;rusty;sword;weapon : game.game_demo.objects.objects.Weapon
+#
+@desc rusty =
+ 这是一把生锈的阔剑。它曾经是把好剑，但现在只有剑柄还是保持完好。
+#
+# Only allow to pick up if we don't already has something called weapon
+@lock rusty = get:not holds(weapon)
+#
+@set rusty/get_err_msg = "酒保微笑着对你说：“朋友，别太贪心了，你已经有一把武器了。”"
+#
+@create/drop 钝的斧头;blunt axe;blunt;axe;weapon : game.game_demo.objects.objects.Weapon
+#
+@desc axe =
+ 一把沉重的武器，但它的刃已经钝了，上面布满了锈迹和缺口。
+#
+@lock blunt = get:not holds(weapon)
+#
+@set blunt/get_err_msg = "酒保叉着手说：“嘿，你已经有一把武器了，没必要再拿一把了！”"
+#
+@create/drop 修补过的矛;patched spear;patched;spear;weapon : game.game_demo.objects.objects.Weapon
+#
+@desc patched =
+ 矛的尖端看上去还挺不错的，但柄折断过，而且修补得很不好。
+#
+@lock patched = get:not holds(weapon)
+#
+@set patched/get_err_msg = "酒保摇着头说：“朋友，你已经有一把武器了，留一些给以后来的可怜蛋吧。”"
+#
+#------------------------------------------------------------
+#
+# The old bridge
+#
+#------------------------------------------------------------
+#
+# Back to cliff
+@teleport tut#02
+#
+# The bridge uses parent rooms.BridgeRoom, which causes the player to
+# take a longer time than expected to cross as they are pummeled by
+# wind and a chance to fall off. This room should not have regular
+# exits back to the cliff, that is handled by the bridge typeclass
+# itself.
+#
+@dig 古老的吊桥;The old bridge;bridge;tut#05
+ : game.game_demo.objects.rooms.BridgeRoom
+ = 古老的吊桥;old bridge;east;e;bridge;hangbridge
+#
+# put some descriptions on the exit to the bridge
+#
+@desc bridge =
+ 吊桥的基座位于悬崖东面的边缘上，两个沉重的石柱固定住了桥的这一端。
+#
+# go to the bridge
+#
+bridge
+#
+# Set up properties on bridge room (see game.game_demo.objects.rooms.BridgeRoom)
+#
+# connect west edge to cliff
+#
+@set here/west_exit = tut#02
+#
+# connect other end to gatehouse
+#
+@set here/east_exit = tut#09
+#
+# Fall location is the cliff ledge
+#
+@set here/fall_exit = tut#06
+#
+@set here/tutorial_info =
+ The bridge is a single room that uses a custom cmdset to overrule the
+ movement commands. This makes it take a few steps to cross it despite
+ it being only one room.
+
+
+ The bridge has no normal exits, instead it has a counter that tracks
+ how far out on the bridge the Character is. For the bridge to work it
+ needs the names of links to the adjoining rooms, and when the counter
+ indicates the Character is leaving the bridge, they are teleported
+ there.
+
+
+ The room also inherits from the weather room to cause the bridge to
+ sway at regular intervals. It also implements a timer and a random
+ occurrence at every step across the bridge. It might be worth trying
+ this passage a few times to see what may happen.  Hint: you can fall
+ off!
+
+#------------------------------------------------------------
+#
+# Ledge under the bridge
+#
+#------------------------------------------------------------
+#
+# You only end up at the ledge if you fall off the bridge. It
+# has no direct connection to the bridge.
+#
+@dig/teleport 突出的平台;Protruding ledge;cliffledge;ledge;tut#06
+#
+@set here/tutorial_info =
+ This room is stored as an attribute on the 'Bridge' room and used as a
+ destination should the player fall off the bridge. In our example the
+ bridge is relatively simple and always drops us to the same ledge; a
+ more advanced implementation might implement different locations to
+ end up in depending on what happens on the bridge.
+#
+@desc
+ You are on a narrow ledge protruding from the side of the cliff,
+ about halfway down.  The air is saturated with salty sea water,
+ sprays hitting your face from the crashing waves below.
+
+ The ledge is covered with a few black-grey brushes. Not far from you
+ the cliff-face is broken down to reveal a narrow natural opening into
+ the cliff.
+#
+@create/drop brushes;brush
+#
+@lock brush = get:false()
+#
+@desc brush =
+ The brushes covering the ledge are gray and dwarfed from constantly
+ being pummeled by salt, rain and wind.
+#
+@create/drop The sea (far below you);sea;ocean
+#
+@set sea/get_err_msg:
+ Try as you might, the Sea will always get you long before you can
+ ever get it.
+#
+@lock sea = get:false()
+#
+@desc sea =
+ Below you the gray sea rages. You can almost imagine the
+ cliff trembling under its onslaught.
+#
+@create/drop The hang bridge (above you);bridge;hangbridge;above
+#
+@lock bridge = get:false()
+#
+@desc bridge =
+ You can see the shape of the hanging bridge a fair bit above you, partly
+ obscured by the rain. There is no way to get back up there from this
+ ledge.
+#
+@set bridge/get_err_msg = You can't reach it, it's too far away.
+
+
+#------------------------------------------------------------
+#
+# Underground passages
+#
+#------------------------------------------------------------
+#
+# The underground passages allow the player to get back up to the
+# cliff again. If you look at the map, the 'dark cell' also connects
+# to here. We'll get to that later.
+#
+@dig Underground passages;passages;underground;tut#07
+ : game.game_demo.objects.rooms.TutorialRoom
+ = hole into cliff;hole;passage;cliff
+#
+# Describe the exit
+#
+@desc hole into cliff =
+ The hole is natural, the soft rock eroded by ages of sea water. The
+ opening is small but large enough for you to push through. It looks
+ like it expands into a cavern further in.
+#
+hole
+#
+@set here/tutorial_info =
+ This room acts as a hub for getting the player back to the
+ start again, regardless of how you got here.
+#
+@desc
+ The underground cavern system you have entered seems to stretch on
+ forever, with criss-crossing paths and natural caverns probably
+ carved by water. It is not completely dark, here and there faint
+ daylight sifts down from above - the cliff is porous leaving channels
+ of air and light up to the surface.
+
+
+ (some time later)
+
+
+ You eventually come upon a cavern with a black pool of stale
+ water. In it sits a murky bucket, the first remnant of any sort of
+ intelligent life down here. The bucket has disconnected from a chain
+ hanging down from a circular opening high above. Gray daylight
+ simmers down the hole together with rain that ripples the black
+ surface of the pool.
+#
+@create/drop pool;water
+#
+@lock pool = get:false()
+#
+@set pool/get_err_msg =
+ You sift your hands through the black water without feeling any
+ immediate bottom.  It's chilling cold and so dark you don't feel like
+ taking a sip.
+#
+@desc pool =
+ The water of the pool is black and opaque. The rain coming down from
+ above does not seem to ripple the surface quite as much as it should.
+#
+@create/drop hole (high above);hole;above
+#
+@lock hole = get:false()
+#
+@set hole/get_err_msg = You cannot reach it from here. You need to climb the chain.
+#
+@desc hole =
+ Whereas the lower edges of the hole seem jagged and natural you can
+ faintly make out that it turns into a man-made circular shaft higher
+ up. It looks like an old well.
+#
+# From the passages we get back up to the cliff, so we
+# open up a new exit back there.
+#
+# connect chain to Cliff.
+@open climb the chain;climb;chain = tut#02
+#
+@desc chain =
+ The chain is made of iron. It is rusty but you think it might still
+ hold your weight even after all this time. Better hope you don't need
+ to do this more times ...
+
+#------------------------------------------------------------
+#
+# The Dark Cell
+#
+#------------------------------------------------------------
+#
+@dig/teleport Dark cell;dark;cell;tut#08
+ : game.game_demo.objects.rooms.DarkRoom
+#
+@set here/tutorial_info =
+ Dark room
+
+ The dark room implements a custom "dark" state. This is a very
+ restricted state that completely redefines the look command and only
+ allows limited interactions.
+
+ Looking around repeatedly will eventually produce hints as to how to
+ get out of the dark room.
+#
+# the description is only seen if the player first finds a
+# light source.
+#
+@desc
+ {YThe {yflickering light{Y of your makeshift light reveals a small square
+ cell. It does not seem like you are still in the castle, for the
+ stone of the walls are chiseled crudely and drip with water and mold.
+
+ One wall holds a solid iron-cast door. While rusted and covered with
+ lichen it seems very sturdy. In a corner lies what might have once
+ been a bed or a bench but is now nothing more than a pile of splinters,
+ one of which you are using for light. One of the walls is covered with a
+ thick cover of black roots having broken through the cracks from the
+ outside.{n
+#
+@create/drop iron-cast door;iron;door;iron-cast
+#
+@lock door = get:false()
+#
+@desc door =
+ The door is very solid and clad in iron. No matter how much you push
+ at it, it won't budge. It actually doesn't show any signs of having
+ been opened for a very long time.
+#
+@create/drop stone walls;walls;stone
+#
+@lock stone = get:false()
+#
+@desc stone =
+ The walls are dripping with moisture and mold. A network of roots
+ have burst through the cracks on one side, bending the stones
+ slightly aside. You feel a faint draft from that direction.
+#
+# The crumbling wall is in fact an advanced type of Exit, all we need to do is
+# to supply it with a destination.
+#
+# Puzzle wall is an exit without a given destination at start
+@create/drop root-covered wall;wall;roots;wines;root : game.game_demo.objects.objects.CrumblingWall
+#
+# This destination is auto-assigned to the exit when its puzzle is solved
+# connect to the Underground passages
+@set root-covered wall/destination = tut#07
+#
+@lock roots = get:false()
+#
+# (the crumbling wall describes itself, so we don't do it here)
+@set here/tutorial_info =
+ This room presents a puzzle that has to be solved in order to get out
+ of the room. The root-covered wall is in fact an advanced Exit-type
+ object that is locked until the puzzle is solved.
+
+#------------------------------------------------------------
+#
+# Castle Gate
+# We are done with the underground, describe castle.
+#------------------------------------------------------------
+#
+# We are done building the underground passages, let's
+# head back up to ground level. We teleport to the bridge
+# and continue from there.
+#
+# Back to the bridge
+@teleport tut#05
+#
+# The bridge room should not have any normal exits from it, that is
+# handled by the bridge itself. So we teleport away from it.
+#
+@dig/teleport Ruined gatehouse;gatehouse;tut#09
+ : game.game_demo.objects.rooms.TutorialRoom
+ = , Bridge over the abyss;bridge;abyss;west;w
+#
+@set here/tutorial_info =
+ This is part of a four-room area patrolled by a mob: the guardian of
+ the castle. The mob initiates combat if the player stays in the same
+ room for long enough.
+
+ Combat itself is a very simple affair which takes advantage of the
+ strength of the weapon you use, but dictates a fixed skill for you and
+ your enemy. The enemy is quite powerful, so don't stick around too
+ long ...
+#
+@desc
+ The old gatehouse is near collapse. Part of its northern wall has
+ already fallen down, together with parts of the fortifications in
+ that direction.  Heavy stone pillars hold up sections of ceiling, but
+ elsewhere the flagstones are exposed to open sky. Part of a heavy
+ portcullis, formerly blocking off the inner castle from attack, is
+ sprawled over the ground together with most of its frame.
+
+ {wEast{n the gatehouse leads out to a small open area surrounded by
+ the remains of the castle.  There is also a standing archway
+ offering passage to a path along the old {wsouth{nern inner wall.
+#
+@create/drop fallen portoculis;portoculis;fall;fallen
+#
+@lock portoculis = get:false()
+#
+@desc portoculis =
+ This heavy iron grating used to block off the inner part of the gate house, now it has fallen
+ to the ground together with the stone archway that once help it up.
+#
+# We lock the bridge exit for the mob, so it don't wander out on the bridge
+#
+@lock bridge = traverse:not attr(is_mob)
+
+#------------------------------------------------------------
+#
+# Along the southern inner wall (south from gatehouse)
+#
+#------------------------------------------------------------
+
+@dig Along inner wall;inner wall;along;tut#10
+ : game.game_demo.objects.rooms.WeatherRoom
+ = Standing archway;archway;south;s,ruined gatehouse;gatehouse;north;n
+#
+@desc standing archway =
+ It seems the archway leads off into a series of dimly lit rooms.
+#
+archway
+#
+@set here/tutorial_info =
+ This is part of a four-room area patrolled by a mob; the guardian of
+ the castle. The mob initiates combat if the player stays in the same
+ room for long enough.
+
+ Combat itself is a very simple affair which takes advantage of the
+ strength of the weapon you use, but dictates a fixed skill for you and
+ your enemy.
+#
+@desc
+ What appears at first sight to be a series of connected rooms
+ actually turns out to be collapsed buildings so mashed together by
+ the ravages of time that they all seem to lean on each other and
+ against the outer wall. The whole scene is directly open to the sky.
+
+ The buildings make a half-circle along the main wall, here and there
+ broken by falling stone and rubble. At one end (the {wnorth{nern) of
+ this half-circle is the entrance to the castle, the ruined
+ gatehoue. {wEast{nwards from here is some sort of open courtyard.
+
+#------------------------------------------------------------
+#
+# Corner of castle (east from gatehouse)
+#
+#------------------------------------------------------------
+# back to castle gate
+@teleport tut#09
+#
+@dig/teleport Corner of castle ruins;corner;tut#11
+ : game.game_demo.objects.rooms.TutorialRoom
+ = castle corner;corner;east;e,gatehouse;west;w
+#
+@desc
+ The ruins opens up to the sky in a small open area, lined by
+ columns. The open area is dominated by a huge stone obelisk in its
+ center, an ancient ornament miraculously still standing.
+
+ Previously one could probably continue past the obelisk and eastward
+ into the castle keep itself, but that way is now completely blocked
+ by fallen rubble. To the {wwest{n is the gatehouse and entrance to
+ the castle, whereas {wsouth{nwards the collumns make way for a wide
+ open courtyard.
+#
+@set here/tutorial_info =
+ This is part of a four-room area patrolled by a mob; the guardian of
+ the castle. The mob initiates combat if the player stays in the same
+ room for long enough.
+
+ Combat itself is a very simple affair which takes advantage of the
+ strength of the weapon you use, but dictates a fixed skill for you and
+ your enemy.
+#
+@create/drop obelisk:game.game_demo.objects.objects.Obelisk
+#
+@lock obelisk = get:false()
+#
+@set obelisk/get_err_msg = It's way too heavy for anyone to move.
+#
+# (the obelisk describes itself, so we need no do it here)
+#
+# Create the mobile. This is the start location.
+@create/drop Ghostly apparition;ghost;apparition;fog : game.game_demo.objects.mob.Enemy
+#
+@set ghost/full_health = 20
+#
+@set ghost/defeat_location = dark cell
+#
+@lock ghost = get:false()
+#
+@set ghost/get_err_msg = Your fingers just pass straight through it!
+#
+@desc ghost =
+ This ghostly shape could momentarily be mistaken for a thick fog had
+ it not moved with such determination and giving echoing hollow
+ screams as it did. The shape is hard to determine, now and then it
+ seems to form limbs and even faces that fade away only moments
+ later. The thing reeks of almost tangible spite at your
+ presence. This must be the ruin's eternal guardian.
+#
+# Give the enemy some random echoes (echoed at irregular intervals)
+# This 'list structure' [ ... ] is parsed by the batch reader and
+# split by commas (so each entry cannot contain commas).
+#
+@set ghost/irregular_echoes =
+ ["The foggy thing gives off a high-pitched shriek.","For a moment the
+ fog wraps around a nearby pillar.", "The fog drifts lower to the ground
+ as if looking for something.", "The fog momentarily takes on a reddish
+ hue.", "The fog temporarily fills most of the area as it changes
+ shape.", "You accidentally breathes in some of the fog - you start
+ coughing from the cold moisture."]
+#
+# give the enemy a tentacle weapon
+#
+@create foggy tentacles;tentacles:game.game_demo.objects.objects.Weapon
+#
+# Make the enemy's weapon good - hits at 70% of attacks
+#
+@set foggy tentacles/hit = 0.7
+#
+# Actually give the enemy its weapon
+#
+@teleport/quiet tentacles = ghost
+#
+# Clear inactive mode and start the mob
+#
+@set ghost/inactive =
+
+#------------------------------------------------------------
+#
+# The courtyard
+#
+#------------------------------------------------------------
+#
+@dig/teleport Overgrown courtyard;courtyard;tut#12
+ : game.game_demo.objects.rooms.WeatherRoom
+ = courtyard;south;s,castle corner;north;n
+#
+# Connect west exit to the inner wall
+@open along inner wall;wall;along;west;w, overgrown courtyard;courtyard;east;e = tut#10
+#
+@set here/tutorial_info =
+ This is part of a four-room area patrolled by a mob; the guardian of
+ the castle. The mob initiates combat if the player stays in the same
+ room for long enough.
+
+ Combat itself is a very simple affair which takes advantage of the
+ strength of the weapon you use, but dictates a fixed skill for you and
+ your enemy.
+#
+@desc
+ The inner courtyard of the old castle is littered with debris and
+ overgrown with low grass and patches of thorny vines. There is a
+ collapsed structure close to the gatehouse that looks like a stable.
+
+ {wNorth{nwards is a smaller area cornered in the debris, adorned with
+ a large obelisk-like thing. To the {wwest{n the castle walls loom
+ over a mess of collapsed buildings. On the opposite, {weast{nern side
+ of the yard is a large building with a curved roof that seem to have
+ withstood the test of time better than many of those around it, it
+ looks like some sort of temple.
+#
+@create/drop old stables;stable;stables;building
+#
+@lock stable = get:false()
+#
+@desc stable =
+ The building is empty, if it was indeed once a stable it was abandoned long ago.
+
+#------------------------------------------------------------
+#
+# The temple
+#
+#------------------------------------------------------------
+#
+@dig/teleport The ruined temple;temple;in;tut#13
+ : game.game_demo.objects.rooms.TutorialRoom
+ = ruined temple;temple;east;e, overgrown courtyard;courtyard;outside;out;west;w
+#
+@desc
+ This building seems to have survived the ravages of time better than
+ most of the others. Its arched roof and wide spaces suggests that
+ this is a temple or church of some kind.
+
+
+ The wide hall of the temple stretches before you. At the far edge is
+ a stone altar with no clear markings. Despite its relatively good
+ condition, the temple is empty of all furniture or valuables, like it
+ was looted or its treasures moved ages ago.
+
+ Stairs lead down to the temple's dungeon on either side of the
+ altar. A gaping door opening shows the a wide courtyard to the west.
+
+#------------------------------------------------------------
+#
+# Antechamber - below the temple
+#
+#------------------------------------------------------------
+#
+@dig Antechamber;antechamber;tut#14
+ : game.game_demo.objects.rooms.TutorialRoom
+ =  stairs down;stairs;down;d, up the stairs to ruined temple;stairs;temple;up;u
+#
+@desc stairs down =
+ The stairs are worn by the age-old passage of feet.
+#
+# Lock the antechamber so the ghost cannot get in there.
+@lock stairs down = traverse:not attr(is_mob)
+#
+# Go down
+#
+stairs down
+#
+@desc
+ This chamber lies almost directly under the main altar of the
+ temple. The passage of aeons is felt here and you also sense you are
+ close to great power.
+
+ The sides of the chamber are lined with stone archways, these are
+ entrances to the {wtombs{n of what must have been influential
+ families or individual heroes of the realm. Each is adorned by a
+ stone statue or symbol of fine make. They do not seem to be ordered
+ in any particular order or rank.
+#
+@set here/tutorial_info =
+ This is the second part of a puzzle involving the Obelisk in the
+ castle's north-east corner. The correct exit to use will vary
+ depending on which scene was shown on the Obelisk surface.
+
+ Each tomb is a teleporter room and is keyed to a number corresponding
+ to the scene last shown on the obelisk (now stored on player). If the
+ number doesn't match, the tomb is a trap that teleports to a second
+ Teleporter room describing how you fall in a trap - that room then
+ directly relay you on to the Dark Cell. If correct, the tomb
+ teleports to the Ancient Tomb treasure chamber.
+#
+# We create all the tombs
+#
+@dig Blue bird tomb
+ : game.game_demo.objects.rooms.TeleportRoom
+ = Tomb with stone bird;bird;blue;stone
+#
+@dig Tomb of woman on horse
+ : game.game_demo.objects.rooms.TeleportRoom
+ = Tomb with statue of riding woman;horse;riding;
+#
+@dig Tomb of the crowned queen
+ : game.game_demo.objects.rooms.TeleportRoom
+ = Tomb with statue of a crowned queen;crown;queen
+#
+@dig Tomb of the shield
+ : game.game_demo.objects.rooms.TeleportRoom
+ = Tomb with shield of arms;shield
+#
+@dig Tomb of the hero
+ : game.game_demo.objects.rooms.TeleportRoom
+ = Tomb depicting a heroine fighting a monster;knight;hero;monster;beast
+#
+# The puzzle_values are set on Character by looking at the Obelisk in
+# the Castle Corner room. If the scenes shown don't match, the
+# failure/success_teleport_to attributes will be used to teleport away
+# the Character. Since the scene shown by the Obelisk is random, this
+# means the right tomb need not be the same.
+#
+@tel Blue bird tomb
+#
+@set here/puzzle_value = 0
+#
+@set here/failure_teleport_to = falling!
+#
+@set here/success_teleport_to = Ancient tomb
+#
+@teleport Tomb of woman on horse
+#
+@set here/puzzle_value = 1
+#
+@set here/failure_teleport_to = falling!
+#
+@set here/success_teleport_to = Ancient tomb
+#
+@teleport Tomb of the crowned queen
+#
+@set here/puzzle_value = 2
+#
+@set here/failure_teleport_to = falling!
+#
+@set here/success_teleport_to = Ancient tomb
+#
+@teleport Tomb of the shield
+#
+@set here/puzzle_value = 3
+#
+@set here/failure_teleport_to = falling!
+#
+@set here/success_teleport_to = Ancient tomb
+#
+@teleport Tomb of the hero
+#
+@set here/puzzle_value = 4
+#
+@set here/failure_teleport_to = falling!
+#
+@set here/success_teleport_to = Ancient tomb
+
+#------------------------------------------------------------
+#
+# Falling room
+#
+# This is a transition between the trap and the cell room.  Character
+# is teleported here if they picked the wrong tomb.
+#
+#------------------------------------------------------------
+#
+@dig/teleport Falling!;falling;tut#15
+ : game.game_demo.objects.rooms.TeleportRoom
+#
+@desc
+ The tomb is dark. You fumble your way through it. You think you can
+ make out a coffin in front of you in the gloom.
+
+
+ {rSuddenly you hear a distinct 'click' and the ground abruptly
+ disappears under your feet! You fall ... things go dark. {n
+
+
+ ...
+
+
+ ... You come to your senses. You lie down. On stone floor. You
+ shakily come to your feet. Somehow you suspect that you are not under
+ the tomb anymore, like you were magically snatched away.
+
+ The air is damp. Where are you?
+#
+@set here/success_teleport_to = dark cell
+#
+@set here/failure_teleport_to = dark cell
+#
+# back to antechamber
+@tel tut#14
+#
+#------------------------------------------------------------
+#
+# The ancient tomb
+#
+# This is the real tomb, the goal of the adventure.
+#
+#------------------------------------------------------------
+# Create the real tomb
+#
+@dig/teleport Ancient tomb;tut#16
+ : game.game_demo.objects.rooms.TutorialRoom
+ =  ,back to antechamber;antechamber;back
+#
+@desc
+ The tomb is dark. You fumble your way through it. You think you can
+ make out a coffin in front of you in the gloom.
+
+ The coffin comes into view. On and around it are chiseled scenes of a
+ stern woman in armor. They depict great heroic deeds. This is clearly
+ the tomb of some sort of ancient heroine - it must be the goal you
+ have been looking for!
+#
+@set here/tutorial_info =
+ Congratulations, you have reached the end of this little tutorial
+ scenario. Just grab the mythical weapon (get weapon) and the exit
+ will open.
+
+ You can end the quest here or go back through the tutorial rooms to
+ explore further. You will find this weapon works better against the
+ castle's guardian than any of the others you have found ...
+#
+# The exact nature of the weapon is randomized. The get_text attribute
+# on the sarcophagus holds a %s replacement that is filled by the typeclass
+# with the name of the weapon when you get the weapon.
+#
+@create/drop Stone sarcophagus;sarcophagus;stone : game.game_demo.objects.objects.WeaponRack
+#
+@desc stone =
+ The lid of the coffin is adorned with a stone statue in full size. The weapon held by
+ the stone hands looks very realistic ...
+#
+@set sarcophagus/rack_id = rack_sarcophagus
+#
+@set sarcophagus/min_dmg = 4.0
+#
+@set sarcophagus/max_dmg = 11.0
+#
+@set sarcophagus/magic = True
+#
+@set sarcophagus/get_text =
+ The hands of the statue close on what seems to be a real weapon
+ rather than one in stone.  This must be the hero's legendary weapon!
+ The prize you have been looking for!
+
+ With trembling hands you release the weapon from the stone and hold
+ {c%s{n in your hands!
+
+
+
+
+ {gThis concludes the Evennia tutorial. From here you can either
+ continue to explore the castle (hint: this weapon works better
+ against the castle guardian than any you might have found earlier) or
+ you can choose to exit.{n
+
+#------------------------------------------------------------
+#
+# Outro - end of the tutorial
+#
+# This cleans all temporary attributes set on the Character
+# by the tutorial, removes weapons and items etc.
+#
+#------------------------------------------------------------
+#
+@dig End of tutorial;end;tut#17
+ : game.game_demo.objects.rooms.OutroRoom
+ = Exit tutorial;exit;end
+#
+# All weapons from the rack gets an automatic alias the same as the
+# rack_id. This we can use to check if any such weapon is in inventory
+# before unlocking the exit.
+#
+@lock Exit tutorial: view:holds(rack_sarcophagus) ; traverse:holds(rack_sarcophagus)
+#
+# to tutorial outro
+@tel tut#17
+#
+# we want to clear the weapon-rack ids on the character when exiting.
+@set here/wracklist = ["rack_sarcophagus"]
+#
+# this quits the tutorial and cleans up all variables that was .
+@desc
+ {gThanks for trying out this little Evennia tutorial!
+
+
+ The game play given here is of course just scraping the surface of
+ what can be done with Evennia. The tutorial focuses more on showing
+ various techniques than to supply any sort of novel storytelling or
+ gaming challenge.  The full README and source code for the tutorial
+ world can be found under {wgame_demo{g.
+
+
+ If you went through the tutorial quest once, it can be interesting to
+ do it again to explore the various possibilities and rooms you might
+ not have come across yet, maybe with the source/build code to one
+ side. If you play as superuser (user #1) the mobile will ignore you
+ and teleport rooms etc will not affect you (this will also disable
+ all locks, so keep that in mind when checking functionality).{n
+#
+@set here/tutorial_info =
+ This room cleans up all temporary attributes that was put on the
+ character during the tutorial. Hope you enjoyed the play through!
+#
+# Tie this back to Limbo
+#
+@open exit back to Limbo;limbo;exit;back = #2
+#
+@tel #2
