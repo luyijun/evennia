@@ -52,4 +52,5 @@ nosetests.xml
 .idea
 
 # User game
+game/demo_game/
 game/game_demo/
