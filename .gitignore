@@ -50,3 +50,6 @@ nosetests.xml
 
 # PyCharm config
 .idea
+
+# User game
+game/game_demo/
