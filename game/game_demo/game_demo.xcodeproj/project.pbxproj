@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXGroup section */
-		30EB08661A093CA5002412EC = {
+		30346A4F1A0A8EC5008E65D5 = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -16,10 +16,10 @@
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		30EB086B1A093CA5002412EC /* game_demo */ = {
+		30346A541A0A8EC5008E65D5 /* game_demo */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "$(ACTION)";
-			buildConfigurationList = 30EB086E1A093CA5002412EC /* Build configuration list for PBXLegacyTarget "game_demo" */;
+			buildConfigurationList = 30346A571A0A8EC5008E65D5 /* Build configuration list for PBXLegacyTarget "game_demo" */;
 			buildPhases = (
 			);
 			buildToolPath = /Users/kellysmile27/Python/evenniaevn/bin/python;
@@ -32,35 +32,35 @@
 /* End PBXLegacyTarget section */
 
 /* Begin PBXProject section */
-		30EB08671A093CA5002412EC /* Project object */ = {
+		30346A501A0A8EC5008E65D5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Lu Yijun";
 				TargetAttributes = {
-					30EB086B1A093CA5002412EC = {
+					30346A541A0A8EC5008E65D5 = {
 						CreatedOnToolsVersion = 6.0.1;
 					};
 				};
 			};
-			buildConfigurationList = 30EB086A1A093CA5002412EC /* Build configuration list for PBXProject "game_demo" */;
+			buildConfigurationList = 30346A531A0A8EC5008E65D5 /* Build configuration list for PBXProject "game_demo" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 30EB08661A093CA5002412EC;
+			mainGroup = 30346A4F1A0A8EC5008E65D5;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				30EB086B1A093CA5002412EC /* game_demo */,
+				30346A541A0A8EC5008E65D5 /* game_demo */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin XCBuildConfiguration section */
-		30EB086C1A093CA5002412EC /* Debug */ = {
+		30346A551A0A8EC5008E65D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -100,7 +100,7 @@
 			};
 			name = Debug;
 		};
-		30EB086D1A093CA5002412EC /* Release */ = {
+		30346A561A0A8EC5008E65D5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -134,7 +134,7 @@
 			};
 			name = Release;
 		};
-		30EB086F1A093CA5002412EC /* Debug */ = {
+		30346A581A0A8EC5008E65D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUGGING_SYMBOLS = YES;
@@ -146,7 +146,7 @@
 			};
 			name = Debug;
 		};
-		30EB08701A093CA5002412EC /* Release */ = {
+		30346A591A0A8EC5008E65D5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				OTHER_CFLAGS = "";
@@ -158,24 +158,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		30EB086A1A093CA5002412EC /* Build configuration list for PBXProject "game_demo" */ = {
+		30346A531A0A8EC5008E65D5 /* Build configuration list for PBXProject "game_demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				30EB086C1A093CA5002412EC /* Debug */,
-				30EB086D1A093CA5002412EC /* Release */,
+				30346A551A0A8EC5008E65D5 /* Debug */,
+				30346A561A0A8EC5008E65D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30EB086E1A093CA5002412EC /* Build configuration list for PBXLegacyTarget "game_demo" */ = {
+		30346A571A0A8EC5008E65D5 /* Build configuration list for PBXLegacyTarget "game_demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				30EB086F1A093CA5002412EC /* Debug */,
-				30EB08701A093CA5002412EC /* Release */,
+				30346A581A0A8EC5008E65D5 /* Debug */,
+				30346A591A0A8EC5008E65D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 30EB08671A093CA5002412EC /* Project object */;
+	rootObject = 30346A501A0A8EC5008E65D5 /* Project object */;
 }
