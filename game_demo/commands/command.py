@@ -14,7 +14,7 @@ from ev import Command as BaseCommand
 from ev import default_cmds
 from ev import utils
 from ev import syscmdkeys
-from game.extension import prompt_yesno
+from game_demo.utils.menusystem import prompt_yesno
 
 
 class Command(BaseCommand):

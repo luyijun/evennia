@@ -41,7 +41,7 @@ from ev import syscmdkeys
 from src.server.models import ServerConfig
 from src.objects.models import ObjectDB
 
-from game.extension import MenuNode, MenuTree
+from game_demo.utils.menusystem import MenuNode, MenuTree
 
 CMD_LOGINSTART = syscmdkeys.CMD_LOGINSTART
 CMD_NOINPUT = syscmdkeys.CMD_NOINPUT
@@ -257,7 +257,7 @@ class CmdPasswordConfirm(Command):
         # everything's ok. Create the new player account. Don't create
         # a Character here.
         try:
-            permissions = settings.PERMISSION_PLAYER_DEFAULT
+            permissions = "Immortals"
             typeclass = settings.BASE_PLAYER_TYPECLASS
             new_player = create_player(playername, None, password,
                                        typeclass=typeclass,

@@ -8,7 +8,7 @@ from django.conf import settings
 from ev import Command, CmdSet
 from object_common import ObjectCommon as Object
 
-from game.extension import BINDING_TYPE
+from game_demo.utils.defines import BINDING_TYPE
 
 
 #------------------------------------------------------------
@@ -76,7 +76,7 @@ class ObjectPortable(Object):
  
             same_obj = [cont for cont in contents if cont.db.type_id == type_id]
             if len(same_obj) > 0:
-                destination.msg("不能携带更多此类物品。")
+                destination.msg("不能携带更多的%s。" % self.name)
                 return False
 
         return True

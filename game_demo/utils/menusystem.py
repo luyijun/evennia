@@ -465,16 +465,93 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
     yesnocmdset.add(CmdMenuLook())
     yesnocmdset.add(CmdMenuHelp())
 
-    # assinging menu data flags to caller.
-    caller.db._menu_data = {"help": "Please select Yes or No.",
-                            "look": "Please select Yes or No."}
     # assign cmdset and ask question
-    caller.cmdset.add(yesnocmdset)
+    prompt = ""
     if default == "Y":
         prompt = "{lcY{lt[Y] (默认){le / {lcN{lt[N]{le"
     else:
         prompt = "{lcY{lt[Y]{le / {lcN{lt[N] (默认){le"
     prompt = "%s %s: " % (question, prompt)
+    
+    # assinging menu data flags to caller.
+    caller.db._menu_data = {"help": "请选择 Y(是) 或 N(否)。",
+                            "look": prompt}
+
+    caller.cmdset.add(yesnocmdset)
+    caller.msg(prompt)
+
+
+#
+# A simple choice question. Call this from a command to give object
+# a cmdset where they need to make a choice. Does not
+# make use the node system since there is only one level of choice.
+#
+
+def prompt_choice(caller, question="", prompts=None, funcs=None, no_choice=True):
+    """
+        This sets up a simple choice questionnaire. Question will be
+        asked, followed by a serie of prompts. Note that this isn't
+        making use of the menu node system.
+        
+        prompts - prompts of choices
+        funcs - functions callback to be called as func(self) when make choice (self.caller is available)
+        no_choice - user can make no choice and exit
+        """
+    
+    # creating and defining commands
+    count = 0
+    choices = ""
+    commands = []
+    for choice in prompts:
+        count += 1
+        choices += "\n{lc%d{lt[%d]{le %s" % (count, count, choice)
+        
+        if count <= len(funcs):
+            cmd = CmdMenuNode(key="%d" % count)
+            cmd.func = funcs[count - 1]
+
+            def _func(self):
+                self.func(self)
+                self.caller.cmdset.delete('menucmdset')
+                del self.caller.db._menu_data
+            
+            cmd.callback = MethodType(_func, cmd, CmdMenuNode)
+            commands.append(cmd)
+
+    errorcmd = CmdMenuNode(key=CMD_NOMATCH)
+    if not no_choice:
+        def _errorcmd(self):
+            self.caller.msg("只能选择提供的选项。")
+    else:
+        def _errorcmd(self):
+            self.caller.cmdset.delete('menucmdset')
+    errorcmd.callback = MethodType(_errorcmd, errorcmd, CmdMenuNode)
+    
+    defaultcmd = CmdMenuNode(key=CMD_NOINPUT)
+    if not no_choice:
+        def _defaultcmd(self):
+            caller.msg(prompt)
+    else:
+        def _errorcmd(self):
+            self.caller.cmdset.delete('menucmdset')
+    defaultcmd.callback = MethodType(_defaultcmd, defaultcmd, CmdMenuNode)
+    
+    # creating cmdset (this will already have look/help commands)
+    choicecmdset = MenuCmdSet()
+    for cmd in commands: choicecmdset.add(cmd)
+    choicecmdset.add(errorcmd)
+    choicecmdset.add(defaultcmd)
+    choicecmdset.add(CmdMenuLook())
+    choicecmdset.add(CmdMenuHelp())
+
+    prompt = "%s %s: " % (question, choices)
+    
+    # assinging menu data flags to caller.
+    caller.db._menu_data = {"help": "Please select Yes or No.",
+                            "look": prompt}
+        
+    # assign cmdset and ask question
+    caller.cmdset.add(choicecmdset)
     caller.msg(prompt)
 
 

@@ -76,7 +76,7 @@ class ObjectPortable(Object):
  
             same_obj = [cont for cont in contents if cont.db.type_id == type_id]
             if len(same_obj) > 0:
-                destination.msg("不能携带更多此类物品。")
+                destination.msg("不能携带更多的%s。" % self.name)
                 return False
 
         return True

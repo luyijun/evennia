@@ -25,7 +25,8 @@ from src.settings_default import *
 ######################################################################
 SECRET_KEY = 'wOxp*280IZ&_U[;("}>+]?j.ytgNLBlo6$qzi5r/'
 
-GAME_MODULE = "game.game_demo"
+GAME_MODULE = "game_demo"
+WEB_DIR = os.path.join(BASE_PATH, 'game_demo')
 
 
 ######################################################################
@@ -48,7 +49,7 @@ CONNECTION_SCREEN_MODULE = GAME_MODULE + ".conf.connection_screens"
 
 CMDSET_UNLOGGEDIN = GAME_MODULE + ".commands.menu_login.UnloggedInCmdSet"
 CMDSET_CHARACTER = GAME_MODULE + ".commands.cmdset.CharacterCmdSet"
-CMDSET_PLAYER = GAME_MODULE + ".commands.cmdset.PlayerCmdSet"
+#CMDSET_PLAYER = GAME_MODULE + ".commands.cmdset.PlayerCmdSet"
 
 
 ######################################################################
@@ -66,6 +67,6 @@ BASE_EXIT_TYPECLASS = GAME_MODULE + ".objects.exit.Exit"
 ######################################################################
 
 ROOT_URLCONF = GAME_MODULE + ".web.urls"
-STATICFILES_DIRS = (os.path.join(GAME_DIR, "game_demo", "web", "static_overrides"),) + STATICFILES_DIRS
-TEMPLATE_DIRS = (os.path.join(GAME_DIR, "game_demo", "web", "template_overrides"),) + TEMPLATE_DIRS
+STATICFILES_DIRS = (os.path.join(WEB_DIR, "web", "static_overrides"),) + STATICFILES_DIRS
+TEMPLATE_DIRS = (os.path.join(WEB_DIR, "web", "template_overrides"),) + TEMPLATE_DIRS
 

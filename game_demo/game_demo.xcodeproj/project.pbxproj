@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		301F3E721A0BC99E0072C86C /* object_creater.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = object_creater.py; sourceTree = "<group>"; };
 		30346A5D1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A5F1A0A915C008E65D5 /* build.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = build.ev; sourceTree = "<group>"; };
 		30346A601A0A915C008E65D5 /* limbo.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = limbo.ev; sourceTree = "<group>"; };
@@ -101,6 +102,7 @@
 				30346A6C1A0A915C008E65D5 /* exit.py */,
 				30346A6D1A0A915C008E65D5 /* mob.py */,
 				30346A6E1A0A915C008E65D5 /* object_common.py */,
+				301F3E721A0BC99E0072C86C /* object_creater.py */,
 				30346A6F1A0A915C008E65D5 /* object_portable.py */,
 				30346A701A0A915C008E65D5 /* objects.py */,
 				30346A711A0A915C008E65D5 /* room.py */,
