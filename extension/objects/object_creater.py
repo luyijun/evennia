@@ -3,8 +3,9 @@
 """
 
 
-from ev import Object as DefaultObject
-from game_demo.commands.command import MuxCommand
+from ev import CmdSet
+from extension.commands.command import MuxCommand
+from object_common import ObjectCommon as Object
 
 
 #------------------------------------------------------------
@@ -83,7 +84,7 @@ class CmdSetDemandObject(CmdSet):
         self.add(CmdFillShelf())
 
 
-class ObjectShelf(DefaultObject):
+class ObjectShelf(Object):
     """
     """
     def __init__(self):
@@ -93,13 +94,13 @@ class ObjectShelf(DefaultObject):
     
         self.obj_info = {1:{"name":"生锈的剑",
                             "desc":"这是一把生锈的阔剑。它曾经是把好剑，但现在只有剑柄还是保持完好。",
-                            "typeclass":"game.game_demo.objects.object_create.ObjectPortable"},
+                            "typeclass":"extension.objects.object_create.ObjectPortable"},
                          2:{"name":"生锈的剑",
                             "desc":"这是一把生锈的阔剑。它曾经是把好剑，但现在只有剑柄还是保持完好。",
-                            "typeclass":"game.game_demo.objects.object_create.ObjectPortable"},
+                            "typeclass":"extension.objects.object_create.ObjectPortable"},
                          3:{"name":"生锈的剑",
                             "desc":"这是一把生锈的阔剑。它曾经是把好剑，但现在只有剑柄还是保持完好。",
-                            "typeclass":"game.game_demo.objects.object_create.ObjectPortable"},}
+                            "typeclass":"extension.objects.object_create.ObjectPortable"},}
     
     def at_object_creation(self):
         "called at creation"

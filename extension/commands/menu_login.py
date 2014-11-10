@@ -41,7 +41,7 @@ from ev import syscmdkeys
 from src.server.models import ServerConfig
 from src.objects.models import ObjectDB
 
-from game_demo.utils.menusystem import MenuNode, MenuTree
+from extension.utils.menusystem import MenuNode, MenuTree
 
 CMD_LOGINSTART = syscmdkeys.CMD_LOGINSTART
 CMD_NOINPUT = syscmdkeys.CMD_NOINPUT

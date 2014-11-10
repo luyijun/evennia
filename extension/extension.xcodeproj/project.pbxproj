@@ -9,14 +9,10 @@
 /* Begin PBXFileReference section */
 		301F3E721A0BC99E0072C86C /* object_creater.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = object_creater.py; sourceTree = "<group>"; };
 		30346A5D1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
-		30346A5F1A0A915C008E65D5 /* build.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = build.ev; sourceTree = "<group>"; };
-		30346A601A0A915C008E65D5 /* limbo.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = limbo.ev; sourceTree = "<group>"; };
 		30346A621A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A631A0A915C008E65D5 /* cmdset.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cmdset.py; sourceTree = "<group>"; };
 		30346A641A0A915C008E65D5 /* command.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = command.py; sourceTree = "<group>"; };
 		30346A651A0A915C008E65D5 /* menu_login.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = menu_login.py; sourceTree = "<group>"; };
-		30346A671A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
-		30346A681A0A915C008E65D5 /* connection_screens.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = connection_screens.py; sourceTree = "<group>"; };
 		30346A6A1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A6B1A0A915C008E65D5 /* character.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = character.py; sourceTree = "<group>"; };
 		30346A6C1A0A915C008E65D5 /* exit.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = exit.py; sourceTree = "<group>"; };
@@ -27,19 +23,9 @@
 		30346A711A0A915C008E65D5 /* room.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = room.py; sourceTree = "<group>"; };
 		30346A721A0A915C008E65D5 /* rooms.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = rooms.py; sourceTree = "<group>"; };
 		30346A731A0A915C008E65D5 /* scripts.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = scripts.py; sourceTree = "<group>"; };
-		30346A741A0A915C008E65D5 /* settings.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = settings.py; sourceTree = "<group>"; };
 		30346A761A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A771A0A915C008E65D5 /* defines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = defines.py; sourceTree = "<group>"; };
 		30346A781A0A915C008E65D5 /* menusystem.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = menusystem.py; sourceTree = "<group>"; };
-		30346A7A1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
-		30346A7C1A0A915C008E65D5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		30346A7F1A0A915C008E65D5 /* webclient.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = webclient.css; sourceTree = "<group>"; };
-		30346A811A0A915C008E65D5 /* evennia_websocket_webclient.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = evennia_websocket_webclient.js; sourceTree = "<group>"; };
-		30346A831A0A915C008E65D5 /* base.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = base.html; sourceTree = "<group>"; };
-		30346A851A0A915C008E65D5 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
-		30346A861A0A915C008E65D5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		30346A871A0A915C008E65D5 /* urls.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = urls.py; sourceTree = "<group>"; };
-		30346A881A0A915C008E65D5 /* views.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = views.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -54,24 +40,11 @@
 			isa = PBXGroup;
 			children = (
 				30346A5D1A0A915C008E65D5 /* __init__.py */,
-				30346A5E1A0A915C008E65D5 /* batch */,
 				30346A611A0A915C008E65D5 /* commands */,
-				30346A661A0A915C008E65D5 /* conf */,
 				30346A691A0A915C008E65D5 /* objects */,
-				30346A741A0A915C008E65D5 /* settings.py */,
 				30346A751A0A915C008E65D5 /* utils */,
-				30346A791A0A915C008E65D5 /* web */,
 			);
 			name = extension;
-			sourceTree = "<group>";
-		};
-		30346A5E1A0A915C008E65D5 /* batch */ = {
-			isa = PBXGroup;
-			children = (
-				30346A5F1A0A915C008E65D5 /* build.ev */,
-				30346A601A0A915C008E65D5 /* limbo.ev */,
-			);
-			path = batch;
 			sourceTree = "<group>";
 		};
 		30346A611A0A915C008E65D5 /* commands */ = {
@@ -83,15 +56,6 @@
 				30346A651A0A915C008E65D5 /* menu_login.py */,
 			);
 			path = commands;
-			sourceTree = "<group>";
-		};
-		30346A661A0A915C008E65D5 /* conf */ = {
-			isa = PBXGroup;
-			children = (
-				30346A671A0A915C008E65D5 /* __init__.py */,
-				30346A681A0A915C008E65D5 /* connection_screens.py */,
-			);
-			path = conf;
 			sourceTree = "<group>";
 		};
 		30346A691A0A915C008E65D5 /* objects */ = {
@@ -120,70 +84,6 @@
 				30346A781A0A915C008E65D5 /* menusystem.py */,
 			);
 			path = utils;
-			sourceTree = "<group>";
-		};
-		30346A791A0A915C008E65D5 /* web */ = {
-			isa = PBXGroup;
-			children = (
-				30346A7A1A0A915C008E65D5 /* __init__.py */,
-				30346A7B1A0A915C008E65D5 /* static_overrides */,
-				30346A821A0A915C008E65D5 /* template_overrides */,
-				30346A871A0A915C008E65D5 /* urls.py */,
-				30346A881A0A915C008E65D5 /* views.py */,
-			);
-			path = web;
-			sourceTree = "<group>";
-		};
-		30346A7B1A0A915C008E65D5 /* static_overrides */ = {
-			isa = PBXGroup;
-			children = (
-				30346A7C1A0A915C008E65D5 /* README.md */,
-				30346A7D1A0A915C008E65D5 /* webclient */,
-			);
-			path = static_overrides;
-			sourceTree = "<group>";
-		};
-		30346A7D1A0A915C008E65D5 /* webclient */ = {
-			isa = PBXGroup;
-			children = (
-				30346A7E1A0A915C008E65D5 /* css */,
-				30346A801A0A915C008E65D5 /* js */,
-			);
-			path = webclient;
-			sourceTree = "<group>";
-		};
-		30346A7E1A0A915C008E65D5 /* css */ = {
-			isa = PBXGroup;
-			children = (
-				30346A7F1A0A915C008E65D5 /* webclient.css */,
-			);
-			path = css;
-			sourceTree = "<group>";
-		};
-		30346A801A0A915C008E65D5 /* js */ = {
-			isa = PBXGroup;
-			children = (
-				30346A811A0A915C008E65D5 /* evennia_websocket_webclient.js */,
-			);
-			path = js;
-			sourceTree = "<group>";
-		};
-		30346A821A0A915C008E65D5 /* template_overrides */ = {
-			isa = PBXGroup;
-			children = (
-				30346A831A0A915C008E65D5 /* base.html */,
-				30346A841A0A915C008E65D5 /* evennia_general */,
-				30346A861A0A915C008E65D5 /* README.md */,
-			);
-			path = template_overrides;
-			sourceTree = "<group>";
-		};
-		30346A841A0A915C008E65D5 /* evennia_general */ = {
-			isa = PBXGroup;
-			children = (
-				30346A851A0A915C008E65D5 /* index.html */,
-			);
-			path = evennia_general;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -8,7 +8,7 @@ from django.conf import settings
 from ev import Command, CmdSet
 from object_common import ObjectCommon as Object
 
-from game_demo.utils.defines import BINDING_TYPE
+from extension.utils.defines import BINDING_TYPE
 
 
 #------------------------------------------------------------
