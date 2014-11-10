@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block header_ext %}
+{% endblock %}
+
+{% block content %}
+<div class="rowOfBoxes">
+   <!--div class="twoThirds noBorderOnLeft"-->
+   <div class="noBorderOnLeft">
+      <h1>欢迎！</h1>
+      <p>欢迎您访问 Evennia 的游戏演示网站！
+        {% if webclient_enabled %}
+        要进入游戏可以直接使用<b><a href="{% url 'webclient:index' %}">网页客户端</a></b>！
+        {% endif %}
+      <br><br>
+ 
+      <a href="http://www.evenniacn.com">Evennia</a> 是一款开源的MUD游戏服务器软件，它使用Python编写，基于Twisted和Django开发，使用BSD许可协议发布，对商业应用友好。<br>
+      虽然MUD是一种历史比较久远的游戏方式，但Evennia自身使用了不少新技术。它结构清晰、文档丰富、开发简便、易于扩展，还自带有网页服务器和客户端，加以改动就可用于更广泛的用途，发展潜力很大。<br><br>
+
+      如果想了解更多信息，欢迎访问<a href="http://www.evenniacn.com">Evennia中文站</a>。
+      </p>
+   </div>
+</div>
+
+<div class="rowOfBoxes dividingBorderAbove">
+
+   <div class="quarter noBorderOnLeft">
+      <h1>玩家</h1>
+      <p>      
+      目前已有 <strong>{{num_players_registered}}</strong> 个玩家注册，其中 <strong>{{num_players_registered_recent}}</strong> 个是本周注册的，在最近七天内有 <strong>{{num_players_connected_recent}}</strong> 个玩家登录过。<br><br>
+      当前有 <strong>{{num_players_connected}}</strong> 个玩家正在游戏。
+      </p>
+   </div>
+
+   <div class="quarter">
+      <h1>最近登录</h1>
+      <ul>
+      {% for player in players_connected_recent %}
+      <li>{{player.username}} -- <em>{{player.last_login|timesince}} 前</em></li>
+      {% endfor %}
+      </ul>
+      <p class="filler"><!-- Filler para to extend left vertical line --></p>
+   </div>
+
+   <div class="quarter">
+      <h1>数据库信息</h1>
+      <ul>
+      <li>{{num_players_registered}} 玩家 (+ {{num_characters}} 角色)</li>
+      <li>{{num_rooms}} 房间 (+ {{num_exits}} 出口)</li>
+      <li>{{num_others}} 其他物体</li>
+
+      </ul>
+   </div>
+
+   <div class="quarter">
+      <h1>公告</h1>
+      <p>欢迎访问！
+      </p>
+   </div>
+
+</div>
+{% endblock %}
