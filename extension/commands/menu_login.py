@@ -257,7 +257,7 @@ class CmdPasswordConfirm(Command):
         # everything's ok. Create the new player account. Don't create
         # a Character here.
         try:
-            permissions = "Immortals"
+            permissions = settings.PERMISSION_PLAYER_DEFAULT
             typeclass = settings.BASE_PLAYER_TYPECLASS
             new_player = create_player(playername, None, password,
                                        typeclass=typeclass,
