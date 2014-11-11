@@ -22,5 +22,5 @@ def enum(**enums):
 # Banding Types
 #------------------------------------------------------------
 BINDING_TYPE = enum(NONE = 0,
-                    ON_EQUIP = 1,
-                    ON_PICKUP = 2)
+                    ON_PICKUP = 1,
+                    ON_EQUIP = 2)
