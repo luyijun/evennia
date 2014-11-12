@@ -289,8 +289,9 @@ class CmdDiscardObject(MuxCommand):
         okay = obj.delete()
         if not okay:
             caller.msg("发生错误：%s无法丢弃。" % objname)
-        else:
-            caller.msg("\n%s已被丢弃。" % objname)
+            return
+        
+        caller.msg("\n%s已被丢弃。" % objname)
         return
         
         
@@ -441,3 +442,46 @@ class CmdLook(default_cmds.CmdLook):
     Set CMD_NOINPUT to look.
     """
     aliases = ["l", "ls", syscmdkeys.CMD_NOINPUT]
+                                                   
+                                                   
+                                                   
+                                                   
+#------------------------------------------------------------
+# loot
+#------------------------------------------------------------
+class CmdLoot(MuxCommand):
+    """
+    Usage:
+    loot object_creater
+   
+    This will try to loot a object_creater for portable object.
+    """
+    key = "loot"
+    aliases = ""
+    locks = "cmd:all()"
+    help_cateogory = "TutorialWorld"
+    arg_regex = r"\s.*?|$"
+
+    def func(self):
+        """
+        Implement the command
+        """
+
+        caller = self.caller
+        if not self.args:
+            string = "Usage: loot <obj>"
+            caller.msg(string)
+            return
+
+        obj = caller.search(self.args, location=caller.location)
+        if not obj:
+            caller.msg("没有找到%s" % (self.args))
+            return
+
+        if not hasattr(obj, "give"):
+            string = "无法搜索该物体。"
+            caller.msg(string)
+            return
+
+        obj.give(caller)
+                           

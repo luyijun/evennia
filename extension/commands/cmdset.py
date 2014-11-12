@@ -84,6 +84,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(Cmd.CmdInventory())
         self.add(Cmd.CmdGoto())
         self.add(Cmd.CmdLook())
+        self.add(Cmd.CmdLoot())
 
 
 class UnloggedinCmdSet(default_cmds.UnloggedinCmdSet):

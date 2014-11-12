@@ -28,7 +28,7 @@ class ObjectCommon(DefaultObject):
     def at_object_creation(self):
         "Called when the object is first created."
         super(ObjectCommon, self).at_object_creation()
-        self.db.type_id = 0
+        self.db.type_id = ""
 
         
     def return_appearance(self, pobject):
