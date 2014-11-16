@@ -10,12 +10,12 @@ examples/cmdset.py)
 """
 
 import traceback
+import re
 from ev import Command as BaseCommand
 from ev import default_cmds
 from ev import utils
 from ev import syscmdkeys
 from extension.utils.menusystem import prompt_yesno
-
 
 class Command(BaseCommand):
     """
@@ -374,7 +374,7 @@ class CmdInventory(MuxCommand):
                     if max_width < width:
                         max_width = width
                 else:
-                    width.append(0)
+                    widths.append(0)
 
             index = 0
             space = " " * (max_width - widths[index] + 2)
@@ -452,9 +452,9 @@ class CmdLook(default_cmds.CmdLook):
 class CmdLoot(MuxCommand):
     """
     Usage:
-    loot object_creater
+    loot object_creator
    
-    This will try to loot a object_creater for portable object.
+    This will try to loot a object_creator for portable object.
     """
     key = "loot"
     aliases = ""
@@ -485,3 +485,64 @@ class CmdLoot(MuxCommand):
 
         obj.give(caller)
                            
+
+#------------------------------------------------------------
+# set object's type id
+#------------------------------------------------------------
+class CmdTypeId(MuxCommand):
+    """
+    Usage:
+    @typeid <obj> = [id]
+    
+    This will try to set the type id of an object.
+    """
+    key = "@typeid"
+    locks = "perm(Builders)"
+    help_cateogory = "Building"
+    
+    def func(self):
+        """
+        Implement the command
+        """
+        caller = self.caller
+        if not self.args:
+            string = "Usage: @typeid <obj> [=id]"
+            caller.msg(string)
+            return
+        
+        if not self.lhslist:
+            objname = self.args
+            obj = caller.search(objname, location=caller.location)
+            if not obj:
+                caller.msg("Sorry, can not find %.")
+            else:
+                caller.msg("%s's type id is %d", (objname, obj.db.type_id))
+            return
+
+        objname = self.lhs
+        obj = caller.search(objname, location=caller.location)
+        if not obj:
+            caller.msg("Sorry, can not find %.")
+            return
+
+        if not hasattr(obj, "set_type_id"):
+            caller.msg("You can not set its type id")
+            return
+    
+        if not self.rhs:
+            callser.msg("Must input a type id.")
+            return
+        
+        pattern = re.compile(r"\d+", re.I)
+        if not pattern.match(self.rhs):
+            caller.msg("Type id must be numbers.")
+            return
+         
+        # change the type:
+        type_id = int(self.rhs)
+        if not obj.set_type_id(type_id):
+            caller.msg("Type data error!")
+            return
+            
+        caller.msg("%s's type id has been set to %s." % (objname, type_id))
+            

@@ -7,8 +7,9 @@ from django.conf import settings
 
 from ev import Command, CmdSet
 from object_common import ObjectCommon as Object
-
+from extension.data.models import Portable_Object_Types
 from extension.utils.defines import BINDING_TYPE
+from extension.utils.defines import OBJECT_CATE
 
 
 #------------------------------------------------------------
@@ -23,9 +24,29 @@ class ObjectPortable(Object):
         "Called when the object is first created."
         super(ObjectPortable, self).at_object_creation()
 
-        self.db.bind_type = BINDING_TYPE.NONE
+        self.ndb.bind_type = BINDING_TYPE.NONE
+        self.ndb.is_unique = False
         self.db.is_bound = False
-        self.db.is_unique = False
+
+    
+    def load_type_data(self):
+        "Set object data from db."
+
+        if not super(ObjectPortable, self).load_type_data():
+            return False
+
+        if not self.category == OBJECT_CATE.PORTABLE:
+            return False
+        
+        cate_data = Portable_Object_Types.objects.filter(db_key=self.db.type_id)
+        if not cate_data:
+            return False
+
+        info = cate_data[0]
+        self.ndb.bind_type = info.db_bind_type
+        self.ndb.is_unique = info.db_unique
+        
+        return True
 
 
     def basetype_posthook_setup(self):
@@ -70,11 +91,11 @@ class ObjectPortable(Object):
             return False
 
         # Check if user try to get another unique objects.
-        if self.db.is_unique:
-            type_id = self.db.type_id
+        if self.ndb.is_unique:
+            self_id = self.db.type_id
             contents = destination.contents;
  
-            same_obj = [cont for cont in contents if cont.db.type_id == type_id]
+            same_obj = [cont for cont in contents if cont.db.type_id == self_id]
             if len(same_obj) > 0:
                 destination.msg("不能携带更多的{w[%s]{n。" % self.name)
                 return False
@@ -89,7 +110,7 @@ class ObjectPortable(Object):
 
         source_location - where we came from. This may be None.
         """        
-        if self.db.bind_type == BINDING_TYPE.ON_PICKUP:
+        if self.ndb.bind_type == BINDING_TYPE.ON_PICKUP:
             self.db.is_bound = True
 
         
@@ -101,12 +122,12 @@ class ObjectPortable(Object):
         if self.db.is_bound:
             desc = "已绑定"
         else:
-            if self.db.bind_type == BINDING_TYPE.ON_EQUIP:
+            if self.ndb.bind_type == BINDING_TYPE.ON_EQUIP:
                 desc = "装备绑定"
-            elif self.db.bind_type == BINDING_TYPE.ON_PICKUP:
+            elif self.ndb.bind_type == BINDING_TYPE.ON_PICKUP:
                 desc = "拾取绑定"
                 
-        if self.db.is_unique:
+        if self.ndb.is_unique:
             if desc:
                 desc += "  "
             else:

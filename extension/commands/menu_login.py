@@ -384,7 +384,7 @@ LOGIN_SCREEN_HELP = \
 
 # The login menu tree, using the commands above
 
-node1a = MenuNode("node1a", text="请输入您的用户名（返回上一步请直接按回车键）：",
+node1a = MenuNode("node1a", text="请输入您的用户名（直接按回车键可返回上一步）：",
                   links=["START", "node1b"],
                   helptext=["输入您注册时所使用的用户名。"],
                   keywords=[CMD_NOINPUT, CMD_NOMATCH],
@@ -396,7 +396,7 @@ node1b = MenuNode("node1b", text="请输入密码：",
                   selectcmds=[CmdPasswordSelectBack, CmdPasswordSelect],
                   nodefaultcmds=True)
 
-node2a = MenuNode("node2a", text="请输入您的用户名（返回上一步请直接按回车键）：",
+node2a = MenuNode("node2a", text="请输入您的用户名（直接按回车键可返回上一步）：",
                   links=["START", "node2b"],
                   helptext="用户名的长度不能超过30个字符，只能使用英文字母、数字和下划线。",
                   keywords=[CMD_NOINPUT, CMD_NOMATCH],

@@ -4,11 +4,11 @@ define types
 
 
 #------------------------------------------------------------
-# enum creater
+# enum creator
 #------------------------------------------------------------
 def enum(**enums):
     """
-    Define an enum type creater.
+    Define an enum type creator.
     usage:
         directions = enum(UP = 1, DOWN = 2)
         assert direction.UP == 1
@@ -16,7 +16,14 @@ def enum(**enums):
     """
     return type('Enum', (object,), enums)
     
-    
+
+#------------------------------------------------------------
+# Object Catagory
+#------------------------------------------------------------
+OBJECT_CATE = enum(COMMON = 0,
+                   CREATOR = 1,
+                   PORTABLE = 2)
+
     
 #------------------------------------------------------------
 # Banding Types

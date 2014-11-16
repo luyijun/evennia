@@ -18,17 +18,56 @@ this change, you have to convert them manually e.g. with the
 @typeclass command.
 
 """
+
+import traceback
 from ev import Object as DefaultObject
+from extension.data.models import Object_Type_List
+from extension.utils.defines import OBJECT_CATE
 
 
 class ObjectCommon(DefaultObject):
     """
     This is the root typeclass object of this game.
-     """
+    """
+    def at_init(self):
+        """
+        """
+        super(ObjectCommon, self).at_init()
+        self.load_type_data()
+    
+        
     def at_object_creation(self):
         "Called when the object is first created."
         super(ObjectCommon, self).at_object_creation()
-        self.db.type_id = ""
+        self.db.type_id = 0
+        self.ndb.category = OBJECT_CATE.COMMON
+    
+    
+    def set_type_id(self, type_id):
+        """
+        set type id.
+        Recommend to load db data in ndb attributes
+        in order to display these messages with @ex.
+        """
+        self.db.type_id = type_id
+        return self.load_type_data()
+
+
+    def load_type_data(self):
+        "Load object data from db. Called on init."
+        if self.db.type_id == 0:
+            return False
+            
+        type_data = Object_Type_List.objects.filter(db_key=self.db.type_id)
+        if not type_data:
+            return False
+            
+        info = type_data[0]
+        self.key = info.db_name
+        self.db.desc = info.db_desc
+        self.category = info.db_category
+        
+        return True
 
         
     def return_appearance(self, pobject):

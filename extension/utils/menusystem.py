@@ -63,10 +63,10 @@ class CmdMenuNode(Command):
         "Execute a selection"
 
         if self.callback:
-            try:
-                self.callback()
-            except Exception, e:
-                self.caller.msg("%s\n{rThere was an error with this selection.{n" % e)
+            #try:
+            self.callback()
+            #except Exception, e:
+            #    self.caller.msg("%s\n{rThere was an error with this selection.{n" % e)
         elif self.code:
             ev.logger.log_depmsg("menusystem.code is deprecated. Use menusystem.func.")
             try:
@@ -487,7 +487,7 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
 # make use the node system since there is only one level of choice.
 #
 
-def prompt_choice(caller, question="", prompts=None, funcs=None, no_choice=True):
+def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choose=False):
     """
         This sets up a simple choice questionnaire. Question will be
         asked, followed by a serie of prompts. Note that this isn't
@@ -506,50 +506,53 @@ def prompt_choice(caller, question="", prompts=None, funcs=None, no_choice=True)
         count += 1
         choices += "\n{lc%d{lt[%d]{le %s" % (count, count, choice)
         
-        if count <= len(funcs):
-            cmd = CmdMenuNode(key="%d" % count)
-            cmd.func = funcs[count - 1]
-
-            def _func(self):
-                self.func(self)
+        cmdfunc = CmdMenuNode(key="%d" % count)
+        if choicefunc:
+            cmdfunc.choicefunc = choicefunc
+            def _choicefunc(self):
+                self.choicefunc(self)
                 self.caller.cmdset.delete('menucmdset')
                 del self.caller.db._menu_data
-            
-            cmd.callback = MethodType(_func, cmd, CmdMenuNode)
-            commands.append(cmd)
+            cmdfunc.callback = MethodType(_choicefunc, cmdfunc, CmdMenuNode)
+        
+        commands.append(cmdfunc)
+        
+    prompt = question + choices + "\n请选择。"
+    if not force_choose:
+        prompt += "  {lc{lt[不选择]{le"
 
     errorcmd = CmdMenuNode(key=CMD_NOMATCH)
-    if not no_choice:
+    if force_choose:
         def _errorcmd(self):
             self.caller.msg("只能选择提供的选项。")
     else:
         def _errorcmd(self):
+            self.caller.msg("没有选择物品。")
             self.caller.cmdset.delete('menucmdset')
     errorcmd.callback = MethodType(_errorcmd, errorcmd, CmdMenuNode)
     
     defaultcmd = CmdMenuNode(key=CMD_NOINPUT)
-    if not no_choice:
+    if force_choose:
         def _defaultcmd(self):
             caller.msg(prompt)
     else:
-        def _errorcmd(self):
+        def _defaultcmd(self):
+            self.caller.msg("没有选择物品。")
             self.caller.cmdset.delete('menucmdset')
     defaultcmd.callback = MethodType(_defaultcmd, defaultcmd, CmdMenuNode)
     
     # creating cmdset (this will already have look/help commands)
     choicecmdset = MenuCmdSet()
-    for cmd in commands: choicecmdset.add(cmd)
+    for cmdfunc in commands: choicecmdset.add(cmdfunc)
     choicecmdset.add(errorcmd)
     choicecmdset.add(defaultcmd)
     choicecmdset.add(CmdMenuLook())
     choicecmdset.add(CmdMenuHelp())
-
-    prompt = "%s %s: " % (question, choices)
     
     # assinging menu data flags to caller.
-    caller.db._menu_data = {"help": "Please select Yes or No.",
+    caller.db._menu_data = {"help": "Please select.",
                             "look": prompt}
-        
+
     # assign cmdset and ask question
     caller.cmdset.add(choicecmdset)
     caller.msg(prompt)

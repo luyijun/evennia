@@ -95,7 +95,7 @@ class CmdRead(Command):
             string = " %s上没有可阅读的内容。" % obj.key
 
         string += "\n "
-        commands = self.caller.available_cmd_desc(self.caller)
+        commands = self.caller.available_cmd_list(self.caller)
         string += "\n 动作：" + "  ".join(commands)
         string += "\n "
         self.caller.msg(string)
@@ -120,12 +120,12 @@ class Readable(TutorialObject):
         # define a command on the object.
         self.cmdset.add_default(CmdSetReadable, permanent=True)
 
-    def available_cmd_desc(self, pobject):
+    def available_cmd_list(self, pobject):
         """
         This returns a string of available commands.
         """
         commands = ["{lcread %s{lt阅读%s{le" % (self.key, self.key)]
-        commands.extend(super(Readable, self).available_cmd_desc(pobject))
+        commands.extend(super(Readable, self).available_cmd_list(pobject))
         return commands
 
 #------------------------------------------------------------
@@ -163,7 +163,7 @@ class CmdClimb(Command):
         if not ostring:
             ostring = "你爬上%s，向四处张望了一下，又爬了下来。" % self.obj.name
 
-        commands = self.caller.available_cmd_desc(self.caller)
+        commands = self.caller.available_cmd_list(self.caller)
         ostring += "\n动作：" + ", ".join(commands)
         ostring += "\n"
         self.caller.msg(ostring)
@@ -184,12 +184,12 @@ class Climbable(TutorialObject):
         "Called at initial creation only"
         self.cmdset.add_default(CmdSetClimbable, permanent=True)
 
-    def available_cmd_desc(self, pobject):
+    def available_cmd_list(self, pobject):
         """
         This returns a string of available commands.
         """
         commands = ["{lcclimb %s{lt攀爬%s{le" % (self.key, self.key)]
-        commands.extend(super(Climbable, self).available_cmd_desc(pobject))
+        commands.extend(super(Climbable, self).available_cmd_list(pobject))
         return commands
         
 
