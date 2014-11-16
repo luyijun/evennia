@@ -522,7 +522,7 @@ class CmdTypeId(MuxCommand):
         objname = self.lhs
         obj = caller.search(objname, location=caller.location)
         if not obj:
-            caller.msg("Sorry, can not find %.")
+            caller.msg("Sorry, can not find %s." % objname)
             return
 
         if not hasattr(obj, "set_type_id"):

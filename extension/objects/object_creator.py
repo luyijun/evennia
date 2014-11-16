@@ -26,7 +26,7 @@ class ObjectCreator(ObjectCommon):
     """
     def at_object_creation(self):
         "called at creation"
-        super(ObjectSelector, self).at_object_creation()
+        super(ObjectCreator, self).at_object_creation()
     
         self.ndb.obj_list = []
         self.ndb.command = ""
@@ -40,10 +40,12 @@ class ObjectCreator(ObjectCommon):
             return False
 
         if not self.category == OBJECT_CATE.CREATOR:
+            print "Category error!"
             return False
         
         cate_data = Object_Creator_Types.objects.filter(db_key=self.db.type_id)
         if not cate_data:
+            print "Can not find category data."
             return False
             
         info = cate_data[0]
