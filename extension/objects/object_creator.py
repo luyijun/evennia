@@ -10,7 +10,7 @@ from extension.commands.command import MuxCommand
 from object_common import ObjectCommon
 from extension.data.models import Object_Type_List, Object_Creator_Types
 from extension.utils.menusystem import prompt_choice
-from extension.utils.defines import OBJECT_CATE
+from extension.utils.defines import OBJ_CATEGORY
 
 import traceback
 
@@ -39,7 +39,7 @@ class ObjectCreator(ObjectCommon):
         if not super(ObjectCreator, self).load_type_data():
             return False
 
-        if not self.category == OBJECT_CATE.CREATOR:
+        if not self.ndb.category == OBJ_CATEGORY.CREATOR:
             print "Category error!"
             return False
         
@@ -83,10 +83,10 @@ class ObjectCreator(ObjectCommon):
 
 #------------------------------------------------------------
 #
-# object shelf - give all objects on the list
+# object provider - give all objects on the list
 #
 #------------------------------------------------------------
-class ObjectShelf(ObjectCreator):
+class ObjectProvider(ObjectCreator):
     """
     Give all objects on the list
     """
@@ -118,6 +118,12 @@ class ObjectShelf(ObjectCreator):
                             new_obj.delete()
                         else:
                             caller.msg("你拿起了{w[%s]{n" % new_obj.key)
+
+        commands = caller.get_available_cmd_desc(caller)
+        if commands:
+            caller.msg(commands + "\n")
+        else:
+            caller.msg("\n")
 
 
 #------------------------------------------------------------
@@ -202,6 +208,12 @@ class ObjectSelector(ObjectCreator):
                 else:
                     caller.msg("你拿起了{w[%s]{n" % new_obj.key)
 
+        commands = caller.get_available_cmd_desc(caller)
+        if commands:
+            caller.msg(commands + "\n")
+        else:
+            caller.msg("\n")
+            
 
     def give(self, caller):
         """

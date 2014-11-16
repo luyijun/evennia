@@ -26,7 +26,10 @@ import random
 from ev import create_object
 from ev import Command, CmdSet, Script
 from object_common import ObjectCommon as Object
+from object_creator import ObjectSelector
+from object_portable import ObjectPortable
 from exit import Exit
+from extension.utils.defines import OBJ_CATEGORY
 
 #------------------------------------------------------------
 #
@@ -818,7 +821,7 @@ class CmdSetWeapon(CmdSet):
         self.add(CmdAttack())
 
 
-class Weapon(TutorialObject):
+class Weapon(ObjectPortable):
     """
     This defines a bladed weapon.
 
@@ -848,6 +851,35 @@ class Weapon(TutorialObject):
             self.delete()
         else:
             self.location = self.home
+
+
+#------------------------------------------------------------
+#
+# Weapon barrel - spawns weapons
+#
+#------------------------------------------------------------
+class WeaponBarrel(ObjectSelector):
+    """
+    This defines a weapon provider.
+    """
+    def give(self, caller):
+        """
+        Only allow to pick up if caller don't already has something called weapon
+        """
+        contents = caller.contents;
+        weapons = [cont for cont in contents if cont.db.type_id in [1, 2, 3]]
+        if weapons:
+            caller.msg("\n 酒保微笑着对你说：“朋友，别太贪心了，你已经有一把武器了。”")
+
+            commands = caller.get_available_cmd_desc(caller)
+            if commands:
+                caller.msg(commands + "\n")
+            else:
+                caller.msg("\n")
+
+            return
+
+        super(WeaponBarrel, self).give(caller)
 
 
 #------------------------------------------------------------

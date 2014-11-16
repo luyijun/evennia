@@ -22,7 +22,7 @@ this change, you have to convert them manually e.g. with the
 import traceback
 from ev import Object as DefaultObject
 from extension.data.models import Object_Type_List
-from extension.utils.defines import OBJECT_CATE
+from extension.utils.defines import OBJ_CATEGORY
 
 
 class ObjectCommon(DefaultObject):
@@ -40,7 +40,7 @@ class ObjectCommon(DefaultObject):
         "Called when the object is first created."
         super(ObjectCommon, self).at_object_creation()
         self.db.type_id = 0
-        self.ndb.category = OBJECT_CATE.COMMON
+        self.ndb.category = OBJ_CATEGORY.COMMON
     
     
     def set_type_id(self, type_id):
@@ -65,7 +65,7 @@ class ObjectCommon(DefaultObject):
         info = type_data[0]
         self.key = info.db_name
         self.db.desc = info.db_desc
-        self.category = info.db_category
+        self.ndb.category = info.db_category
         
         return True
 

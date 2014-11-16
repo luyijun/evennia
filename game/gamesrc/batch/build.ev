@@ -16,7 +16,7 @@
 # To load this file, place yourself in Limbo (room #2) and load the
 # file as user #1 with
 #
-#     @batchprocess game_demo.batch.build
+#     @batchprocess gamesrc.batch.build
 #
 # If you give the /interactive switch you can step through the
 # build process command for command.
@@ -84,7 +84,7 @@
 # player's client.
 #
 @dig 简介;Intro;tut#01
- : game.game_demo.objects.rooms.IntroRoom
+ : extension.objects.rooms.IntroRoom
 #
 # Open an exit to tutorial. We don't do this in the @dig
 # command since we want to describe the exit.
@@ -140,7 +140,7 @@ tutorial
 #------------------------------------------------------------
 #
 @dig/teleport 离开游戏;Leaving Tutorial
- : game.game_demo.objects.rooms.OutroRoom
+ : extension.objects.rooms.OutroRoom
  = 离开游戏;exit tutorial;exit;back, 重新开始;start again;start
 #
 @desc
@@ -172,7 +172,7 @@ start
 # database.
 #
 @dig/teleport 海边的悬崖;Cliff by the sea;cliff;tut#02
- : game.game_demo.objects.rooms.WeatherRoom
+ : extension.objects.rooms.WeatherRoom
  = 开始探险;begin adventure;begin;start
 #
 # We define the tutorial message seen when the using the tutorial command
@@ -217,7 +217,7 @@ start
  cannot pick it up. Since the get_err property is set, you get a
  customized error message when trying to pick it up.
 #
-@create/drop 木牌;Wooden sign;sign : game.game_demo.objects.objects.Readable
+@create/drop 木牌;Wooden sign;sign : extension.objects.objects.Readable
 #
 @desc sign =
  在向东的小路尽头有一块木牌。标牌后面是海岸边固定悬索桥的锚，悬索桥陆地和
@@ -233,7 +233,7 @@ start
 #
 @set sign/tutorial_info =
  This is a readable object, of the Typeclass
- game.game_demo.objects.objects.Readable. The sign has a cmdset
+ extension.objects.objects.Readable. The sign has a cmdset
  defined on itself, containing only one command, namely 'read'. This
  command is what allows you to 'read sign'. Doing so returns the
  contents of an attribute containing the information on the sign.
@@ -282,7 +282,7 @@ start
 
 # Set a climbable object for discovering a hidden exit
 #
-@create/drop 盘根错节的老树;gnarled old trees;tree;trees;gnarled : game.game_demo.objects.objects.Climbable
+@create/drop 盘根错节的老树;gnarled old trees;tree;trees;gnarled : extension.objects.objects.Climbable
 #
 @desc trees =
  只有最强壮的树才在荒野的边缘生存了下来。它们黑色的根深深扎入悬崖，在海风
@@ -322,7 +322,7 @@ start
 # We dig the room without moving to it.
 #
 @dig 在Evennia客栈外面;Outside Evennia Inn;outside inn;tut#03
- : game.game_demo.objects.rooms.WeatherRoom
+ : extension.objects.rooms.WeatherRoom
  = 北面的小路;northern path;north;n;path,回到悬崖;back to cliff;back;cliff;south;s
 #
 # Lock exit from view/traverse until we climbed that tree (which is
@@ -359,7 +359,7 @@ north
 #------------------------------------------------------------
 #
 @dig/teleport Evennia客栈;The Evennia Inn;evennia inn;inn;tut#04
- : game.game_demo.objects.rooms.TutorialRoom
+ : extension.objects.rooms.TutorialRoom
  = 进入;enter;in,离开;leave;out
 #
 @desc
@@ -384,33 +384,9 @@ north
 #
 # Create the weapons to be held by the barrel.
 #
-@create/drop 生锈的剑;rusty old sword;rusty;sword;weapon : game.game_demo.objects.objects.Weapon
+@create/drop 桶;barrel : extension.objects.objects.WeaponBarrel
 #
-@desc rusty =
- 这是一把生锈的阔剑。它曾经是把好剑，但现在只有剑柄还是保持完好。
-#
-# Only allow to pick up if we don't already has something called weapon
-@lock rusty = get:not holds(weapon)
-#
-@set rusty/get_err_msg = "酒保微笑着对你说：“朋友，别太贪心了，你已经有一把武器了。”"
-#
-@create/drop 钝的斧头;blunt axe;blunt;axe;weapon : game.game_demo.objects.objects.Weapon
-#
-@desc axe =
- 一把沉重的武器，但它的刃已经钝了，上面布满了锈迹和缺口。
-#
-@lock blunt = get:not holds(weapon)
-#
-@set blunt/get_err_msg = "酒保叉着手说：“嘿，你已经有一把武器了，没必要再拿一把了！”"
-#
-@create/drop 修补过的矛;patched spear;patched;spear;weapon : game.game_demo.objects.objects.Weapon
-#
-@desc patched =
- 矛的尖端看上去还挺不错的，但柄折断过，而且修补得很不好。
-#
-@lock patched = get:not holds(weapon)
-#
-@set patched/get_err_msg = "酒保摇着头说：“朋友，你已经有一把武器了，留一些给以后来的可怜蛋吧。”"
+@typeid barrel = 4
 #
 #------------------------------------------------------------
 #
@@ -428,7 +404,7 @@ north
 # itself.
 #
 @dig 古老的吊桥;The old bridge;bridge;tut#05
- : game.game_demo.objects.rooms.BridgeRoom
+ : extension.objects.rooms.BridgeRoom
  = 古老的吊桥;old bridge;east;e;bridge;hangbridge
 #
 # put some descriptions on the exit to the bridge
@@ -440,7 +416,7 @@ north
 #
 bridge
 #
-# Set up properties on bridge room (see game.game_demo.objects.rooms.BridgeRoom)
+# Set up properties on bridge room (see extension.objects.rooms.BridgeRoom)
 #
 # connect west edge to cliff
 #
@@ -543,7 +519,7 @@ bridge
 # to here. We'll get to that later.
 #
 @dig Underground passages;passages;underground;tut#07
- : game.game_demo.objects.rooms.TutorialRoom
+ : extension.objects.rooms.TutorialRoom
  = hole into cliff;hole;passage;cliff
 #
 # Describe the exit
@@ -619,7 +595,7 @@ hole
 #------------------------------------------------------------
 #
 @dig/teleport Dark cell;dark;cell;tut#08
- : game.game_demo.objects.rooms.DarkRoom
+ : extension.objects.rooms.DarkRoom
 #
 @set here/tutorial_info =
  Dark room
@@ -668,7 +644,7 @@ hole
 # to supply it with a destination.
 #
 # Puzzle wall is an exit without a given destination at start
-@create/drop root-covered wall;wall;roots;wines;root : game.game_demo.objects.objects.CrumblingWall
+@create/drop root-covered wall;wall;roots;wines;root : extension.objects.objects.CrumblingWall
 #
 # This destination is auto-assigned to the exit when its puzzle is solved
 # connect to the Underground passages
@@ -699,7 +675,7 @@ hole
 # handled by the bridge itself. So we teleport away from it.
 #
 @dig/teleport Ruined gatehouse;gatehouse;tut#09
- : game.game_demo.objects.rooms.TutorialRoom
+ : extension.objects.rooms.TutorialRoom
  = , Bridge over the abyss;bridge;abyss;west;w
 #
 @set here/tutorial_info =
@@ -743,7 +719,7 @@ hole
 #------------------------------------------------------------
 
 @dig Along inner wall;inner wall;along;tut#10
- : game.game_demo.objects.rooms.WeatherRoom
+ : extension.objects.rooms.WeatherRoom
  = Standing archway;archway;south;s,ruined gatehouse;gatehouse;north;n
 #
 @desc standing archway =
@@ -780,7 +756,7 @@ archway
 @teleport tut#09
 #
 @dig/teleport Corner of castle ruins;corner;tut#11
- : game.game_demo.objects.rooms.TutorialRoom
+ : extension.objects.rooms.TutorialRoom
  = castle corner;corner;east;e,gatehouse;west;w
 #
 @desc
@@ -803,7 +779,7 @@ archway
  strength of the weapon you use, but dictates a fixed skill for you and
  your enemy.
 #
-@create/drop obelisk:game.game_demo.objects.objects.Obelisk
+@create/drop obelisk:extension.objects.objects.Obelisk
 #
 @lock obelisk = get:false()
 #
@@ -812,7 +788,7 @@ archway
 # (the obelisk describes itself, so we need no do it here)
 #
 # Create the mobile. This is the start location.
-@create/drop Ghostly apparition;ghost;apparition;fog : game.game_demo.objects.mob.Enemy
+@create/drop Ghostly apparition;ghost;apparition;fog : extension.objects.mob.Enemy
 #
 @set ghost/full_health = 20
 #
@@ -844,7 +820,7 @@ archway
 #
 # give the enemy a tentacle weapon
 #
-@create foggy tentacles;tentacles:game.game_demo.objects.objects.Weapon
+@create foggy tentacles;tentacles:extension.objects.objects.Weapon
 #
 # Make the enemy's weapon good - hits at 70% of attacks
 #
@@ -865,7 +841,7 @@ archway
 #------------------------------------------------------------
 #
 @dig/teleport Overgrown courtyard;courtyard;tut#12
- : game.game_demo.objects.rooms.WeatherRoom
+ : extension.objects.rooms.WeatherRoom
  = courtyard;south;s,castle corner;north;n
 #
 # Connect west exit to the inner wall
@@ -906,7 +882,7 @@ archway
 #------------------------------------------------------------
 #
 @dig/teleport The ruined temple;temple;in;tut#13
- : game.game_demo.objects.rooms.TutorialRoom
+ : extension.objects.rooms.TutorialRoom
  = ruined temple;temple;east;e, overgrown courtyard;courtyard;outside;out;west;w
 #
 @desc
@@ -930,7 +906,7 @@ archway
 #------------------------------------------------------------
 #
 @dig Antechamber;antechamber;tut#14
- : game.game_demo.objects.rooms.TutorialRoom
+ : extension.objects.rooms.TutorialRoom
  =  stairs down;stairs;down;d, up the stairs to ruined temple;stairs;temple;up;u
 #
 @desc stairs down =
@@ -969,23 +945,23 @@ stairs down
 # We create all the tombs
 #
 @dig Blue bird tomb
- : game.game_demo.objects.rooms.TeleportRoom
+ : extension.objects.rooms.TeleportRoom
  = Tomb with stone bird;bird;blue;stone
 #
 @dig Tomb of woman on horse
- : game.game_demo.objects.rooms.TeleportRoom
+ : extension.objects.rooms.TeleportRoom
  = Tomb with statue of riding woman;horse;riding;
 #
 @dig Tomb of the crowned queen
- : game.game_demo.objects.rooms.TeleportRoom
+ : extension.objects.rooms.TeleportRoom
  = Tomb with statue of a crowned queen;crown;queen
 #
 @dig Tomb of the shield
- : game.game_demo.objects.rooms.TeleportRoom
+ : extension.objects.rooms.TeleportRoom
  = Tomb with shield of arms;shield
 #
 @dig Tomb of the hero
- : game.game_demo.objects.rooms.TeleportRoom
+ : extension.objects.rooms.TeleportRoom
  = Tomb depicting a heroine fighting a monster;knight;hero;monster;beast
 #
 # The puzzle_values are set on Character by looking at the Obelisk in
@@ -1044,7 +1020,7 @@ stairs down
 #------------------------------------------------------------
 #
 @dig/teleport Falling!;falling;tut#15
- : game.game_demo.objects.rooms.TeleportRoom
+ : extension.objects.rooms.TeleportRoom
 #
 @desc
  The tomb is dark. You fumble your way through it. You think you can
@@ -1081,7 +1057,7 @@ stairs down
 # Create the real tomb
 #
 @dig/teleport Ancient tomb;tut#16
- : game.game_demo.objects.rooms.TutorialRoom
+ : extension.objects.rooms.TutorialRoom
  =  ,back to antechamber;antechamber;back
 #
 @desc
@@ -1106,7 +1082,7 @@ stairs down
 # on the sarcophagus holds a %s replacement that is filled by the typeclass
 # with the name of the weapon when you get the weapon.
 #
-@create/drop Stone sarcophagus;sarcophagus;stone : game.game_demo.objects.objects.WeaponRack
+@create/drop Stone sarcophagus;sarcophagus;stone : extension.objects.objects.WeaponRack
 #
 @desc stone =
  The lid of the coffin is adorned with a stone statue in full size. The weapon held by
@@ -1146,7 +1122,7 @@ stairs down
 #------------------------------------------------------------
 #
 @dig End of tutorial;end;tut#17
- : game.game_demo.objects.rooms.OutroRoom
+ : extension.objects.rooms.OutroRoom
  = Exit tutorial;exit;end
 #
 # All weapons from the rack gets an automatic alias the same as the

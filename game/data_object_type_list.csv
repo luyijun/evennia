@@ -1,0 +1,4 @@
+1|1|生锈的剑|extension.objects.objects.Weapon|2|这是一把生锈的阔剑。它曾经是把不错的剑，但现在只有剑柄还是保持完好。
+2|2|钝的斧头|extension.objects.objects.Weapon|2|一把沉重的武器，但它的刃已经钝了，上面布满了锈迹和缺口。
+3|3|修补过的矛|extension.objects.objects.Weapon|2|矛的尖端看上去还挺不错的，但柄折断过，而且修补得很不好。
+4|4|桶|extension.objects.object_creator.ObjectSelector|1|桶上插着几把生锈的武器。

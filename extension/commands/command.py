@@ -292,6 +292,12 @@ class CmdDiscardObject(MuxCommand):
             return
         
         caller.msg("\n%s已被丢弃。" % objname)
+        commands = caller.get_available_cmd_desc(caller)
+        if commands:
+            caller.msg(commands + "\n")
+        else:
+            caller.msg("\n")
+
         return
         
         
@@ -299,7 +305,14 @@ class CmdDiscardObject(MuxCommand):
         """
         Func canceled.
         """
-        self.caller.msg("没有丢弃。")
+        caller = self.caller
+        
+        caller.msg("没有丢弃。")
+        commands = caller.get_available_cmd_desc(caller)
+        if commands:
+            caller.msg(commands + "\n")
+        else:
+            caller.msg("\n")
 
     
     def func(self):
@@ -361,9 +374,12 @@ class CmdInventory(MuxCommand):
 
     def func(self):
         "check inventory"
-        items = self.caller.contents
+        caller = self.caller
+        items = caller.contents
         if not items:
-            string = "你没有携带任何东西。"
+            string = " {c=============================================================={n"
+            string += "\n {c你没有携带任何东西。{n"
+            string += "\n {c=============================================================={n"
         else:
             max_width = len(utils.to_str(utils.to_unicode("物品"), encoding = "gbk"))
             widths = [max_width]
@@ -378,17 +394,27 @@ class CmdInventory(MuxCommand):
 
             index = 0
             space = " " * (max_width - widths[index] + 2)
-            table = "%s%s%s" % ("物品", space, "描述")
+            table = " %s%s%s" % ("物品", space, "描述")
             for item in items:
                 name = "{lclook %s{lt%s{le" % (item.dbref, item.name)
                 desc = item.db.desc if item.db.desc else ""
                 index += 1
                 space = " " * (max_width - widths[index] + 2)
 
-                table += "\n%s%s%s" % (name, space, desc)
-            string = "{w你携带着：\n%s" % table
+                table += "\n %s%s%s" % (name, space, desc)
+                
+            string = " {c=============================================================={n"
+            string += "\n {c你携带着{n"
+            string += "\n {c=============================================================={n"
+            string += "\n%s" % table
 
-        self.caller.msg(string)
+        caller.msg(string)
+        
+        commands = caller.get_available_cmd_desc(caller)
+        if commands:
+            caller.msg(commands + "\n")
+        else:
+            caller.msg("\n")
         
         
 #------------------------------------------------------------

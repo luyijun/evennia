@@ -9,7 +9,7 @@ from ev import Command, CmdSet
 from object_common import ObjectCommon as Object
 from extension.data.models import Portable_Object_Types
 from extension.utils.defines import BINDING_TYPE
-from extension.utils.defines import OBJECT_CATE
+from extension.utils.defines import OBJ_CATEGORY
 
 
 #------------------------------------------------------------
@@ -35,7 +35,7 @@ class ObjectPortable(Object):
         if not super(ObjectPortable, self).load_type_data():
             return False
 
-        if not self.category == OBJECT_CATE.PORTABLE:
+        if not self.ndb.category == OBJ_CATEGORY.PORTABLE:
             return False
         
         cate_data = Portable_Object_Types.objects.filter(db_key=self.db.type_id)

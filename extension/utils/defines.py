@@ -18,11 +18,11 @@ def enum(**enums):
     
 
 #------------------------------------------------------------
-# Object Catagory
+# Object Category
 #------------------------------------------------------------
-OBJECT_CATE = enum(COMMON = 0,
-                   CREATOR = 1,
-                   PORTABLE = 2)
+OBJ_CATEGORY = enum(COMMON = 0,
+                    CREATOR = 1,
+                    PORTABLE = 2)
 
     
 #------------------------------------------------------------
