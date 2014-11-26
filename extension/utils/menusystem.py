@@ -527,7 +527,7 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
             self.caller.msg("只能选择提供的选项。")
     else:
         def _errorcmd(self):
-            self.caller.msg("没有选择物品。")
+            self.caller.msg("没有选择。")
             self.caller.cmdset.delete('menucmdset')
     errorcmd.callback = MethodType(_errorcmd, errorcmd, CmdMenuNode)
     
@@ -537,7 +537,7 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
             caller.msg(prompt)
     else:
         def _defaultcmd(self):
-            self.caller.msg("没有选择物品。")
+            self.caller.msg("没有选择。")
             self.caller.cmdset.delete('menucmdset')
     defaultcmd.callback = MethodType(_defaultcmd, defaultcmd, CmdMenuNode)
     

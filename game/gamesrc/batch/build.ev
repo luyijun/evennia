@@ -220,9 +220,9 @@ start
 @create/drop 木牌;Wooden sign;sign : extension.objects.objects.Readable
 #
 @desc sign =
- 在向东的小路尽头有一块木牌。标牌后面是海岸边固定悬索桥的锚，悬索桥陆地和
- 将荒凉峭壁上的城堡废墟连接了起来。这个标牌并不像其他东西一样古老，它上面
- 的文字清晰可辨。
+ 在向东的小路尽头有一块木牌。标牌后面是海岸边固定悬索桥的锚，悬索桥将陆地
+ 和峭壁上的城堡废墟连接了起来。这个标牌并不像其他东西一样古老，它上面的文
+ 字清晰可辨。
 #
 @lock sign = get:false()
 #
@@ -302,6 +302,9 @@ start
 # The text to echo to player if trying 'climb tree'
 #
 @set tree/climb_text =
+ {c=============================================================={n
+ {c攀爬{n
+ {c=============================================================={n
  经过一些努力，你爬上了一棵老树。
 
  树枝又湿又滑，但足以承受你的重量。借着站得高的优势，你能看得又远又广。
@@ -360,7 +363,7 @@ north
 #
 @dig/teleport Evennia客栈;The Evennia Inn;evennia inn;inn;tut#04
  : extension.objects.rooms.TutorialRoom
- = 进入;enter;in,离开;leave;out
+ = 进入客栈;enter;in,离开客栈;leave;out
 #
 @desc
  一进入Evennia客栈便是一间大房间，里面放满了桌子。吧台沿着着东墙摆着，里
@@ -468,44 +471,36 @@ bridge
  end up in depending on what happens on the bridge.
 #
 @desc
- You are on a narrow ledge protruding from the side of the cliff,
- about halfway down.  The air is saturated with salty sea water,
- sprays hitting your face from the crashing waves below.
-
- The ledge is covered with a few black-grey brushes. Not far from you
- the cliff-face is broken down to reveal a narrow natural opening into
- the cliff.
+ 你落在突出悬崖的一处狭窄平台上，大约掉下了一半的距离。空气中充满了咸咸的
+ 海水味，海浪击打着岸礁，水花飞溅在你脸上。
+ 平台上覆盖着一些黑灰色的灌木。不远处的崖壁已经碎裂，形成了一条通向悬崖的
+ 天然通道。
 #
-@create/drop brushes;brush
+@create/drop 灌木丛;brushes;brush
 #
 @lock brush = get:false()
 #
 @desc brush =
- The brushes covering the ledge are gray and dwarfed from constantly
- being pummeled by salt, rain and wind.
+ 平台上覆盖着灌木，因为一直受到风雨、海水的击打，显得矮小而灰暗。
 #
-@create/drop The sea (far below you);sea;ocean
+@create/drop 大海(在你下方距离很远);The sea (far below you);sea;ocean
 #
 @set sea/get_err_msg:
- Try as you might, the Sea will always get you long before you can
- ever get it.
+ 尽管你很努力，但还是无法拿起大海。
 #
 @lock sea = get:false()
 #
 @desc sea =
- Below you the gray sea rages. You can almost imagine the
- cliff trembling under its onslaught.
+ 在你下面，灰色的大海咆哮着，猛烈击打着悬崖，你几乎能感受到悬崖的颤抖。
 #
-@create/drop The hang bridge (above you);bridge;hangbridge;above
+@create/drop 吊桥(在你上面);The hang bridge (above you);bridge;hangbridge;above
 #
 @lock bridge = get:false()
 #
 @desc bridge =
- You can see the shape of the hanging bridge a fair bit above you, partly
- obscured by the rain. There is no way to get back up there from this
- ledge.
+ 在雨中，你可以看到上面吊桥矇眬的影子。你没法从平台回到那里。
 #
-@set bridge/get_err_msg = You can't reach it, it's too far away.
+@set bridge/get_err_msg = 你没法碰到到它，它太远了。
 
 
 #------------------------------------------------------------
@@ -518,16 +513,15 @@ bridge
 # cliff again. If you look at the map, the 'dark cell' also connects
 # to here. We'll get to that later.
 #
-@dig Underground passages;passages;underground;tut#07
+@dig 地下通道;Underground passages;passages;underground;tut#07
  : extension.objects.rooms.TutorialRoom
- = hole into cliff;hole;passage;cliff
+ = 悬崖上的洞;hole into cliff;hole;passage;cliff
 #
 # Describe the exit
 #
 @desc hole into cliff =
- The hole is natural, the soft rock eroded by ages of sea water. The
- opening is small but large enough for you to push through. It looks
- like it expands into a cavern further in.
+ 洞是因海水常年侵蚀岩壁而形成的。洞口虽小，但已足你让你通过。它看上去似乎
+ 向内延伸进更深的洞穴中。
 #
 hole
 #
@@ -536,57 +530,43 @@ hole
  start again, regardless of how you got here.
 #
 @desc
- The underground cavern system you have entered seems to stretch on
- forever, with criss-crossing paths and natural caverns probably
- carved by water. It is not completely dark, here and there faint
- daylight sifts down from above - the cliff is porous leaving channels
- of air and light up to the surface.
-
-
- (some time later)
-
-
- You eventually come upon a cavern with a black pool of stale
- water. In it sits a murky bucket, the first remnant of any sort of
- intelligent life down here. The bucket has disconnected from a chain
- hanging down from a circular opening high above. Gray daylight
- simmers down the hole together with rain that ripples the black
- surface of the pool.
+ 你所进入的洞穴在地下纵横交错，似乎没有尽头。这应该都是被水侵蚀出来的。洞
+ 内并不是一片黑暗，悬崖上的岩石缝隙很多，斑驳的光线可以从顶上透射下来，里
+ 面的空气也很流通。
+（一段时间之后）
+ 你最终来到了一个洞穴，里面有一潭黑色的死水。水潭中有一个黑暗的水桶，里面
+ 有一具遗骸。有一条链子从顶上高高的圆形洞口垂下来，木桶原先就挂在这链子上。
+ 黯淡的光线照射进来，雨水落在黑色的潭水上，激起了一些涟漪。
 #
-@create/drop pool;water
+@create/drop 水潭;pool;water
 #
 @lock pool = get:false()
 #
 @set pool/get_err_msg =
- You sift your hands through the black water without feeling any
- immediate bottom.  It's chilling cold and so dark you don't feel like
- taking a sip.
+ 你将手伸进水里，触碰不到它的底。水很冷而且很黑，你一点也不想喝它。
 #
 @desc pool =
- The water of the pool is black and opaque. The rain coming down from
- above does not seem to ripple the surface quite as much as it should.
+ 潭里的水又黑又浑浊。雨水从顶上滴落下来，没有激起太多涟漪。
 #
-@create/drop hole (high above);hole;above
+@create/drop 高高的洞口;hole (high above);hole;above
 #
 @lock hole = get:false()
 #
-@set hole/get_err_msg = You cannot reach it from here. You need to climb the chain.
+@set hole/get_err_msg = 你无法从这里碰到它，需要爬上链条才行。
 #
 @desc hole =
- Whereas the lower edges of the hole seem jagged and natural you can
- faintly make out that it turns into a man-made circular shaft higher
- up. It looks like an old well.
+ 虽然洞口下面的边缘参差不平，似乎是自然形成的，但你依稀可以看出它上面还连
+ 接着一个人造的圆洞，看起来像一口老井。
 #
 # From the passages we get back up to the cliff, so we
 # open up a new exit back there.
 #
 # connect chain to Cliff.
-@open climb the chain;climb;chain = tut#02
+@open 爬上链条;climb the chain;climb;chain = tut#02
 #
 @desc chain =
- The chain is made of iron. It is rusty but you think it might still
- hold your weight even after all this time. Better hope you don't need
- to do this more times ...
+ 链条是铁的，已经生锈了。虽然已经很旧了，但你觉得还是可以承受你的重量的。
+ 希望你不用再来爬一次。。。
 
 #------------------------------------------------------------
 #
@@ -594,7 +574,7 @@ hole
 #
 #------------------------------------------------------------
 #
-@dig/teleport Dark cell;dark;cell;tut#08
+@dig/teleport 黑暗的房间;Dark cell;dark;cell;tut#08
  : extension.objects.rooms.DarkRoom
 #
 @set here/tutorial_info =
@@ -611,40 +591,34 @@ hole
 # light source.
 #
 @desc
- {YThe {yflickering light{Y of your makeshift light reveals a small square
- cell. It does not seem like you are still in the castle, for the
- stone of the walls are chiseled crudely and drip with water and mold.
-
- One wall holds a solid iron-cast door. While rusted and covered with
- lichen it seems very sturdy. In a corner lies what might have once
- been a bed or a bench but is now nothing more than a pile of splinters,
- one of which you are using for light. One of the walls is covered with a
- thick cover of black roots having broken through the cracks from the
- outside.{n
+ {y火光{Y在你临时的火把上忽明忽暗，照射出一个不大的方形房间。你似乎已经不在城
+ 堡里了，因为墙上的石头看上去很粗糙，上面滴着水，还有一块块的霉斑。
+ 墙上有一道坚实的铁门。尽管已经生锈了还长着青苔，但看起来依然很坚固。角落
+ 上原先放置的可能是张床或长椅，但现在只剩下一堆碎木头，你正拿着其中的一支
+ 当火把。
+ 有一面墙覆盖着黑色的树根，它是从外面顶破墙壁生长进来的。{n
 #
-@create/drop iron-cast door;iron;door;iron-cast
+@create/drop 铁门;iron-cast door;iron;door;iron-cast
 #
 @lock door = get:false()
 #
 @desc door =
- The door is very solid and clad in iron. No matter how much you push
- at it, it won't budge. It actually doesn't show any signs of having
- been opened for a very long time.
+ 门是铁铸的，很坚固。不管你多么用力地推它，它都纹丝不动。它看上去已经有很
+ 长时间没开过了。
 #
-@create/drop stone walls;walls;stone
+@create/drop 石壁;stone walls;walls;stone
 #
 @lock stone = get:false()
 #
 @desc stone =
- The walls are dripping with moisture and mold. A network of roots
- have burst through the cracks on one side, bending the stones
- slightly aside. You feel a faint draft from that direction.
+ 墙壁滴着水还长着霉斑。有一面墙上，根系透过裂缝伸展进来，把石壁都挤压得有
+ 些鼓出来了。你感觉在那里好像有些隐约的图案。
 #
 # The crumbling wall is in fact an advanced type of Exit, all we need to do is
 # to supply it with a destination.
 #
 # Puzzle wall is an exit without a given destination at start
-@create/drop root-covered wall;wall;roots;wines;root : extension.objects.objects.CrumblingWall
+@create/drop 覆盖着根系的墙壁;root-covered wall;wall;roots;wines;root : extension.objects.objects.CrumblingWall
 #
 # This destination is auto-assigned to the exit when its puzzle is solved
 # connect to the Underground passages
@@ -674,9 +648,9 @@ hole
 # The bridge room should not have any normal exits from it, that is
 # handled by the bridge itself. So we teleport away from it.
 #
-@dig/teleport Ruined gatehouse;gatehouse;tut#09
+@dig/teleport 坍塌的门楼;Ruined gatehouse;gatehouse;tut#09
  : extension.objects.rooms.TutorialRoom
- = , Bridge over the abyss;bridge;abyss;west;w
+ = , 跨越深渊的吊桥;Bridge over the abyss;bridge;abyss;west;w
 #
 @set here/tutorial_info =
  This is part of a four-room area patrolled by a mob: the guardian of
@@ -689,24 +663,18 @@ hole
  long ...
 #
 @desc
- The old gatehouse is near collapse. Part of its northern wall has
- already fallen down, together with parts of the fortifications in
- that direction.  Heavy stone pillars hold up sections of ceiling, but
- elsewhere the flagstones are exposed to open sky. Part of a heavy
- portcullis, formerly blocking off the inner castle from attack, is
- sprawled over the ground together with most of its frame.
-
- {wEast{n the gatehouse leads out to a small open area surrounded by
- the remains of the castle.  There is also a standing archway
- offering passage to a path along the old {wsouth{nern inner wall.
+ 古老的门楼几乎全塌了。一部分北墙以及与它相连的工事也完全倒塌了。坚实的石
+ 柱仍支撑着残破的天花板，有些地方已经暴露在天空下了。用来保护内城免受攻击
+ 的沉重闸门也趴在地上了，边上还散落着它的大部分支架。
+ 门楼{w西面{n通向一片被遗迹包围的小空地。有一道仍然挺立的拱廊通往{w南面{n的内墙。
 #
-@create/drop fallen portoculis;portoculis;fall;fallen
+@create/drop 倒塌的闸门;fallen portoculis;portoculis;fall;fallen
 #
 @lock portoculis = get:false()
 #
 @desc portoculis =
- This heavy iron grating used to block off the inner part of the gate house, now it has fallen
- to the ground together with the stone archway that once help it up.
+ 这道沉重的闸门曾将内城和门楼隔开，现在它已经和支撑它的石拱门一起坍落在了
+ 地上。
 #
 # We lock the bridge exit for the mob, so it don't wander out on the bridge
 #
@@ -718,12 +686,12 @@ hole
 #
 #------------------------------------------------------------
 
-@dig Along inner wall;inner wall;along;tut#10
+@dig 内墙;Along inner wall;inner wall;along;tut#10
  : extension.objects.rooms.WeatherRoom
- = Standing archway;archway;south;s,ruined gatehouse;gatehouse;north;n
+ = 挺立的拱门;Standing archway;archway;south;s,坍塌的门楼;ruined gatehouse;gatehouse;north;n
 #
 @desc standing archway =
- It seems the archway leads off into a series of dimly lit rooms.
+ 看上去拱门好像通往一排昏暗的房间。
 #
 archway
 #
@@ -737,16 +705,10 @@ archway
  your enemy.
 #
 @desc
- What appears at first sight to be a series of connected rooms
- actually turns out to be collapsed buildings so mashed together by
- the ravages of time that they all seem to lean on each other and
- against the outer wall. The whole scene is directly open to the sky.
-
- The buildings make a half-circle along the main wall, here and there
- broken by falling stone and rubble. At one end (the {wnorth{nern) of
- this half-circle is the entrance to the castle, the ruined
- gatehoue. {wEast{nwards from here is some sort of open courtyard.
-
+ 一开始以为这是一排相连的房间，但实际上只是一些倒塌的建筑。时间已将它们摧
+ 毁，现在只乘靠在围墙边的废墟。它们全都暴露在天空之下。
+ 这些建筑物沿着围墙形成一个半圆形，有多处被坠落的石头砸坏。半圆形的{w南端{n是
+ 城堡入口处的门楼废墟。从这里往{w西{n是像是个开放的庭院。
 #------------------------------------------------------------
 #
 # Corner of castle (east from gatehouse)
@@ -755,20 +717,16 @@ archway
 # back to castle gate
 @teleport tut#09
 #
-@dig/teleport Corner of castle ruins;corner;tut#11
+@dig/teleport 城堡废墟的一角;Corner of castle ruins;corner;tut#11
  : extension.objects.rooms.TutorialRoom
- = castle corner;corner;east;e,gatehouse;west;w
+ = 城堡一角;castle corner;corner;east;e,门楼;gatehouse;west;w
 #
 @desc
- The ruins opens up to the sky in a small open area, lined by
- columns. The open area is dominated by a huge stone obelisk in its
- center, an ancient ornament miraculously still standing.
-
- Previously one could probably continue past the obelisk and eastward
- into the castle keep itself, but that way is now completely blocked
- by fallen rubble. To the {wwest{n is the gatehouse and entrance to
- the castle, whereas {wsouth{nwards the collumns make way for a wide
- open courtyard.
+ 在废墟中，圆形的石柱围出了一片的空地，在空地中心矗立着一座巨大的方尖碑，
+ 这个古老的装饰品依然神奇地屹立不倒。
+ 以前，人们应该可以绕过方尖碑继续向东进入城堡，但现在这条路已经被落下的碎
+ 石完全堵死了。西面是门楼和城堡的入口，而在南面，石柱间有一条路通往宽敞的
+ 开放式庭院。
 #
 @set here/tutorial_info =
  This is part of a four-room area patrolled by a mob; the guardian of
@@ -779,16 +737,16 @@ archway
  strength of the weapon you use, but dictates a fixed skill for you and
  your enemy.
 #
-@create/drop obelisk:extension.objects.objects.Obelisk
+@create/drop 方尖碑;obelisk:extension.objects.objects.Obelisk
 #
 @lock obelisk = get:false()
 #
-@set obelisk/get_err_msg = It's way too heavy for anyone to move.
+@set obelisk/get_err_msg = 它实在太重了，没有人能移动它。
 #
 # (the obelisk describes itself, so we need no do it here)
 #
 # Create the mobile. This is the start location.
-@create/drop Ghostly apparition;ghost;apparition;fog : extension.objects.mob.Enemy
+@create/drop 幽灵;Ghostly apparition;ghost;apparition;fog : extension.objects.mob.Enemy
 #
 @set ghost/full_health = 20
 #
@@ -796,31 +754,29 @@ archway
 #
 @lock ghost = get:false()
 #
-@set ghost/get_err_msg = Your fingers just pass straight through it!
+@set ghost/get_err_msg = 你的手指直接穿过它了！
 #
 @desc ghost =
- This ghostly shape could momentarily be mistaken for a thick fog had
- it not moved with such determination and giving echoing hollow
- screams as it did. The shape is hard to determine, now and then it
- seems to form limbs and even faces that fade away only moments
- later. The thing reeks of almost tangible spite at your
- presence. This must be the ruin's eternal guardian.
+ 如果这个幽灵没有向着一个方向移动，同时发出恐怖的尖叫声回荡四周，那肯定马
+ 上会被误认为是一团浓雾。它的形状很难说清，它时而会显出四肢甚至还有面孔，
+ 但很快又消散了。对于你的出现，这团东西表现出了强烈的恶意。它肯定是这片废
+ 墟的永恒守护者。
 #
 # Give the enemy some random echoes (echoed at irregular intervals)
 # This 'list structure' [ ... ] is parsed by the batch reader and
 # split by commas (so each entry cannot contain commas).
 #
 @set ghost/irregular_echoes =
- ["The foggy thing gives off a high-pitched shriek.","For a moment the
- fog wraps around a nearby pillar.", "The fog drifts lower to the ground
- as if looking for something.", "The fog momentarily takes on a reddish
- hue.", "The fog temporarily fills most of the area as it changes
- shape.", "You accidentally breathes in some of the fog - you start
- coughing from the cold moisture."]
+ ["这团雾一样的东西发出一声强烈的尖啸。",
+  "这团雾在附近的柱子上绕了一会儿。",
+  "这团雾低伏在地面上，似乎在寻找什么东西。",
+  "这团雾突然呈现出些许红色。",
+  "这团雾在变换着形状，有一瞬间占据了大部分的空间。",
+  "你不小心吸进了一些雾，一股阴冷的气息让你咳嗽了起来。"]
 #
 # give the enemy a tentacle weapon
 #
-@create foggy tentacles;tentacles:extension.objects.objects.Weapon
+@create 雾状的触手;foggy tentacles;tentacles:extension.objects.objects.Weapon
 #
 # Make the enemy's weapon good - hits at 70% of attacks
 #
@@ -840,12 +796,12 @@ archway
 #
 #------------------------------------------------------------
 #
-@dig/teleport Overgrown courtyard;courtyard;tut#12
+@dig/teleport 长满杂草的庭院;Overgrown courtyard;courtyard;tut#12
  : extension.objects.rooms.WeatherRoom
- = courtyard;south;s,castle corner;north;n
+ = 庭院;courtyard;south;s,城堡一角;castle corner;north;n
 #
 # Connect west exit to the inner wall
-@open along inner wall;wall;along;west;w, overgrown courtyard;courtyard;east;e = tut#10
+@open 沿着内墙;along inner wall;wall;along;west;w, 长满杂草的庭院;overgrown courtyard;courtyard;east;e = tut#10
 #
 @set here/tutorial_info =
  This is part of a four-room area patrolled by a mob; the guardian of
@@ -857,23 +813,19 @@ archway
  your enemy.
 #
 @desc
- The inner courtyard of the old castle is littered with debris and
- overgrown with low grass and patches of thorny vines. There is a
- collapsed structure close to the gatehouse that looks like a stable.
-
- {wNorth{nwards is a smaller area cornered in the debris, adorned with
- a large obelisk-like thing. To the {wwest{n the castle walls loom
- over a mess of collapsed buildings. On the opposite, {weast{nern side
- of the yard is a large building with a curved roof that seem to have
- withstood the test of time better than many of those around it, it
- looks like some sort of temple.
+ 古老的城堡内院到处散落着废墟和残片，长满了低矮的杂草，四周还有刺手的藤蔓。
+ 在靠近门楼的地方有一处坍塌的建筑，看上去像是马厩。
+ {w北面{n有一块小一些的地方，角落堆着废墟，还放着一个很大的类似方尖碑的东西。
+ 在{w西面{n，城堡的围墙下有一片乱七八糟的建筑废墟。在另一头，院子的{w东面{n是一个
+ 幢有着弯曲屋顶的巨大建筑，它似乎比周围的大多数建筑都更能经受时间的考验。
+ 它看起来像是个神庙。
 #
-@create/drop old stables;stable;stables;building
+@create/drop 旧马厩;old stables;stable;stables;building
 #
 @lock stable = get:false()
 #
 @desc stable =
- The building is empty, if it was indeed once a stable it was abandoned long ago.
+ 这个建筑是空的，如果它确实是马厩，那肯定已经被废弃很久了。
 
 #------------------------------------------------------------
 #
@@ -881,23 +833,17 @@ archway
 #
 #------------------------------------------------------------
 #
-@dig/teleport The ruined temple;temple;in;tut#13
+@dig/teleport 破旧的神庙;The ruined temple;temple;in;tut#13
  : extension.objects.rooms.TutorialRoom
- = ruined temple;temple;east;e, overgrown courtyard;courtyard;outside;out;west;w
+ = 破旧的神庙;ruined temple;temple;east;e, 长满杂草的庭院;overgrown courtyard;courtyard;outside;out;west;w
 #
 @desc
- This building seems to have survived the ravages of time better than
- most of the others. Its arched roof and wide spaces suggests that
- this is a temple or church of some kind.
-
-
- The wide hall of the temple stretches before you. At the far edge is
- a stone altar with no clear markings. Despite its relatively good
- condition, the temple is empty of all furniture or valuables, like it
- was looted or its treasures moved ages ago.
-
- Stairs lead down to the temple's dungeon on either side of the
- altar. A gaping door opening shows the a wide courtyard to the west.
+ 这个建筑似乎比其他大多数建筑都更能经受时间的摧残。它有着拱形的屋顶和宽敞
+ 的空间，暗示着它可能是某种神庙或教堂。
+ 神庙宽阔的大厅在你面前伸展开。远端是一座石头祭坛，上面有一些不太清晰的标
+ 记。尽管它的状况相对较好，但里面空空荡荡的，没有任何设施或贵重物品，可能
+ 是被洗劫一空或早就把值钱的物品搬走了。
+ 在祭坛两侧有楼梯通向神庙的地下室。它敞开的大门通向西面的庭院。
 
 #------------------------------------------------------------
 #
@@ -905,12 +851,12 @@ archway
 #
 #------------------------------------------------------------
 #
-@dig Antechamber;antechamber;tut#14
+@dig 前厅;Antechamber;antechamber;tut#14
  : extension.objects.rooms.TutorialRoom
- =  stairs down;stairs;down;d, up the stairs to ruined temple;stairs;temple;up;u
+ =  下楼梯;stairs down;stairs;down;d, 上楼梯到神庙;up the stairs to ruined temple;stairs;temple;up;u
 #
 @desc stairs down =
- The stairs are worn by the age-old passage of feet.
+ 楼梯因常年行走已经磨损了。
 #
 # Lock the antechamber so the ghost cannot get in there.
 @lock stairs down = traverse:not attr(is_mob)
@@ -920,15 +866,11 @@ archway
 stairs down
 #
 @desc
- This chamber lies almost directly under the main altar of the
- temple. The passage of aeons is felt here and you also sense you are
- close to great power.
-
- The sides of the chamber are lined with stone archways, these are
- entrances to the {wtombs{n of what must have been influential
- families or individual heroes of the realm. Each is adorned by a
- stone statue or symbol of fine make. They do not seem to be ordered
- in any particular order or rank.
+ 前厅几乎就在神庙主祭坛的正下方。在这里你能感受到万年的过往，你觉得已经接
+ 近一个强大的力量之源了。
+ 房间的四面都有一排石拱门。它们是墓穴的入口，里面一定埋葬着权利显赫的家族
+ 或王国的英雄。每一个都装饰有石像或精致的符号。它们似乎没有按特定的次序或
+ 等级排列。
 #
 @set here/tutorial_info =
  This is the second part of a puzzle involving the Obelisk in the
@@ -944,25 +886,25 @@ stairs down
 #
 # We create all the tombs
 #
-@dig Blue bird tomb
+@dig 蓝鸟墓穴;Blue bird tomb
  : extension.objects.rooms.TeleportRoom
- = Tomb with stone bird;bird;blue;stone
+ = 装饰有石鸟的墓穴;Tomb with stone bird;bird;blue;stone
 #
-@dig Tomb of woman on horse
+@dig 骑马女士墓穴;Tomb of woman on horse
  : extension.objects.rooms.TeleportRoom
- = Tomb with statue of riding woman;horse;riding;
+ = 装饰有女士骑马雕像的墓穴;Tomb with statue of riding woman;horse;riding;
 #
-@dig Tomb of the crowned queen
+@dig 皇冠女王墓穴;Tomb of the crowned queen
  : extension.objects.rooms.TeleportRoom
- = Tomb with statue of a crowned queen;crown;queen
+ = 装饰有头戴皇冠的女王的墓穴;Tomb with statue of a crowned queen;crown;queen
 #
-@dig Tomb of the shield
+@dig 盾牌墓穴;Tomb of the shield
  : extension.objects.rooms.TeleportRoom
- = Tomb with shield of arms;shield
+ = 装饰有盾牌的墓穴;Tomb with shield of arms;shield
 #
-@dig Tomb of the hero
+@dig 英雄墓穴;Tomb of the hero
  : extension.objects.rooms.TeleportRoom
- = Tomb depicting a heroine fighting a monster;knight;hero;monster;beast
+ = 装饰有女英雄与怪兽战斗壁画的墓穴;Tomb depicting a heroine fighting a monster;knight;hero;monster;beast
 #
 # The puzzle_values are set on Character by looking at the Obelisk in
 # the Castle Corner room. If the scenes shown don't match, the
@@ -1019,26 +961,22 @@ stairs down
 #
 #------------------------------------------------------------
 #
-@dig/teleport Falling!;falling;tut#15
+@dig/teleport 坠落！;Falling!;falling;tut#15
  : extension.objects.rooms.TeleportRoom
 #
 @desc
- The tomb is dark. You fumble your way through it. You think you can
- make out a coffin in front of you in the gloom.
+ 墓穴里很暗，你摸索着向前走去。你觉得应该可以在黑暗中辨识出前方的石棺。
 
+ {r突然，你听到一个声清晰的“咔嗒”声，你脚下的地面一下子消失了！你坠落了下
+ 去，四周一片漆黑。{n
 
- {rSuddenly you hear a distinct 'click' and the ground abruptly
- disappears under your feet! You fall ... things go dark. {n
+ ……
 
+ ……你恢复知觉了。你正躺在一块石板上。
+ 你摇摇晃晃地站起来。不知怎么的，你觉得你已经不在墓穴中了，就像被一股魔力
+ 扔出来一样。
 
- ...
-
-
- ... You come to your senses. You lie down. On stone floor. You
- shakily come to your feet. Somehow you suspect that you are not under
- the tomb anymore, like you were magically snatched away.
-
- The air is damp. Where are you?
+ 周围的空气很潮湿。你在哪里？
 #
 @set here/success_teleport_to = dark cell
 #
@@ -1056,18 +994,15 @@ stairs down
 #------------------------------------------------------------
 # Create the real tomb
 #
-@dig/teleport Ancient tomb;tut#16
+@dig/teleport 古墓;Ancient tomb;tut#16
  : extension.objects.rooms.TutorialRoom
- =  ,back to antechamber;antechamber;back
+ =  ,回到前厅;back to antechamber;antechamber;back
 #
 @desc
- The tomb is dark. You fumble your way through it. You think you can
- make out a coffin in front of you in the gloom.
+ 墓穴里很暗，你摸索着向前走去。你觉得应该可以在黑暗中辨识出前方的石棺。
 
- The coffin comes into view. On and around it are chiseled scenes of a
- stern woman in armor. They depict great heroic deeds. This is clearly
- the tomb of some sort of ancient heroine - it must be the goal you
- have been looking for!
+ 你看到石棺了。在它四周和上面都雕刻有一位威严女性穿着装甲的形象。它们描绘
+ 了伟大的英雄事迹。这显然​​是某位古代英雄的陵墓，它一定是你一直在寻找的目标！
 #
 @set here/tutorial_info =
  Congratulations, you have reached the end of this little tutorial
@@ -1082,11 +1017,10 @@ stairs down
 # on the sarcophagus holds a %s replacement that is filled by the typeclass
 # with the name of the weapon when you get the weapon.
 #
-@create/drop Stone sarcophagus;sarcophagus;stone : extension.objects.objects.WeaponRack
+@create/drop 石棺;Stone sarcophagus;sarcophagus;stone : extension.objects.objects.WeaponRack
 #
 @desc stone =
- The lid of the coffin is adorned with a stone statue in full size. The weapon held by
- the stone hands looks very realistic ...
+ 石棺的盖子上雕刻着整幅石像。石像手上握着的武器看起来非常逼真……
 #
 @set sarcophagus/rack_id = rack_sarcophagus
 #
@@ -1097,20 +1031,15 @@ stairs down
 @set sarcophagus/magic = True
 #
 @set sarcophagus/get_text =
- The hands of the statue close on what seems to be a real weapon
- rather than one in stone.  This must be the hero's legendary weapon!
- The prize you have been looking for!
-
- With trembling hands you release the weapon from the stone and hold
- {c%s{n in your hands!
+ 石像手上握着的似乎是一把真正的武器，而不是石头做的。这一定是英雄的传奇武
+ 器！是你一直在寻找的宝物！
+ 你的手颤抖着将武器从石像上取了下来，把{c%s{n握在了自己的手中！
 
 
 
 
- {gThis concludes the Evennia tutorial. From here you can either
- continue to explore the castle (hint: this weapon works better
- against the castle guardian than any you might have found earlier) or
- you can choose to exit.{n
+ {g至此，演示游戏就结束了。之后你还可以继续探索城堡（小提示：这把武器对城堡
+ 守卫的攻击效果要比之前你找到的任何武器都好）或着选择退出。{n
 
 #------------------------------------------------------------
 #
@@ -1121,9 +1050,9 @@ stairs down
 #
 #------------------------------------------------------------
 #
-@dig End of tutorial;end;tut#17
+@dig 演示游戏结束;End of tutorial;end;tut#17
  : extension.objects.rooms.OutroRoom
- = Exit tutorial;exit;end
+ = 退出演示游戏;Exit tutorial;exit;end
 #
 # All weapons from the rack gets an automatic alias the same as the
 # rack_id. This we can use to check if any such weapon is in inventory
@@ -1139,22 +1068,14 @@ stairs down
 #
 # this quits the tutorial and cleans up all variables that was .
 @desc
- {gThanks for trying out this little Evennia tutorial!
+ {g感谢你试玩这个Evennia演示游戏！
 
+ 这里给出的游戏只展现了Evennia功能的很小一部分。本游戏侧重于展示技术，而
+ 不是讲述故事或挑战游戏。本游戏的内容基于Evennia的"世界教程"，想了解更多
+ 信息可以访问Evennia中文站 www.evenniacn.com 。
 
- The game play given here is of course just scraping the surface of
- what can be done with Evennia. The tutorial focuses more on showing
- various techniques than to supply any sort of novel storytelling or
- gaming challenge.  The full README and source code for the tutorial
- world can be found under {wgame_demo{g.
-
-
- If you went through the tutorial quest once, it can be interesting to
- do it again to explore the various possibilities and rooms you might
- not have come across yet, maybe with the source/build code to one
- side. If you play as superuser (user #1) the mobile will ignore you
- and teleport rooms etc will not affect you (this will also disable
- all locks, so keep that in mind when checking functionality).{n
+ 如果你是第一次完成本游戏中的任务，那再去做一遍探索也很有趣，可以尝试第一
+ 次没有做过的选择、进入没有进过的房间。{n
 #
 @set here/tutorial_info =
  This room cleans up all temporary attributes that was put on the

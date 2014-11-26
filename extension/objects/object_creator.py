@@ -187,8 +187,11 @@ class ObjectSelector(ObjectCreator):
     def menu_selected(self, menu_node):
         """
         """
-        obj_id = self.ndb.obj_list[int(menu_node.key) - 1]
-        self.give_object(menu_node.caller, obj_id)
+        if menu_node.key.isdigit():
+            select = int(menu_node.key)
+            if select > 0:
+                obj_id = self.ndb.obj_list[select - 1]
+                self.give_object(menu_node.caller, obj_id)
                     
                     
     def give_object(self, caller, obj_id):

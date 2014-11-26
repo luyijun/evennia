@@ -11,11 +11,13 @@ examples/cmdset.py)
 
 import traceback
 import re
+import random, time
 from ev import Command as BaseCommand
 from ev import default_cmds
 from ev import utils
 from ev import syscmdkeys
-from extension.utils.menusystem import prompt_yesno
+from extension.utils.menusystem import prompt_yesno, prompt_choice
+
 
 class Command(BaseCommand):
     """
@@ -540,9 +542,9 @@ class CmdTypeId(MuxCommand):
             objname = self.args
             obj = caller.search(objname, location=caller.location)
             if not obj:
-                caller.msg("Sorry, can not find %.")
+                caller.msg("Sorry, can not find %s." % objname)
             else:
-                caller.msg("%s's type id is %d", (objname, obj.db.type_id))
+                caller.msg("%s's type id is %d" % (objname, obj.db.type_id))
             return
 
         objname = self.lhs
@@ -571,4 +573,177 @@ class CmdTypeId(MuxCommand):
             return
             
         caller.msg("%s's type id has been set to %s." % (objname, type_id))
+        
+
+#------------------------------------------------------------
+# attack
+#------------------------------------------------------------
+class CmdAttack(MuxCommand):
+    """
+    Attack the enemy. Commands:
+
+      stab <enemy>
+      slash <enemy>
+      parry
+
+    stab - (thrust) makes a lot of damage but is harder to hit with.
+    slash - is easier to land, but does not make as much damage.
+    parry - forgoes your attack but will make you harder to hit on next
+            enemy attack.
+
+    """
+
+    # this is an example of implementing many commands as a single
+    # command class, using the given command alias to separate between them.
+
+    key = "fight"
+    locks = "cmd:all()"
+    help_category = "General"
+    
+    def menu_selected(self, menu_node):
+        """
+        """
+        caller = self.caller
+        
+        if not menu_node.key.isdigit():
+            self.fight(0)
+            caller.display_available_cmds()
+            return
+            
+        select = int(menu_node.key)
+        if select > 0:
+            self.fight(select)
+            
+        caller.display_available_cmds()
+
+
+    def func(self):
+        "Implements the stab"
+        
+        caller = self.caller
+        
+        if not caller.ndb.weapon:
+            caller.msg("你没有武器，无法战斗！")
+            caller.display_available_cmds()
+            return
+
+        action = ""
+        
+        target = None
+        if not self.args:
+            if caller.ndb.target:
+                target = caller.ndb.target
+        else:
+            if not self.lhs:
+                objname = self.args
+            else:
+                objname = self.lhs
+                action = self.rhs
+        
+            if not objname:
+                caller.msg("你需要一个目标。")
+                caller.display_available_cmds()
+                return
+            
+            target = caller.search(objname, location=caller.location)
+            if not target:
+                caller.msg("无法找到%s。" % objname)
+                caller.display_available_cmds()
+                return
+                
+        if target.db.health <= 0:
+            caller.msg("%s已经死了。" % target.key)
+            caller.display_available_cmds()
+            return
+
+        # set each targets
+        caller.ndb.target = target
+        if not target.ndb.target:
+            target.ndb.target = caller
+        
+        if not action:
+            prompt_choice(caller,
+                          question="如何战斗？",
+                          prompts=["刺", "砍", "防御"],
+                          choicefunc=self.menu_selected)
+        else:
+            if action == "stab":
+                self.fight(1)
+            elif action == "slash":
+                self.fight(2)
+            elif action == "defend":
+                self.fight(3)
+            else:
+                self.fight(0)
+            
+            caller.display_available_cmds()
+                      
+                      
+    def fight(self, select):
+        """
+        """
+        caller = self.caller
+        if select == 3:
+            # defend
+            string = "你举起武器摆出了防御的姿势，准备格挡敌人的下一次攻击。"
+            caller.msg(string)
+            caller.db.combat_parry_mode = True
+            caller.location.msg_contents("%s摆出了防御姿态。" % self.caller, exclude=[self.caller])
+            return
+        elif select == 1 or select == 2:
+            string = ""
+            tstring = ""
+            ostring = ""
+            
+            target = caller.ndb.target
+            weapon = caller.ndb.weapon
+            hit = weapon.db.hit
+            damage = weapon.db.damage
+            if select == 1:
+                # stab
+                hit *= 0.7  # modified due to stab
+                damage *= 2  # modified due to stab
+                string = "你用%s刺去。" % weapon.key
+                tstring = "%s用%s刺向你。" % (caller.key, weapon.key)
+                ostring = "%s用%s刺向%s。" % (caller.key, weapon.key, target.key)
+                self.caller.db.combat_parry_mode = False
+            elif select == 2:
+                # slash
+                # un modified due to slash
+                string = "你用%s砍去。" % weapon.key
+                tstring = "%s用%s砍向你。" % (caller.key, weapon.key)
+                ostring = "%s用%s砍向%s。" % (caller.key, weapon.key, target.key)
+                self.caller.db.combat_parry_mode = False
+
+            if target.db.combat_parry_mode:
+                # target is defensive; even harder to hit!
+                target.msg("{G你进行防御，想努力躲开攻击。{n")
+                hit *= 0.5
+
+            if random.random() <= hit:
+                self.caller.msg(string + "{g击中了！{n")
+                target.msg(tstring + "{r击中了！{n")
+                self.caller.location.msg_contents(ostring + "击中了！", exclude=[target, caller])
+
+                # call enemy hook
+                if hasattr(target, "at_hit"):
+                    # should return True if target is defeated, False otherwise.
+                    target.at_hit(weapon, caller, damage)
+                elif target.db.health:
+                    target.db.health -= damage
+                else:
+                    # sorry, impossible to fight this enemy ...
+                    self.caller.msg("敌人似乎没有受到影响。")
+
+            else:
+                self.caller.msg(string + "{r你没有击中。{n")
+                target.msg(tstring + "{g没有击中你。{n")
+                self.caller.location.msg_contents(ostring + "没有击中。", exclude=[target, caller])
+        else:
+            # no choice
+            self.caller.msg("你拿着武器不知所措，不知是该刺、砍还是格挡……")
+            self.caller.location.msg_contents("%s拿着武器不知所措。" % caller.key)
+            self.caller.db.combat_parry_mode = False
+            return
+
             

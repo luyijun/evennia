@@ -114,17 +114,17 @@ class WeatherRoom(TutorialRoom):
     def update_irregular(self):
         "create a tuple of possible texts to return."
         strings = (
-            "The rain coming down from the iron-grey sky intensifies.",
-            "A gush of wind throws the rain right in your face. Despite your cloak you shiver.",
-            "The rainfall eases a bit and the sky momentarily brightens.",
-            "For a moment it looks like the rain is slowing, then it begins anew with renewed force.",
-            "The rain pummels you with large, heavy drops. You hear the rumble of thunder in the distance.",
-            "The wind is picking up, howling around you, throwing water droplets in your face. It's cold.",
-            "Bright fingers of lightning flash over the sky, moments later followed by a deafening rumble.",
-            "It rains so hard you can hardly see your hand in front of you. You'll soon be drenched to the bone.",
-            "Lightning strikes in several thundering bolts, striking the trees in the forest to your west.",
-            "You hear the distant howl of what sounds like some sort of dog or wolf.",
-            "Large clouds rush across the sky, throwing their load of rain over the world.")
+            "天空一片昏暗，雨下得越来越大了。",
+            "一阵狂风迎面吹来，雨点直接拍打在你脸上。尽管你穿着披风，但还是禁不住打起冷颤来。",
+            "雨势稍有减缓，天空也变得亮了一些了。",
+            "有一会儿雨势看起来正在减弱，但很快它又积蓄起力量卷土重来了。",
+            "粗大的雨点打在你身上。远处传来隆隆的雷声。",
+            "风呼啸着在你身旁吹过，夹杂的雨点落在你脸上，你觉得很冷。",
+            "一道明亮的闪电划过长空，紧接着你就听到震耳欲聋的雷声。",
+            "雨下得很大，你几乎无法看到前面的路。用不了多久你就要浑身湿透了。",
+            "几道闪电击落下来，打在西边的树林中。",
+            "你听到远处传来的嚎叫声，似乎是狗或狼发出的。",
+            "巨大的乌云在天上翻滚，将装载的雨水倾斜到地上。")
 
         # get a random value so we can select one of the strings above.
         # Send this to the room.
@@ -162,14 +162,14 @@ class CmdLookDark(Command):
         "Implement the command."
         caller = self.caller
         # we don't have light, grasp around blindly.
-        messages = ("It's pitch black. You fumble around but cannot find anything.",
-                    "You don't see a thing. You feel around, managing to bump your fingers hard against something. Ouch!",
-                    "You don't see a thing! Blindly grasping the air around you, you find nothing.",
-                    "It's totally dark here. You almost stumble over some un-evenness in the ground.",
-                    "You are completely blind. For a moment you think you hear someone breathing nearby ... \n ... surely you must be mistaken.",
-                    "Blind, you think you find some sort of object on the ground, but it turns out to be just a stone.",
-                    "Blind, you bump into a wall. The wall seems to be covered with some sort of vegetation, but its too damp to burn.",
-                    "You can't see anything, but the air is damp. It feels like you are far underground.")
+        messages = ("周围一片漆黑。你四处摸索，但无法找到任何东西。",
+                    "你看不到任何东西。你摸索着周围，手指突然重重地撞上了某个物体。哎哟！",
+                    "你看不到任何东西！你盲目地向周围抓去，什么都没碰到。",
+                    "这里一丝光都没有，你差点被凹凸不平的地面绊倒。",
+                    "你完全失明了。有一会儿，你觉得好像听到附近有呼吸声……\n……想必你是弄错了。",
+                    "看不见。你以为在地上找到了什么，但发现这只是块石头。",
+                    "看不见。你撞到墙了，墙壁上似乎覆盖着一些植物，但它们太潮湿了，无法点燃。",
+                    "你什么都看不到。周围的空气很潮湿，你感觉像是在深深的地下。")
         irand = random.randint(0, 10)
         if irand < len(messages):
             caller.msg(messages[irand])
@@ -178,7 +178,7 @@ class CmdLookDark(Command):
             carried_lights = [obj for obj in caller.contents
                                        if utils.inherits_from(obj, LightSource)]
             if carried_lights:
-                string = "You don't want to stumble around in blindness anymore. You already found what you need. Let's get light already!"
+                string = "你不想继续在黑暗中摸索了。你已经找到了所需的东西，点亮它吧！"
                 caller.msg(string)
                 return
             #if we are lucky, we find the light source.
@@ -188,10 +188,10 @@ class CmdLookDark(Command):
                 lightsource = lightsources[0]
             else:
                 # create the light source from scratch.
-                lightsource = create_object(LightSource, key="splinter")
+                lightsource = create_object(LightSource, key="木片")
             lightsource.location = caller
-            string = "Your fingers bump against a splinter of wood in a corner. It smells of resin and seems dry enough to burn!"
-            string += "\nYou pick it up, holding it firmly. Now you just need to {wlight{n it using the flint and steel you carry with you."
+            string = "在角落里，你的手指碰到了一些木片。它们还带着树脂的香味，而且比较干燥，应该可以点燃！"
+            string += "\n你把它捡起来，紧紧地握手里。现在，你只需要用随身携带的火石{w点着{n它就行了。"
             caller.msg(string)
 
 
@@ -205,8 +205,8 @@ class CmdDarkHelp(Command):
 
     def func(self):
         "Implements the help command."
-        string = "Can't help you until you find some light! Try feeling around for something to burn."
-        string += " You cannot give up even if you don't find anything right away."
+        string = "如果你不把房间照亮，我们也无法给你帮助。在周围努力寻找可以点燃的东西吧。"
+        string += "即使你无法马上找到也不能放弃。"
         self.caller.msg(string)
 
 # the nomatch system command will give a suitable error when we cannot find
@@ -222,7 +222,7 @@ class CmdDarkNoMatch(Command):
 
     def func(self):
         "Implements the command."
-        self.caller.msg("Until you find some light, there's not much you can do. Try feeling around.")
+        self.caller.msg("除非你把房间照亮，否则你无法做些什么。努力搜索四周吧。")
 
 
 class DarkCmdSet(CmdSet):
@@ -263,7 +263,7 @@ class DarkState(Script):
                 char.msg("You are Superuser, so you are not affected by the dark state.")
             else:
                 char.cmdset.add(DarkCmdSet)
-            char.msg("The room is pitch dark! You are likely to be eaten by a Grue.")
+            char.msg("房间里一片漆黑！你感觉好像被吞进了巨人的肚子。")
 
     def is_valid(self):
         "is valid only as long as noone in the room has lit the lantern."
@@ -509,24 +509,29 @@ class CmdLookBridge(Command):
         bridge_position = self.caller.db.tutorial_bridge_position
 
 
-        messages =("You are standing {wvery close to the the bridge's western foundation{n. If you go west you will be back on solid ground ...",
-                   "The bridge slopes precariously where it extends eastwards towards the lowest point - the center point of the hang bridge.",
-                   "You are {whalfways{n out on the unstable bridge.",
-                   "The bridge slopes precariously where it extends westwards towards the lowest point - the center point of the hang bridge.",
-                   "You are standing {wvery close to the bridge's eastern foundation{n. If you go east you will be back on solid ground ...")
-        moods = ("The bridge sways in the wind.", "The hanging bridge creaks dangerously.",
-                 "You clasp the ropes firmly as the bridge sways and creaks under you.",
-                 "From the castle you hear a distant howling sound, like that of a large dog or other beast.",
-                 "The bridge creaks under your feet. Those planks does not seem very sturdy.",
-                 "Far below you the ocean roars and throws its waves against the cliff, as if trying its best to reach you.",
-                 "Parts of the bridge come loose behind you, falling into the chasm far below!",
-                 "A gust of wind causes the bridge to sway precariously.",
-                 "Under your feet a plank comes loose, tumbling down. For a moment you dangle over the abyss ...",
-                 "The section of rope you hold onto crumble in your hands, parts of it breaking apart. You sway trying to regain balance.")
-        message = "{c%s{n\n" % self.obj.key + messages[bridge_position] + "\n" + moods[random.randint(0, len(moods) - 1)]
+        messages =("你正站在吊桥上，{w离西面的出口很近{n。如果你向西走可以回到坚实的大地上……",
+                   "吊桥向东延伸，从这里到桥的中间点是一段下坡路。",
+                   "你已经在这座不太牢固的桥上走了{w一半{n的路程了。",
+                   "吊桥向西延伸，从这里到桥的中间点是一段下坡路。",
+                   "你正站在吊桥上，{w离东面的出口很近{n。如果你向东走可以回到坚实的大地上……")
+        moods = ("桥在风中摇晃着。",
+                 "吊桥在嘎嘎作响，让你感到有些害怕。",
+                 "你脚下的桥摇晃着发出嘎吱嘎吱的声响，你紧紧地抓着边上的绳索。",
+                 "从城堡方向传来了远远的嚎叫声，像是由一条大狗或什么野兽发出的。",
+                 "桥在你的脚下嘎嘎作响，那些木板看上去不太牢固。",
+                 "大海远远地在你下面，正咆哮着将海浪砸向悬崖，仿佛想要拍到你身上。",
+                 "几块木板在你身后断裂开，坠如下面的深渊中。",
+                 "一阵狂风吹过，吊桥摇晃了起来。",
+                 "你脚下的一块木板松脱了，翻滚着坠落下去。你的半个身子悬在了空中……",
+                 "你手中握着的绳索部分断裂开了，你摇摆着努力恢复平衡。")
+
+        message = "\n {c=============================================================={n"
+        message += "\n {c%s{n" % self.obj.key
+        message += "\n {c=============================================================={n"
+        message += "\n" + messages[bridge_position] + "\n" + moods[random.randint(0, len(moods) - 1)]
         chars = [obj for obj in self.obj.contents if obj != self.caller and obj.has_player]
         if chars:
-            message += "\n You see: %s" % ", ".join("{c%s{n" % char.key for char in chars)
+            message += "\n 你看见：%s" % ", ".join("{c%s{n" % char.key for char in chars)
 
         message += "\n {lceast{lt向东走{le  {lcwest{lt向西走{le"
         self.caller.msg(message)
@@ -537,10 +542,10 @@ class CmdLookBridge(Command):
             # we fall on 5% of the times.
             fexit = search_object(self.obj.db.fall_exit)
             if fexit:
-                string = "\n Suddenly the plank you stand on gives way under your feet! You fall!"
-                string += "\n You try to grab hold of an adjoining plank, but all you manage to do is to "
-                string += "divert your fall westwards, towards the cliff face. This is going to hurt ... "
-                string += "\n ... The world goes dark ...\n"
+                string = "\n 突然，你脚下的木板断开了！你掉下去了！"
+                string += "\n 你想尽力抓住相邻的木板，但只是改变了你坠落的方向。你正摔向西面的悬崖。这"
+                string += "\n 次肯定要受伤了……"
+                string += "\n ……整个世界一片黑暗……\n"
                 # note that we move silently so as to not call look hooks (this is a little trick to leave
                 # the player with the "world goes dark ..." message, giving them ample time to read it. They
                 # have to manually call look to find out their new location). Thus we also call the
@@ -548,7 +553,7 @@ class CmdLookBridge(Command):
                 self.caller.msg("{r%s{n" % string)
                 self.obj.at_object_leave(self.caller, fexit)
                 self.caller.location = fexit[0] # stealth move, without any other hook calls.
-                self.obj.msg_contents("A plank gives way under %s's feet and they fall from the bridge!" % self.caller.key)
+                self.obj.msg_contents("一块木板在%s的脚下断开了，他摔下桥了！" % self.caller.key)
 
 
 # custom help command
@@ -626,14 +631,14 @@ class BridgeRoom(TutorialRoom):
         over the bridge a little more interesting.
         """
         strings = (
-            "The rain intensifies, making the planks of the bridge even more slippery.",
-            "A gush of wind throws the rain right in your face.",
-            "The rainfall eases a bit and the sky momentarily brightens.",
-            "The bridge shakes under the thunder of a closeby thunder strike.",
-            "The rain pummels you with large, heavy drops. You hear the distinct howl of a large hound in the distance.",
-            "The wind is picking up, howling around you and causing the bridge to sway from side to side.",
-            "Some sort of large bird sweeps by overhead, giving off an eery screech. Soon it has disappeared in the gloom.",
-            "The bridge sways from side to side in the wind.")
+            "雨越下越大，桥上的木板变得更加湿滑了。",
+            "一阵狂风迎面吹来，雨点直接拍打在你脸上。",
+            "雨势稍有减缓，天空也变得亮了一些了。",
+            "一声惊雷在不远处炸响，桥也随之震动了一下。",
+            "粗大的雨点打在你身上。远处传来猎犬的低吼声。",
+            "风呼啸着在你身旁吹过，桥也开始左右摇晃起来。",
+            "一只巨大的鸟在上空掠过，发出了一声尖啸。很快它就消失在昏暗的天空中了。",
+            "桥在风中左右摇晃。")
         self.msg_contents("{w%s{n" % strings[random.randint(0, 7)])
 
     def at_object_receive(self, character, source_location):

@@ -41,4 +41,31 @@ class Character(Object, DefaultCharacter):
                     has connected" message echoed to the room
 
     """
-    pass
+    def at_init(self):
+        super(Character, self).at_init()
+        
+        # Clear target
+        self.ndb.target = None
+    
+        # Set weapon.
+        self.ndb.weapon = None
+        items = self.contents
+        if items:
+            self.ndb.weapon = items[0]
+
+    
+    def at_hit(self, weapon, attacker, damage):
+        if not self.ndb.target:
+            self.ndb.target = attacker
+
+
+    def available_cmd_list(self, pobject):
+        """
+        This returns a list of available commands.
+        """
+        if not self.ndb.target:
+            return super(Character, self).available_cmd_list(pobject)
+
+        commands = ["{lcfight %s{lt战斗！{le" % self.ndb.target.dbref]
+        commands += super(Character, self).available_cmd_list(pobject)
+        return commands

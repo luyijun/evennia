@@ -162,12 +162,17 @@ class CmdClimb(Command):
         if obj != self.obj:
             self.caller.msg("尽管你很努力，你还是无法爬上去。")
             return
-        ostring = self.obj.db.climb_text
+        
+        ostring = " \n"
+        ostring += self.obj.db.climb_text
         if not ostring:
-            ostring = "你爬上%s，向四处张望了一下，又爬了下来。" % self.obj.name
+            ostring += "\n {c=============================================================={n"
+            ostring += "\n {c攀爬{n"
+            ostring += "\n {c=============================================================={n"
+            ostring += "\n 你爬上%s，向四处张望了一下，又爬了下来。" % self.obj.name
 
         commands = self.caller.available_cmd_list(self.caller)
-        ostring += "\n动作：" + ", ".join(commands)
+        ostring += "\n\n动作：" + ", ".join(commands)
         ostring += "\n"
         self.caller.msg(ostring)
         self.caller.db.last_climbed = self.obj
@@ -209,11 +214,11 @@ class Climbable(TutorialObject):
 #
 #------------------------------------------------------------
 
-OBELISK_DESCS = ["You can briefly make out the image of {ba woman with a blue bird{n.",
-                 "You for a moment see the visage of {ba woman on a horse{n.",
-                 "For the briefest moment you make out an engraving of {ba regal woman wearing a crown{n.",
-                 "You think you can see the outline of {ba flaming shield{n in the stone.",
-                 "The surface for a moment seems to portray {ba woman fighting a beast{n."]
+OBELISK_DESCS = ["你可以大致辨认出这是一幅画着{b女人和蓝鸟{n的画。",
+                 "有一瞬间你认出了{b一个女人骑在马上{n的样子。",
+                 "你一下子就看出这是一个{b戴着皇冠的贵妇{n的浮雕。",
+                 "你觉得你认出了石头上雕刻着{b一面燃烧着的盾牌{n。",
+                 "有一刹那在面上似乎描绘了{b一个女人在与野兽搏斗{n。"]
 
 
 class Obelisk(TutorialObject):
@@ -232,8 +237,7 @@ class Obelisk(TutorialObject):
         "Overload the default version of this hook."
         clueindex = random.randint(0, len(OBELISK_DESCS) - 1)
         # set this description
-        string = "The surface of the obelisk seem to waver, shift and writhe under your gaze, with "
-        string += "different scenes and structures appearing whenever you look at it. "
+        string = "方尖碑的表面似乎在你眼前扭动、翻转着，不论你何时看它，看到的都是不一样的景象。"
         self.db.desc = string + OBELISK_DESCS[clueindex]
         # remember that this was the clue we got.
         caller.db.puzzle_clue = clueindex
@@ -312,14 +316,14 @@ class CmdLightSourceOn(Command):
         "Implements the command"
 
         if self.obj.db.is_active:
-            self.caller.msg("%s is already burning." % self.obj.key)
+            self.caller.msg("%s已经被点燃了。" % self.obj.key)
         else:
             # set lightsource to active
             self.obj.db.is_active = True
             # activate the script to track burn-time.
             self.obj.scripts.add(StateLightSourceOn)
-            self.caller.msg("{gYou light {C%s.{n" % self.obj.key)
-            self.caller.location.msg_contents("%s lights %s!" % (self.caller, self.obj.key), exclude=[self.caller])
+            self.caller.msg("{g你点燃了{C%s。{n" % self.obj.key)
+            self.caller.location.msg_contents("%s点燃了%s！" % (self.caller, self.obj.key), exclude=[self.caller])
             # run script validation on the room to make light/dark states tick.
             self.caller.location.scripts.validate()
             # look around
@@ -339,14 +343,14 @@ class CmdLightSourceOff(Command):
         "Implements the command "
 
         if not self.obj.db.is_active:
-            self.caller.msg("%s is not burning." % self.obj.key)
+            self.caller.msg("%s没有在燃烧。" % self.obj.key)
         else:
             # set lightsource to inactive
             self.obj.db.is_active = False
             # validating the scripts will kill it now that is_active=False.
             self.obj.scripts.validate()
-            self.caller.msg("{GYou dowse {C%s.{n" % self.obj.key)
-            self.caller.location.msg_contents("%s dowses %s." % (self.caller, self.obj.key), exclude=[self.caller])
+            self.caller.msg("{G你熄灭了{C%s。{n" % self.obj.key)
+            self.caller.location.msg_contents("%s熄灭了%s。" % (self.caller, self.obj.key), exclude=[self.caller])
             self.caller.location.scripts.validate()
             self.caller.execute_cmd("look")
 
@@ -374,7 +378,7 @@ class LightSource(TutorialObject):
         self.db.tutorial_info = "This object can be turned on off and has a timed script controlling it."
         self.db.is_active = False
         self.db.burntime = 60 * 3  # 3 minutes
-        self.db.desc = "A splinter of wood with remnants of resin on it, enough for burning."
+        self.db.desc = "一小段木头，上面还残留着松脂，它应该能被点燃。"
         # add commands
         self.cmdset.add_default(CmdSetLightSource, permanent=True)
 
@@ -390,7 +394,9 @@ class LightSource(TutorialObject):
                 loc = self.location.location
             except AttributeError:
                 loc = self.location
-            loc.msg_contents("{c%s{n {Rburns out.{n" % self.key)
+            
+            if loc:
+                loc.msg_contents("{c%s{n{R烧尽了。{n" % self.key)
         self.db.is_active = False
         try:
             # validate in holders current room, if possible
@@ -456,13 +462,13 @@ class CmdShiftRoot(Command):
         """
 
         if not self.arglist:
-            self.caller.msg("What do you want to move, and in what direction?")
+            self.caller.msg("你想移动什么？向哪个方向移动？")
             return
         if "root" in self.arglist:
             self.arglist.remove("root")
         # we accept arguments on the form <color> <direction>
         if not len(self.arglist) > 1:
-            self.caller.msg("You must define which colour of root you want to move, and in which direction.")
+            self.caller.msg("你必须指明想把什么颜色的树根向哪个方向移动。")
             return
         color = self.arglist[0].lower()
         direction = self.arglist[1].lower()
@@ -470,77 +476,77 @@ class CmdShiftRoot(Command):
         root_pos = self.obj.db.root_pos
 
         if not color in root_pos:
-            self.caller.msg("No such root to move.")
+            self.caller.msg("没有这样的树根。")
             return
 
         # first, vertical roots (red/blue) - can be moved left/right
         if color == "red":
             if direction == "left":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("You shift the reddish root to the left.")
+                self.caller.msg("你把红色的树根移向左边。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["blue"]:
                     root_pos["blue"] += 1
-                    self.caller.msg("The root with blue flowers gets in the way and is pushed to the right.")
+                    self.caller.msg("长着蓝花的树根占住了地方，你把它推向右边。")
             elif direction == "right":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("You shove the reddish root to the right.")
+                self.caller.msg("你把红色的树根移向右边。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["blue"]:
                     root_pos["blue"] -= 1
-                    self.caller.msg("The root with blue flowers gets in the way and is pushed to the left.")
+                    self.caller.msg("长着蓝花的树根占住了地方，你把它推向左边。")
             else:
-                self.caller.msg("You cannot move the root in that direction.")
+                self.caller.msg("你无法把树根往那个方向移动。")
         elif color == "blue":
             if direction == "left":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("You shift the root with small blue flowers to the left.")
+                self.caller.msg("你把长着蓝花的树根移向左边。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["red"]:
                     root_pos["red"] += 1
-                    self.caller.msg("The reddish root is to big to fit as well, so that one falls away to the left.")
+                    self.caller.msg("红色的树根占住了地方，你把它推向右边。")
             elif direction == "right":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("You shove the root adorned with small blue flowers to the right.")
+                self.caller.msg("你把长着蓝花的树根移向右边。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["red"]:
                     root_pos["red"] -= 1
-                    self.caller.msg("The thick reddish root gets in the way and is pushed back to the left.")
+                    self.caller.msg("红色的树根占住了地方，你把它推向左边。")
             else:
-                self.caller.msg("You cannot move the root in that direction.")
+                self.caller.msg("你无法把树根往那个方向移动。")
         # now the horizontal roots (yellow/green). They can be moved up/down
         elif color == "yellow":
             if direction == "up":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("You shift the root with small yellow flowers upwards.")
+                self.caller.msg("你把带着黄色小花的树根移向上方。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["green"]:
                     root_pos["green"] += 1
-                    self.caller.msg("The green weedy root falls down.")
+                    self.caller.msg("覆盖着绿色苔藓的树根落了下来。")
             elif direction == "down":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("You shove the root adorned with small yellow flowers downwards.")
+                self.caller.msg("你把带有黄色小花的树根移向下面。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["green"]:
                     root_pos["green"] -= 1
-                    self.caller.msg("The weedy green root is shifted upwards to make room.")
+                    self.caller.msg("为了腾出地方，覆盖着绿色苔藓的树根被移了上去。")
             else:
-                self.caller.msg("You cannot move the root in that direction.")
+                self.caller.msg("你无法把树根往那个方向移动。")
         elif color == "green":
             if direction == "up":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("You shift the weedy green root upwards.")
+                self.caller.msg("你把覆盖着绿色苔藓的树根移向上方。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["yellow"]:
                     root_pos["yellow"] += 1
-                    self.caller.msg("The root with yellow flowers falls down.")
+                    self.caller.msg("带有黄色小花的树根落了下来。")
             elif direction == "down":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("You shove the weedy green root downwards.")
+                self.caller.msg("你把覆盖着绿色苔藓的树根移向下面。")
                 if root_pos[color] != 0 and root_pos[color] == root_pos["yellow"]:
                     root_pos["yellow"] -= 1
-                    self.caller.msg("The root with yellow flowers gets in the way and is pushed upwards.")
+                    self.caller.msg("为了腾出地方，带有黄色小花的树根被移了上去。")
             else:
-                self.caller.msg("You cannot move the root in that direction.")
+                self.caller.msg("你无法把树根往那个方向移动。")
         # store new position
         self.obj.db.root_pos = root_pos
         # check victory condition
         if root_pos.values().count(0) == 0: # no roots in middle position
             self.caller.db.crumbling_wall_found_button = True
-            self.caller.msg("Holding aside the root you think you notice something behind it ...")
+            self.caller.msg("把树根移开之后，你注意到后面有什么东西……")
 
 
 class CmdPressButton(Command):
@@ -558,20 +564,20 @@ class CmdPressButton(Command):
 
         if self.caller.db.crumbling_wall_found_exit:
             # we already pushed the button
-            self.caller.msg("The button folded away when the secret passage opened. You cannot push it again.")
+            self.caller.msg("秘道露出来的时候按钮已移到了一边，你不能再按它了。")
             return
 
         # pushing the button
-        string = "You move your fingers over the suspicious depression, then gives it a "
-        string += "decisive push. First nothing happens, then there is a rumble and a hidden "
-        string += "{wpassage{n opens, dust and pebbles rumbling as part of the wall moves aside."
+        string = "你把手放进这个可疑的凹陷中，用力地推了一下。"
+        string += "一开始什么都没发生，但紧接着传来一阵隆隆声，一条{w密道{n露了出来。"
+        string += "随着墙的移动，墙上的鹅卵石也纷纷落下。"
 
         # we are done - this will make the exit traversable!
         self.caller.db.crumbling_wall_found_exit = True
         # this will make it into a proper exit
         eloc = self.caller.search(self.obj.db.destination, global_search=True)
         if not eloc:
-            self.caller.msg("The exit leads nowhere, there's just more stone behind it ...")
+            self.caller.msg("这个出口没有通往任何地方，在它后面是更多的石头……")
             return
         self.obj.destination = eloc
         self.caller.msg(string)
@@ -629,16 +635,16 @@ class CrumblingWall(TutorialObject, Exit):
 
     def _translate_position(self, root, ipos):
         "Translates the position into words"
-        rootnames = {"red": "The {rreddish{n vertical-hanging root ",
-                     "blue": "The thick vertical root with {bblue{n flowers ",
-                     "yellow": "The thin horizontal-hanging root with {yyellow{n flowers ",
-                     "green": "The weedy {ggreen{n horizontal root "}
-        vpos = {-1: "hangs far to the {wleft{n on the wall.",
-                 0: "hangs straight down the {wmiddle{n of the wall.",
-                 1: "hangs far to the {wright{n of the wall."}
-        hpos = {-1: "covers the {wupper{n part of the wall.",
-                 0: "passes right over the {wmiddle{n of the wall.",
-                 1: "nearly touches the floor, near the {wbottom{n of the wall."}
+        rootnames = {"red": "一条垂直的{r红色{n的树根。",
+                     "blue": "一条垂直的粗壮树根，上面长着{b蓝色{n的花。",
+                     "yellow": "一条细长的横挂着的树根，上面长着{y黄色{n的小花。",
+                     "green": "一条覆盖着{g绿色{n苔藓的横向的树根。"}
+        vpos = {-1: "墙的{w左侧{n挂着",
+                 0: "墙的{w正中{n挂着",
+                 1: "墙的{w右侧{n挂着"}
+        hpos = {-1: "墙的{w上面{n覆盖着",
+                 0: "墙的{w中间{n横挂着",
+                 1: "墙的{w底部{n堆积着"}
 
         if root in ("yellow", "green"):
             string = rootnames[root] + hpos[ipos]
@@ -652,14 +658,12 @@ class CrumblingWall(TutorialObject, Exit):
         current root positions.
         """
         if caller.db.crumbling_wall_found_button:
-            string = "Having moved all the roots aside, you find that the center of the wall, "
-            string += "previously hidden by the vegetation, hid a curious square depression. It was maybe once "
-            string += "concealed and made to look a part of the wall, but with the crumbling of stone around it,"
-            string += "it's now easily identifiable as some sort of button."
+            string =  "移开所有的树根之后，你发现在墙壁正中先前被植物遮蔽的地方有一个奇怪的方形\n"
+            string += "凹陷。如果是在很久以前你肯定无法发现它，因为它伪装成了墙壁的一部分，但现\n"
+            string += "在覆盖在它上面的石头早已破碎，很容易就能认出这是个按钮。"
         else:
-            string =  "The wall is old and covered with roots that here and there have permeated the stone. "
-            string += "The roots (or whatever they are - some of them are covered in small non-descript flowers) "
-            string += "crisscross the wall, making it hard to clearly see its stony surface.\n"
+            string =  "墙壁很古老。根系从石缝间伸展进来（也可能是藤蔓，因为有些还长着不知名的小\n"
+            string += "花。），在墙上纵横交错，使你很难看清墙壁的石头表面。\n"
             for key, pos in self.db.root_pos.items():
                 string += "\n" + self._translate_position(key, pos)
         self.db.desc = string
@@ -677,7 +681,7 @@ class CrumblingWall(TutorialObject, Exit):
 
     def at_failed_traverse(self, traverser):
         "This is called if the player fails to pass the Exit."
-        traverser.msg("No matter how you try, you cannot force yourself through %s." % self.key)
+        traverser.msg("不论你怎么努力，都无法穿过%s." % self.key)
 
     def reset(self):
         """
@@ -715,112 +719,6 @@ class CrumblingWall(TutorialObject, Exit):
 # to hit with it, and how much damage it can do.
 #
 #------------------------------------------------------------
-
-class CmdAttack(Command):
-    """
-    Attack the enemy. Commands:
-
-      stab <enemy>
-      slash <enemy>
-      parry
-
-    stab - (thrust) makes a lot of damage but is harder to hit with.
-    slash - is easier to land, but does not make as much damage.
-    parry - forgoes your attack but will make you harder to hit on next
-            enemy attack.
-
-    """
-
-    # this is an example of implementing many commands as a single
-    # command class, using the given command alias to separate between them.
-
-    key = "attack"
-    aliases = ["hit","kill", "fight", "thrust", "pierce", "stab",
-               "slash", "chop", "parry", "defend"]
-    locks = "cmd:all()"
-    help_category = "TutorialWorld"
-
-    def func(self):
-        "Implements the stab"
-
-        cmdstring = self.cmdstring
-
-        if cmdstring in ("attack", "fight"):
-            string = "How do you want to fight? Choose one of 'stab', 'slash' or 'defend'."
-            self.caller.msg(string)
-            return
-
-        # parry mode
-        if cmdstring in ("parry", "defend"):
-            string = "You raise your weapon in a defensive pose, ready to block the next enemy attack."
-            self.caller.msg(string)
-            self.caller.db.combat_parry_mode = True
-            self.caller.location.msg_contents("%s takes a defensive stance" % self.caller, exclude=[self.caller])
-            return
-
-        if not self.args:
-            self.caller.msg("Who do you attack?")
-            return
-        target = self.caller.search(self.args.strip())
-        if not target:
-            return
-
-        string = ""
-        tstring = ""
-        ostring = ""
-        if cmdstring in ("thrust", "pierce", "stab"):
-            hit = float(self.obj.db.hit) * 0.7  # modified due to stab
-            damage = self.obj.db.damage * 2  # modified due to stab
-            string = "You stab with %s. " % self.obj.key
-            tstring = "%s stabs at you with %s. " % (self.caller.key, self.obj.key)
-            ostring = "%s stabs at %s with %s. " % (self.caller.key, target.key, self.obj.key)
-            self.caller.db.combat_parry_mode = False
-        elif cmdstring in ("slash", "chop"):
-            hit = float(self.obj.db.hit)   # un modified due to slash
-            damage = self.obj.db.damage  # un modified due to slash
-            string = "You slash with %s. " % self.obj.key
-            tstring = "%s slash at you with %s. " % (self.caller.key, self.obj.key)
-            ostring = "%s slash at %s with %s. " % (self.caller.key, target.key, self.obj.key)
-            self.caller.db.combat_parry_mode = False
-        else:
-            self.caller.msg("You fumble with your weapon, unsure of whether to stab, slash or parry ...")
-            self.caller.location.msg_contents("%s fumbles with their weapon." % self.obj.key)
-            self.caller.db.combat_parry_mode = False
-            return
-
-        if target.db.combat_parry_mode:
-            # target is defensive; even harder to hit!
-            target.msg("{GYou defend, trying to avoid the attack.{n")
-            hit *= 0.5
-
-        if random.random() <= hit:
-            self.caller.msg(string + "{gIt's a hit!{n")
-            target.msg(tstring + "{rIt's a hit!{n")
-            self.caller.location.msg_contents(ostring + "It's a hit!", exclude=[target,self.caller])
-
-            # call enemy hook
-            if hasattr(target, "at_hit"):
-                # should return True if target is defeated, False otherwise.
-                return target.at_hit(self.obj, self.caller, damage)
-            elif target.db.health:
-                target.db.health -= damage
-            else:
-                # sorry, impossible to fight this enemy ...
-                self.caller.msg("The enemy seems unaffacted.")
-                return False
-        else:
-            self.caller.msg(string + "{rYou miss.{n")
-            target.msg(tstring + "{gThey miss you.{n")
-            self.caller.location.msg_contents(ostring + "They miss.", exclude=[target, self.caller])
-
-
-class CmdSetWeapon(CmdSet):
-    "Holds the attack command."
-    def at_cmdset_creation(self):
-        "called at first object creation."
-        self.add(CmdAttack())
-
-
 class Weapon(ObjectPortable):
     """
     This defines a bladed weapon.
@@ -839,7 +737,6 @@ class Weapon(ObjectPortable):
         self.db.parry = 0.8  # parry chance
         self.db.damage = 8.0
         self.db.magic = False
-        self.cmdset.add_default(CmdSetWeapon, permanent=True)
 
     def reset(self):
         """
@@ -847,7 +744,7 @@ class Weapon(ObjectPortable):
         to return to.
         """
         if self.location.has_player and self.home == self.location:
-            self.location.msg_contents("%s suddenly and magically fades into nothingness, as if it was never there ..." % self.key)
+            self.location.msg_contents("%s突然神奇地消失了，就像它从来没有存在过一样……" % self.key)
             self.delete()
         else:
             self.location = self.home
@@ -906,7 +803,7 @@ class CmdGetWeapon(Command):
         rack_id = self.obj.db.rack_id
         if self.caller.attributes.get(rack_id):
             # we don't allow a player to take more than one weapon from rack.
-            self.caller.msg("%s has no more to offer you." % self.obj.name)
+            self.caller.msg("没有多余的%s可以给你了。" % self.obj.name)
         else:
             dmg, name, aliases, desc, magic = self.obj.randomize_type()
             new_weapon = create_object(Weapon, key=name, aliases=aliases,location=self.caller, home=self.caller)
@@ -916,7 +813,7 @@ class CmdGetWeapon(Command):
             new_weapon.db.magic = magic
             ostring = self.obj.db.get_text
             if not ostring:
-                ostring = "You pick up %s."
+                ostring = "你拿起了%s。"
             if '%s' in ostring:
                 self.caller.msg(ostring % name)
             else:
@@ -965,45 +862,45 @@ class WeaponRack(TutorialObject):
         dmg = min_dmg + random.random()*(max_dmg - min_dmg)
         aliases = [self.db.rack_id, "weapon"]
         if dmg < 1.5:
-            name = "Knife"
-            desc = "A rusty kitchen knife. Better than nothing."
+            name = "菜刀"
+            desc = "一把生锈的菜刀，总比什么都没有要强。"
         elif dmg < 2.0:
-            name = "Rusty dagger"
-            desc = "A double-edged dagger with nicked edge. It has a wooden handle."
+            name = "生锈的匕首"
+            desc = "一把木柄的匕首，刀刃已经钝了。"
         elif dmg < 3.0:
-            name = "Sword"
-            desc = "A rusty shortsword. It has leather wrapped around the handle."
+            name = "剑"
+            desc = "一把生锈的短剑，柄上缠绕着皮带。"
         elif dmg < 4.0:
-            name = "Club"
-            desc = "A heavy wooden club with some rusty spikes in it."
+            name = "狼牙棒"
+            desc = "一根沉重的狼牙棒，上面带着生锈的长钉。"
         elif dmg < 5.0:
-            name = "Ornate Longsword"
+            name = "华丽的长剑"
             aliases.extend(["longsword","ornate"])
-            desc = "A fine longsword."
+            desc = "一把不错的长剑。"
         elif dmg < 6.0:
-            name = "Runeaxe"
+            name = "符文斧"
             aliases.extend(["rune","axe"])
-            desc = "A single-bladed axe, heavy but yet easy to use."
+            desc = "一把单刃的斧头，虽然重但用起来很称手。"
         elif dmg < 7.0:
-            name = "Broadsword named Thruning"
+            name = "王者之剑"
             aliases.extend(["thruning","broadsword"])
-            desc = "This heavy bladed weapon is marked with the name 'Thruning'. It is very powerful in skilled hands."
+            desc = "这是一把阔剑，沉重而锋利，上面刻着四个字：“王者之剑”。在熟练的人手里，它能发挥出巨大的威力。"
         elif dmg < 8.0:
-            name = "Silver Warhammer"
+            name = "银色战锤"
             aliases.append("warhammer")
-            desc = "A heavy war hammer with silver ornaments. This huge weapon causes massive damage."
+            desc = "这把沉重的战锤镶嵌着银质的纹饰，它能造成巨大的伤害。"
         elif dmg < 9.0:
-            name = "Slayer Waraxe"
+            name = "屠杀者战斧"
             aliases.extend(["waraxe","slayer"])
-            desc = "A huge double-bladed axe marked with the runes for 'Slayer'. It has more runic inscriptions on its head, which you cannot decipher."
+            desc = "在这把巨大的双刃战斧上用符文雕刻着三个字：“屠杀者”。在它的前端还刻着更多的符文，但你看不懂它们写的是什么。"
         elif dmg < 10.0:
-            name = "The Ghostblade"
+            name = "幽魂之刃"
             aliases.append("ghostblade")
-            desc =  "This massive sword is large as you are tall. Its metal shine with a bluish glow."
+            desc =  "虽然你已经够魁梧了，但相比之下这把剑还是显得很大。剑身上散发着浅蓝色的光芒。"
         else:
-            name = "The Hawkblade"
+            name = "雄鹰之刃"
             aliases.append("hawkblade")
-            desc = "White surges of magical power runs up and down this runic blade. The hawks depicted on its hilt almost seems to have a life of their own."
+            desc = "白色的魔法能量在这把神秘的剑上涌动着，剑柄上描绘的雄鹰像是有生命一样。"
         if dmg < 9 and magic:
-            desc += "\nThe metal seems to glow faintly, as if imbued with more power than what is immediately apparent."
+            desc += "\n这把武器在隐隐发光，似乎灌注了异乎寻常的力量。"
         return dmg, name, aliases, desc, magic

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 This module implements a simple mobile object with
 a very rudimentary AI as well as an aggressive enemy
@@ -44,11 +45,11 @@ class Mob(tut_objects.TutorialObject):
 
     def announce_move_from(self, destination):
         "Called just before moving"
-        self.location.msg_contents("With a cold breeze, %s drifts in the direction of %s." % (self.key, destination.key))
+        self.location.msg_contents("带着一阵寒意，%s向%s移动过去。" % (self.key, destination.key))
 
     def announce_move_to(self, source_location):
         "Called just after arriving"
-        self.location.msg_contents("With a wailing sound, %s appears from the %s." % (self.key, source_location.key))
+        self.location.msg_contents("随着一声哀号，%s从%s出现了。" % (self.key, source_location.key))
 
     def update_irregular(self):
         "Called at irregular intervals. Moves the mob."
@@ -96,7 +97,7 @@ class AttackTimer(Script):
         "This sets up the script"
         self.key = "AttackTimer"
         self.desc = "Drives an Enemy's combat."
-        self.interval = random.randint(2, 3) # how fast the Enemy acts
+        self.interval = random.randint(5, 10) # how fast the Enemy acts
         self.start_delay = True # wait self.interval before first call
         self.persistent = True
 
@@ -152,6 +153,16 @@ class Enemy(Mob):
                      that room.
 
     """
+    def at_init(self):
+        super(Enemy, self).at_init()
+
+        # Set weapon.
+        self.ndb.weapon = None
+        items = self.contents
+        if items:
+            self.ndb.weapon = items[0]
+
+    
     def at_object_creation(self):
         "Called at object creation."
         super(Enemy, self).at_object_creation()
@@ -212,6 +223,7 @@ class Enemy(Mob):
                 # no exits - a dead end room. Respawn back to start.
                 self.move_to(self.home)
 
+
     def attack(self):
         """
         This is the main mode of combat. It will try to hit players in
@@ -232,9 +244,10 @@ class Enemy(Mob):
                 target = players[random.randint(0, len(players) - 1)]
 
             # try to use the weapon in hand
-            attack_cmds = ("thrust", "pierce", "stab", "slash", "chop")
-            cmd = attack_cmds[random.randint(0, len(attack_cmds) - 1)]
-            self.execute_cmd("%s %s" % (cmd, target))
+            cmd = "fight %s=" % target.dbref
+            attack_cmds = ("stab", "slash")
+            cmd += attack_cmds[random.randint(0, len(attack_cmds) - 1)]
+            self.execute_cmd(cmd)
 
             # analyze result.
             if target.db.health <= 0:
@@ -243,19 +256,19 @@ class Enemy(Mob):
                 tloc = search_object(self.db.defeat_location)
                 tstring = self.db.defeat_text
                 if not tstring:
-                    tstring = "You feel your conciousness slip away ... you fall to the ground as "
-                    tstring += "the misty apparition envelopes you ...\n The world goes black ...\n"
+                    tstring = "你被幽灵缠绕着，意识渐渐变得模糊了……你重重地摔倒在地上。\n"
+                    tstring += "整个世界变得一片漆黑……\n"
                 target.msg(tstring)
                 ostring = self.db.defeat_text_room
                 if tloc:
                     if not ostring:
-                        ostring = "\n%s envelops the fallen ... and then their body is suddenly gone!" % self.key
+                        ostring = "\n%s缠绕着勇士的尸体……一下子尸体就消失不见了！" % self.key
                         # silently move the player to defeat location
                         # (we need to call hook manually)
                     target.location = tloc[0]
                     tloc[0].at_object_receive(target, self.location)
                 elif not ostring:
-                    ostring = "%s falls to the ground!" % target.key
+                    ostring = "%s倒在了地上！" % target.key
                 self.location.msg_contents(ostring, exclude=[target])
                 # Pursue any stragglers after the battle
                 self.battle_mode = False
@@ -267,6 +280,7 @@ class Enemy(Mob):
             self.battle_mode = False
             self.roam_mode = False
             self.pursue_mode = True
+
 
     def pursue(self):
         """
@@ -332,7 +346,7 @@ class Enemy(Mob):
             # only magical weapons can harm it.
             string = self.db.weapon_ineffective_text
             if not string:
-                string = "Your weapon just passes through your enemy, causing no effect!"
+                string = "你的武器径直穿过了敌人的身体，没有造成任何影响！"
             attacker.msg(string)
             return
         else:
@@ -343,17 +357,15 @@ class Enemy(Mob):
             if health <= 0:
                 string = self.db.win_text
                 if not string:
-                    string = "After your last hit, %s folds in on itself, it seems to fade away into nothingness. " % self.key
-                    string += "In a moment there is nothing left but the echoes of its screams. But you have a "
-                    string += "feeling it is only temporarily weakened. "
-                    string += "You fear it's only a matter of time before it materializes somewhere again."
+                    string = "在你最后一击之后，%s蜷缩了起来，渐渐地消散了。" % self.key
+                    string += "过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
+                    string += "但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
                 attacker.msg(string)
                 string = self.db.win_text_room
                 if not string:
-                    string = "After %s's last hit, %s folds in on itself, it seems to fade away into nothingness. " % (attacker.name, self.key)
-                    string += "In a moment there is nothing left but the echoes of its screams. But you have a "
-                    string += "feeling it is only temporarily weakened. "
-                    string += "You fear it's only a matter of time before it materializes somewhere again."
+                    string = "在%s最后一击之后，%s蜷缩了起来，渐渐地消散了。" % (attacker.name, self.key)
+                    string += "过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
+                    string += "但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
                 self.location.msg_contents(string, exclude=[attacker])
 
                 # put mob in dead mode and hide it from view.
@@ -365,7 +377,7 @@ class Enemy(Mob):
                 self.db.dead_mode = True
                 self.location = None
             else:
-                self.location.msg_contents("%s wails, shudders and writhes." % self.key)
+                self.location.msg_contents("%s哀号着、颤抖着、翻滚着。" % self.key)
         return False
 
     def reset(self):
@@ -381,5 +393,14 @@ class Enemy(Mob):
             self.location = self.home
             string = self.db.respawn_text
             if not string:
-                string = "%s fades into existence from out of thin air. It's looking pissed." % self.key
+                string = "渐渐地%s凭空显现出来，它看上去非常愤怒。" % self.key
                 self.location.msg_contents(string)
+
+
+    def available_cmd_list(self, pobject):
+        """
+        This returns a list of available commands.
+        """
+        commands = ["{lcfight %s{lt战斗！{le" % self.dbref]
+        commands += super(Enemy, self).available_cmd_list(pobject)
+        return commands

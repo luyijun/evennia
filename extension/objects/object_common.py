@@ -145,3 +145,11 @@ class ObjectCommon(DefaultObject):
         Get object's description.
         """
         return self.db.desc
+
+
+    def display_available_cmds(self):
+        """
+        Show available commands.
+        """
+        desc = self.get_available_cmd_desc(None)
+        self.msg(desc)

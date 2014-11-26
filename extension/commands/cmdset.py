@@ -86,6 +86,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(Cmd.CmdLook())
         self.add(Cmd.CmdLoot())
         self.add(Cmd.CmdTypeId())
+        self.add(Cmd.CmdAttack())
 
 
 class UnloggedinCmdSet(default_cmds.UnloggedinCmdSet):
