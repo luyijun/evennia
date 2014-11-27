@@ -33,6 +33,10 @@ class Mob(tut_objects.TutorialObject):
     """
     def at_object_creation(self):
         "This is called when the object is first created."
+        super(Mob, self).at_object_creation()
+        
+        self.cmdset.add_default(settings.CMDSET_CHARACTER, permanent=True)
+        
         self.db.tutorial_info = "This is a moving object. It moves randomly from room to room."
 
         self.scripts.add(tut_scripts.IrregularEvent)
