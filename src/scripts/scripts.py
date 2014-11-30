@@ -207,8 +207,11 @@ class ScriptBase(TypeClass):
     def remaining_repeats(self):
         "Get the number of returning repeats. Returns None if unlimited repeats."
         task = self.ndb._task
-        if task:
-            return max(0, self.dbobj.db_repeats - task.callcount)
+        if not task:
+            return 0
+            
+        return max(0, self.dbobj.db_repeats - task.callcount)
+
 
     def start(self, force_restart=False):
         """

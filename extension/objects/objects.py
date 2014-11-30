@@ -300,6 +300,8 @@ class StateLightSourceOn(Script):
 
     def is_valid(self):
         "This script is only valid as long as the lightsource burns."
+        if not super(StateLightSourceOn, self).is_valid():
+            return False
         return self.obj.db.is_active
 
 

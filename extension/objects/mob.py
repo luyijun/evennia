@@ -10,6 +10,8 @@ import random, time
 from django.conf import settings
 
 from ev import search_object, utils, Script
+from ev import Character as DefaultCharacter
+from object_common import ObjectCommon as Object
 import objects as tut_objects
 import scripts as tut_scripts
 
@@ -25,7 +27,7 @@ BASE_CHARACTER_TYPECLASS = settings.BASE_CHARACTER_TYPECLASS
 #
 #------------------------------------------------------------
 
-class Mob(tut_objects.TutorialObject):
+class Mob(Object, DefaultCharacter):
     """
     This type of mobile will roam from exit to exit at
     random intervals. Simply lock exits against the is_mob attribute
@@ -34,8 +36,6 @@ class Mob(tut_objects.TutorialObject):
     def at_object_creation(self):
         "This is called when the object is first created."
         super(Mob, self).at_object_creation()
-        
-        self.cmdset.add_default(settings.CMDSET_CHARACTER, permanent=True)
         
         self.db.tutorial_info = "This is a moving object. It moves randomly from room to room."
 
