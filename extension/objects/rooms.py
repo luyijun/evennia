@@ -11,6 +11,9 @@ from ev import utils, create_object, search_object
 import scripts as tut_scripts
 from objects import LightSource, TutorialObject
 from room import Room
+from src.commands.default.syscommands import CMD_NOMATCH
+from src.commands.default.syscommands import CMD_NOINPUT
+from src.commands.default.general import CmdSay
 
 #------------------------------------------------------------
 #
@@ -154,13 +157,18 @@ class CmdLookDark(Command):
     Looks in darkness
     """
     key = "look"
-    aliases = ["l", 'feel', 'feel around', 'fiddle']
+    aliases = ["l", 'feel', 'feel around', 'fiddle', CMD_NOINPUT]
     locks = "cmd:all()"
     help_category = "TutorialWorld"
 
     def func(self):
         "Implement the command."
         caller = self.caller
+        
+        string = "\n {c=============================================================={n"
+        string += "\n {c%s{n" % caller.location.key
+        string += "\n {c=============================================================={n"
+        
         # we don't have light, grasp around blindly.
         messages = ("周围一片漆黑。你四处摸索，但无法找到任何东西。",
                     "你看不到任何东西。你摸索着周围，手指突然重重地撞上了某个物体。哎哟！",
@@ -172,15 +180,24 @@ class CmdLookDark(Command):
                     "你什么都看不到。周围的空气很潮湿，你感觉像是在深深的地下。")
         irand = random.randint(0, 10)
         if irand < len(messages):
-            caller.msg(messages[irand])
+            string += "\n " + messages[irand]
+            commands = caller.available_cmd_list(None)
+            if commands:
+                string += "\n\n 动作：" + "  ".join(commands)
+            caller.msg(string)
         else:
             # check so we don't already carry a lightsource.
             carried_lights = [obj for obj in caller.contents
                                        if utils.inherits_from(obj, LightSource)]
+            
             if carried_lights:
-                string = "你不想继续在黑暗中摸索了。你已经找到了所需的东西，点亮它吧！"
+                string += "\n 你不想继续在黑暗中摸索了。你已经找到了所需的东西，点亮它吧！"
+                
+                commands = ["{lclight{lt点燃木片{le"] + caller.available_cmd_list(None)
+                string += "\n\n 动作：" + "  ".join(commands)
                 caller.msg(string)
                 return
+
             #if we are lucky, we find the light source.
             lightsources = [obj for obj in self.obj.contents
                                        if utils.inherits_from(obj, LightSource)]
@@ -189,9 +206,13 @@ class CmdLookDark(Command):
             else:
                 # create the light source from scratch.
                 lightsource = create_object(LightSource, key="木片")
+
             lightsource.location = caller
-            string = "在角落里，你的手指碰到了一些木片。它们还带着树脂的香味，而且比较干燥，应该可以点燃！"
-            string += "\n你把它捡起来，紧紧地握手里。现在，你只需要用随身携带的火石{w点着{n它就行了。"
+            string += "\n 在角落里，你的手指碰到了一些木片。它们还带着树脂的香味，而且比较干燥，应该可以点燃！"
+            string += "\n 你把它捡起来，紧紧地握手里。现在，你只需要用随身携带的火石{w点着{n它就行了。"
+            
+            commands = ["{lclight{lt点燃木片{le"] + caller.available_cmd_list(None)
+            string += "\n\n 动作：" + "  ".join(commands)
             caller.msg(string)
 
 
@@ -209,12 +230,9 @@ class CmdDarkHelp(Command):
         string += "即使你无法马上找到也不能放弃。"
         self.caller.msg(string)
 
+
 # the nomatch system command will give a suitable error when we cannot find
 # the normal commands.
-from src.commands.default.syscommands import CMD_NOMATCH
-from src.commands.default.general import CmdSay
-
-
 class CmdDarkNoMatch(Command):
     "This is called when there is no match"
     key = CMD_NOMATCH

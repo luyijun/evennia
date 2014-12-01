@@ -510,9 +510,9 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
         if choicefunc:
             cmdfunc.choicefunc = choicefunc
             def _choicefunc(self):
-                self.choicefunc(self)
                 self.caller.cmdset.delete('menucmdset')
                 del self.caller.db._menu_data
+                self.choicefunc(self)
             cmdfunc.callback = MethodType(_choicefunc, cmdfunc, CmdMenuNode)
         
         commands.append(cmdfunc)

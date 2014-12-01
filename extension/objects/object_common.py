@@ -70,12 +70,12 @@ class ObjectCommon(DefaultObject):
         return True
 
         
-    def return_appearance(self, pobject):
+    def return_appearance(self, caller):
         """
         This is a convenient hook for a 'look'
         command to call.
         """
-        if not pobject:
+        if not caller:
             return
             
         # get description, build string
@@ -89,11 +89,11 @@ class ObjectCommon(DefaultObject):
         
         string += "\n "
         
-        if self == pobject.location:
+        if self == caller.location:
             # if caller is in this object
             # get and identify all objects
-            visible = (cont for cont in self.contents if cont != pobject and
-                                                        cont.access(pobject, "view"))
+            visible = (cont for cont in self.contents if cont != caller and
+                                                        cont.access(caller, "view"))
             exits, users, things = [], [], []
             for cont in visible:
                 if cont.destination:
@@ -110,7 +110,7 @@ class ObjectCommon(DefaultObject):
             if exits:
                 string += "\n 出口：" + "  ".join(exits)
 
-        commands = self.get_available_cmd_desc(pobject)
+        commands = self.get_available_cmd_desc(caller)
         if commands:
             string += commands
                 
@@ -129,12 +129,12 @@ class ObjectCommon(DefaultObject):
         return commands
         
         
-    def get_available_cmd_desc(self, pobject):
+    def get_available_cmd_desc(self, caller):
         """
         This returns a string of available commands.
         """
         string = ""
-        commands = self.available_cmd_list(pobject)
+        commands = self.available_cmd_list(caller)
         if commands:
             string = "\n 动作：" + "  ".join(commands)
         return string

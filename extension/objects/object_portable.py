@@ -150,15 +150,15 @@ class ObjectPortable(Object):
         return desc
         
         
-    def available_cmd_list(self, pobject):
+    def available_cmd_list(self, caller):
         """
         This returns a string of available commands.
         """
         commands = []
-        if pobject and self.location != pobject:
+        if caller and self.location != caller:
             commands = ["{lcget %s{lt拿起%s{le" % (self.dbref, self.name)]
         else:
             commands = ["{lcdiscard %s{lt丢弃%s{le" % (self.dbref, self.name)]
            
-        commands.extend(super(ObjectPortable, self).available_cmd_list(pobject))
+        commands.extend(super(ObjectPortable, self).available_cmd_list(caller))
         return commands

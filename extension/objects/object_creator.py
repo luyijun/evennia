@@ -61,7 +61,7 @@ class ObjectCreator(ObjectCommon):
         return True
 
 
-    def available_cmd_list(self, pobject):
+    def available_cmd_list(self, caller):
         """
         This returns a string of available commands.
         """
@@ -72,7 +72,7 @@ class ObjectCreator(ObjectCommon):
             command = "{lcloot %s{lt%s{le" % (self.dbref, self.ndb.command)
         
         commands = [command]
-        commands.extend(super(ObjectCreator, self).available_cmd_list(pobject))
+        commands.extend(super(ObjectCreator, self).available_cmd_list(caller))
         return commands
 
 

@@ -30,6 +30,7 @@ from object_creator import ObjectSelector
 from object_portable import ObjectPortable
 from exit import Exit
 from extension.utils.defines import OBJ_CATEGORY
+from extension.utils.menusystem import prompt_choice
 
 #------------------------------------------------------------
 #
@@ -214,11 +215,11 @@ class Climbable(TutorialObject):
 #
 #------------------------------------------------------------
 
-OBELISK_DESCS = ["你可以大致辨认出这是一幅画着{b女人和蓝鸟{n的画。",
-                 "有一瞬间你认出了{b一个女人骑在马上{n的样子。",
-                 "你一下子就看出这是一个{b戴着皇冠的贵妇{n的浮雕。",
-                 "你觉得你认出了石头上雕刻着{b一面燃烧着的盾牌{n。",
-                 "有一刹那在面上似乎描绘了{b一个女人在与野兽搏斗{n。"]
+OBELISK_DESCS = ["你可以大致辨认出这是一幅画着{c女人和蓝鸟{n的画。",
+                 "有一瞬间你认出了{c一个女人骑在马上{n的样子。",
+                 "你一下子就看出这是一个{c戴着皇冠的贵妇{n的浮雕。",
+                 "你觉得你认出了石头上雕刻着{c一面燃烧着的盾牌{n。",
+                 "有一刹那在面上似乎描绘了{c一个女人在与野兽搏斗{n。"]
 
 
 class Obelisk(TutorialObject):
@@ -455,6 +456,74 @@ class CmdShiftRoot(Command):
     def parse(self):
         "custom parser; split input by spaces"
         self.arglist = self.args.strip().split()
+    
+    
+    def root_selected(self, menu_node):
+        "Root selected"
+        if menu_node.key.isdigit():
+            select = int(menu_node.key)
+            if select == 1:
+                self.color = "blue"
+            elif select == 2:
+                self.color = "green"
+            elif select == 3:
+                self.color = "red"
+            elif select == 4:
+                self.color = "yellow"
+            else:
+                return
+            self.choose_direction()
+        
+    
+    def choose_root(self):
+        "Choose a root."
+        prompt_choice(self.caller,
+                      question="\n 你想移动哪条树根？",
+                      prompts=["{c蓝色{n的树根",
+                               "{g绿色{n的树根",
+                               "{r红色{n的树根",
+                               "{y黄色{n的树根"],
+                      choicefunc=self.root_selected)
+    
+    
+    def direction_selected(self, menu_node):
+        "Direction selected"
+        if menu_node.key.isdigit():
+            select = int(menu_node.key)
+            if select == 1:
+                if self.color == "blue" or self.color == "red":
+                    self.direction = "left"
+                elif self.color == "green" or self.color == "yellow":
+                    self.direction = "up"
+                else:
+                    return
+                self.shift_root()
+            elif select == 2:
+                if self.color == "blue" or self.color == "red":
+                    self.direction = "right"
+                elif self.color == "green" or self.color == "yellow":
+                    self.direction = "down"
+                else:
+                    return
+                self.shift_root()
+            else:
+                return
+        
+    
+    def choose_direction(self):
+        "Choose a direction."
+        if self.color == "blue" or self.color == "red":
+            choices = ["向左移动", "向右移动"]
+        elif self.color == "green" or self.color == "yellow":
+            choices = ["向上移动", "向下移动"]
+        else:
+            return
+        
+        prompt_choice(self.caller,
+                      question="\n 你想哪个方向移动？",
+                      prompts=choices,
+                      choicefunc=self.direction_selected)
+
 
     def func(self):
         """
@@ -464,91 +533,120 @@ class CmdShiftRoot(Command):
         """
 
         if not self.arglist:
-            self.caller.msg("你想移动什么？向哪个方向移动？")
+            self.choose_root()
             return
+    
         if "root" in self.arglist:
             self.arglist.remove("root")
+        
         # we accept arguments on the form <color> <direction>
-        if not len(self.arglist) > 1:
-            self.caller.msg("你必须指明想把什么颜色的树根向哪个方向移动。")
+        if len(self.arglist) == 0:
+            self.choose_root()
             return
-        color = self.arglist[0].lower()
-        direction = self.arglist[1].lower()
+        elif len(self.arglist) == 1:
+            self.choose_direction()
+            return
+        
+        self.color = self.arglist[0].lower()
+        self.direction = self.arglist[1].lower()
+        self.shift_root()
+        
+        
+    def shift_root(self):
         # get current root positions dict
         root_pos = self.obj.db.root_pos
+        color = self.color
+        direction = self.direction
 
-        if not color in root_pos:
-            self.caller.msg("没有这样的树根。")
+        string = "\n {c=============================================================={n"
+        string += "\n {c%s{n" % self.obj.key
+        string += "\n {c=============================================================={n"
+        string += "\n "
+        
+        if not self.color in root_pos:
+            string += "没有这样的树根。"
+            string += self.caller.get_available_cmd_desc(None)
+            self.caller.msg(string)
             return
 
         # first, vertical roots (red/blue) - can be moved left/right
+
         if color == "red":
             if direction == "left":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("你把红色的树根移向左边。")
+                string += "你把红色的树根移向左边。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["blue"]:
                     root_pos["blue"] += 1
-                    self.caller.msg("长着蓝花的树根占住了地方，你把它推向右边。")
+                    string += "长着蓝花的树根占住了地方，你把它推向右边。"
             elif direction == "right":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("你把红色的树根移向右边。")
+                string += "你把红色的树根移向右边。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["blue"]:
                     root_pos["blue"] -= 1
-                    self.caller.msg("长着蓝花的树根占住了地方，你把它推向左边。")
+                    string += "长着蓝花的树根占住了地方，你把它推向左边。"
             else:
-                self.caller.msg("你无法把树根往那个方向移动。")
+                string += "你无法把树根往那个方向移动。"
         elif color == "blue":
             if direction == "left":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("你把长着蓝花的树根移向左边。")
+                string +="你把长着蓝花的树根移向左边。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["red"]:
                     root_pos["red"] += 1
-                    self.caller.msg("红色的树根占住了地方，你把它推向右边。")
+                    string += "红色的树根占住了地方，你把它推向右边。"
             elif direction == "right":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("你把长着蓝花的树根移向右边。")
+                string += "你把长着蓝花的树根移向右边。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["red"]:
                     root_pos["red"] -= 1
-                    self.caller.msg("红色的树根占住了地方，你把它推向左边。")
+                    string += "红色的树根占住了地方，你把它推向左边。"
             else:
-                self.caller.msg("你无法把树根往那个方向移动。")
+                string += "你无法把树根往那个方向移动。"
         # now the horizontal roots (yellow/green). They can be moved up/down
         elif color == "yellow":
             if direction == "up":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("你把带着黄色小花的树根移向上方。")
+                string += "你把带着黄色小花的树根移向上方。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["green"]:
                     root_pos["green"] += 1
-                    self.caller.msg("覆盖着绿色苔藓的树根落了下来。")
+                    string += "覆盖着绿色苔藓的树根落了下来。"
             elif direction == "down":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("你把带有黄色小花的树根移向下面。")
+                string += "你把带有黄色小花的树根移向下面。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["green"]:
                     root_pos["green"] -= 1
-                    self.caller.msg("为了腾出地方，覆盖着绿色苔藓的树根被移了上去。")
+                    string += "为了腾出地方，覆盖着绿色苔藓的树根被移了上去。"
             else:
-                self.caller.msg("你无法把树根往那个方向移动。")
+                string += "你无法把树根往那个方向移动。"
         elif color == "green":
             if direction == "up":
                 root_pos[color] = max(-1, root_pos[color] - 1)
-                self.caller.msg("你把覆盖着绿色苔藓的树根移向上方。")
+                string += "你把覆盖着绿色苔藓的树根移向上方。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["yellow"]:
                     root_pos["yellow"] += 1
-                    self.caller.msg("带有黄色小花的树根落了下来。")
+                    string += "带有黄色小花的树根落了下来。"
             elif direction == "down":
                 root_pos[color] = min(1, root_pos[color] + 1)
-                self.caller.msg("你把覆盖着绿色苔藓的树根移向下面。")
+                string += "你把覆盖着绿色苔藓的树根移向下面。"
                 if root_pos[color] != 0 and root_pos[color] == root_pos["yellow"]:
                     root_pos["yellow"] -= 1
-                    self.caller.msg("为了腾出地方，带有黄色小花的树根被移了上去。")
+                    string += "为了腾出地方，带有黄色小花的树根被移了上去。"
             else:
-                self.caller.msg("你无法把树根往那个方向移动。")
+                string += "你无法把树根往那个方向移动。"
+
         # store new position
         self.obj.db.root_pos = root_pos
+
         # check victory condition
         if root_pos.values().count(0) == 0: # no roots in middle position
             self.caller.db.crumbling_wall_found_button = True
-            self.caller.msg("把树根移开之后，你注意到后面有什么东西……")
+            string += "\n把树根移开之后，你注意到后面有什么东西……"
+            commands = ["{lclook %s{lt观察墙壁{le" % self.obj.dbref] + self.obj.available_cmd_list(None)
+            string += "\n" + "\n 动作：" + "  ".join(commands)
+        else:
+            string += "\n" + self.obj.get_roots_desc()
+            string += "\n" + self.obj.get_available_cmd_desc(None)
+            
+        self.caller.msg(string)
 
 
 class CmdPressButton(Command):
@@ -635,10 +733,18 @@ class CrumblingWall(TutorialObject, Exit):
         # ever any other identical value.
         self.db.root_pos = {"yellow": 0, "green": 0, "red": 0, "blue": 0}
 
+    def get_roots_desc(self):
+        "Get desc of roots on the wall."
+        string = ""
+        for key, pos in self.db.root_pos.items():
+            string += "\n" + self._translate_position(key, pos)
+        return string
+
+    
     def _translate_position(self, root, ipos):
         "Translates the position into words"
         rootnames = {"red": "一条垂直的{r红色{n的树根。",
-                     "blue": "一条垂直的粗壮树根，上面长着{b蓝色{n的花。",
+                     "blue": "一条垂直的粗壮树根，上面长着{c蓝色{n的花。",
                      "yellow": "一条细长的横挂着的树根，上面长着{y黄色{n的小花。",
                      "green": "一条覆盖着{g绿色{n苔藓的横向的树根。"}
         vpos = {-1: "墙的{w左侧{n挂着",
@@ -671,6 +777,17 @@ class CrumblingWall(TutorialObject, Exit):
         self.db.desc = string
         # call the parent to continue execution (will use desc we just set)
         return super(CrumblingWall, self).return_appearance(caller)
+        
+
+    def available_cmd_list(self, caller):
+        """
+        This returns a list of available commands.
+        """
+        commands = ["{lcshift{lt移动树根{le"] + super(CrumblingWall, self).available_cmd_list(caller)
+        if caller and caller.db.crumbling_wall_found_button:
+            commands = ["{lcpress{lt按动按钮{le"] + commands
+        return commands
+    
 
     def at_after_traverse(self, traverser, source_location):
         """
