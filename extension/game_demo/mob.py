@@ -10,10 +10,8 @@ import random, time
 from django.conf import settings
 
 from ev import search_object, utils, Script
-from ev import Character as DefaultCharacter
-from object_common import ObjectCommon as Object
-import objects as tut_objects
-import scripts as tut_scripts
+from extension.objects.character import Character as DefaultCharacter
+import scripts as demo_scripts
 
 BASE_CHARACTER_TYPECLASS = settings.BASE_CHARACTER_TYPECLASS
 
@@ -27,7 +25,7 @@ BASE_CHARACTER_TYPECLASS = settings.BASE_CHARACTER_TYPECLASS
 #
 #------------------------------------------------------------
 
-class Mob(Object, DefaultCharacter):
+class Mob(DefaultCharacter):
     """
     This type of mobile will roam from exit to exit at
     random intervals. Simply lock exits against the is_mob attribute
@@ -39,7 +37,7 @@ class Mob(Object, DefaultCharacter):
         
         self.db.tutorial_info = "This is a moving object. It moves randomly from room to room."
 
-        self.scripts.add(tut_scripts.IrregularEvent)
+        self.scripts.add(demo_scripts.IrregularEvent)
         # this is a good attribute for exits to look for, to block
         # a mob from entering certain exits.
         self.db.is_mob = True
@@ -262,6 +260,7 @@ class Enemy(Mob):
                 if not tstring:
                     tstring = "你被幽灵缠绕着，意识渐渐变得模糊了……你重重地摔倒在地上。\n"
                     tstring += "整个世界变得一片漆黑……\n"
+                    tstring += target.get_available_cmd_desc(None)
                 target.msg(tstring)
                 ostring = self.db.defeat_text_room
                 if tloc:

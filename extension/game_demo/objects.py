@@ -23,12 +23,12 @@ WeaponRack
 import time
 import random
 
-from ev import create_object
+from ev import create_object, search_object
 from ev import Command, CmdSet, Script
-from object_common import ObjectCommon as Object
-from object_creator import ObjectSelector
-from object_portable import ObjectPortable
-from exit import Exit
+from extension.objects.object_common import ObjectCommon as Object
+from extension.objects.object_creator import ObjectSelector
+from extension.objects.object_portable import ObjectPortable
+from extension.objects.exit import Exit
 from extension.utils.defines import OBJ_CATEGORY
 from extension.utils.menusystem import prompt_choice
 
@@ -238,7 +238,7 @@ class Obelisk(TutorialObject):
         "Overload the default version of this hook."
         clueindex = random.randint(0, len(OBELISK_DESCS) - 1)
         # set this description
-        string = "方尖碑的表面似乎在你眼前扭动、翻转着，不论你何时看它，看到的都是不一样的景象。"
+        string = "方尖碑的表面似乎在你眼前扭动、翻转着，不论你何时看它，看到的都是不一样的景象。\n"
         self.db.desc = string + OBELISK_DESCS[clueindex]
         # remember that this was the clue we got.
         caller.db.puzzle_clue = clueindex
@@ -668,9 +668,10 @@ class CmdPressButton(Command):
             return
 
         # pushing the button
-        string = "你把手放进这个可疑的凹陷中，用力地推了一下。"
-        string += "一开始什么都没发生，但紧接着传来一阵隆隆声，一条{w密道{n露了出来。"
-        string += "随着墙的移动，墙上的鹅卵石也纷纷落下。"
+        string = "\n 你把手放进这个可疑的凹陷中，用力地推了一下。"
+        string += "\n 一开始什么都没发生，但紧接着传来一阵隆隆声，一条{w密道{n露了出来。"
+        string += "\n 随着墙的移动，墙上的鹅卵石也纷纷落下。"
+        string += "\n" + self.caller.get_available_cmd_desc(None)
 
         # we are done - this will make the exit traversable!
         self.caller.db.crumbling_wall_found_exit = True
@@ -887,7 +888,7 @@ class WeaponBarrel(ObjectSelector):
         if weapons:
             caller.msg("\n 酒保微笑着对你说：“朋友，别太贪心了，你已经有一把武器了。”")
 
-            commands = caller.get_available_cmd_desc(caller)
+            commands = caller.get_available_cmd_desc(None)
             if commands:
                 caller.msg(commands + "\n")
             else:
@@ -911,25 +912,31 @@ class CmdGetWeapon(Command):
 
     This will try to obtain a weapon from the container.
     """
-    key = "get"
-    aliases = "get weapon"
+    key = "take"
+    aliases = "take weapon"
     locks = "cmd:all()"
     help_cateogory = "TutorialWorld"
 
     def func(self):
         "Implement the command"
 
-        rack_id = self.obj.db.rack_id
-        if self.caller.attributes.get(rack_id):
+        if self.caller.ndb.weapon:
             # we don't allow a player to take more than one weapon from rack.
-            self.caller.msg("没有多余的%s可以给你了。" % self.obj.name)
+            string = "\n 你已经有一把武器了。"
+            string += self.caller.get_available_cmd_desc(None)
+            self.caller.msg(string)
         else:
             dmg, name, aliases, desc, magic = self.obj.randomize_type()
-            new_weapon = create_object(Weapon, key=name, aliases=aliases,location=self.caller, home=self.caller)
-            new_weapon.db.rack_id = rack_id
+            new_weapon = create_object(Weapon, key=name, aliases=aliases, location=self, home=self)
             new_weapon.db.damage = dmg
             new_weapon.db.desc = desc
             new_weapon.db.magic = magic
+            
+            #take the object
+            if not new_weapon.move_to(caller, quiet=True, emit_to_obj=caller):
+                new_weapon.delete()
+                return
+            
             ostring = self.obj.db.get_text
             if not ostring:
                 ostring = "你拿起了%s。"
@@ -937,8 +944,6 @@ class CmdGetWeapon(Command):
                 self.caller.msg(ostring % name)
             else:
                 self.caller.msg(ostring)
-            # tag the caller so they cannot keep taking objects from the rack.
-            self.caller.attributes.add(rack_id, True)
 
 
 class CmdSetWeaponRack(CmdSet):
@@ -965,11 +970,62 @@ class WeaponRack(TutorialObject):
     """
     def at_object_creation(self):
         "called at creation"
-        self.cmdset.add_default(CmdSetWeaponRack, permanent=True)
+        #self.cmdset.add_default(CmdSetWeaponRack, permanent=True)
         self.db.rack_id = "weaponrack_1"
         self.db.min_dmg = 1.0
         self.db.max_dmg = 4.0
         self.db.magic = False
+    
+    
+    def available_cmd_list(self, caller):
+        """
+        This returns a list of available commands.
+        """
+        commands = ["{lcloot %s{lt取走武器{le" % self.dbref] + super(WeaponRack, self).available_cmd_list(caller)
+        return commands
+    
+    
+    def give(self, caller):
+        "Give weapon"
+        string = "\n {c=============================================================={n"
+        string += "\n {c取走武器{n"
+        string += "\n {c=============================================================={n"
+        string += "\n "
+        
+        if caller.ndb.weapon:
+            # we don't allow a player to take more than one weapon from rack.
+            string += "你已经有一把武器了。\n"
+            string += caller.get_available_cmd_desc(None)
+            caller.msg(string)
+            return
+        
+        dmg, name, aliases, desc, magic = self.randomize_type()
+        new_weapon = create_object(Weapon, key=name, aliases=aliases, location=self, home=self)
+        new_weapon.db.damage = dmg
+        new_weapon.db.desc = desc
+        new_weapon.db.magic = magic
+        
+        #take the object
+        if not new_weapon.move_to(caller, quiet=True, emit_to_obj=caller):
+            new_weapon.delete()
+            return
+        
+        ostring = self.db.get_text
+        if not ostring:
+            ostring = "你拿起了%s。"
+        if '%s' in ostring:
+            ostring = ostring % name
+        string += ostring
+        caller.msg(string)
+        
+        destination = search_object("tut#17")
+        if not destination:
+            destination = search_object("#2")
+        if destination:
+            source = caller.location
+            caller.location = destination[0]  # stealth move
+            caller.location.at_object_receive(caller, source)
+
 
     def randomize_type(self):
         """
@@ -1021,5 +1077,5 @@ class WeaponRack(TutorialObject):
             aliases.append("hawkblade")
             desc = "白色的魔法能量在这把神秘的剑上涌动着，剑柄上描绘的雄鹰像是有生命一样。"
         if dmg < 9 and magic:
-            desc += "\n这把武器在隐隐发光，似乎灌注了异乎寻常的力量。"
+            desc += "这把武器在隐隐发光，似乎灌注了异乎寻常的力量。"
         return dmg, name, aliases, desc, magic

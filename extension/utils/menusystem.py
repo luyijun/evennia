@@ -424,18 +424,18 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
     if yesfunc:
         cmdyes.yesfunc = yesfunc
         def _yesfunc(self):
-            self.yesfunc(self)
             self.caller.cmdset.delete('menucmdset')
             del self.caller.db._menu_data
+            self.yesfunc(self)
         cmdyes.callback = MethodType(_yesfunc, cmdyes, CmdMenuNode)
 
     cmdno = CmdMenuNode(key="no", aliases=["n"])
     if nofunc:
         cmdno.nofunc = nofunc
         def _nofunc(self):
-            self.nofunc(self) if self.nofunc else None
             self.caller.cmdset.delete('menucmdset')
             del self.caller.db._menu_data
+            self.nofunc(self) if self.nofunc else None
         cmdno.callback = MethodType(_nofunc, cmdno, CmdMenuNode)
 
     errorcmd = CmdMenuNode(key=CMD_NOMATCH)

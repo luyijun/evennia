@@ -10,10 +10,11 @@ from ev import CmdSet, Script, Command
 from ev import utils, create_object, search_object
 import scripts as tut_scripts
 from objects import LightSource, TutorialObject
-from room import Room
+from extension.objects.room import Room
 from src.commands.default.syscommands import CMD_NOMATCH
 from src.commands.default.syscommands import CMD_NOINPUT
 from src.commands.default.general import CmdSay
+import traceback
 
 #------------------------------------------------------------
 #
@@ -164,11 +165,13 @@ class CmdLookDark(Command):
     def func(self):
         "Implement the command."
         caller = self.caller
+
+        if caller.ndb.is_first_look:
+            caller.ndb.is_first_look = False
+            caller.display_available_cmds()
+            return
         
-        string = "\n {c=============================================================={n"
-        string += "\n {c%s{n" % caller.location.key
-        string += "\n {c=============================================================={n"
-        
+        string = ""
         # we don't have light, grasp around blindly.
         messages = ("周围一片漆黑。你四处摸索，但无法找到任何东西。",
                     "你看不到任何东西。你摸索着周围，手指突然重重地撞上了某个物体。哎哟！",
@@ -281,7 +284,7 @@ class DarkState(Script):
                 char.msg("You are Superuser, so you are not affected by the dark state.")
             else:
                 char.cmdset.add(DarkCmdSet)
-            char.msg("房间里一片漆黑！你感觉好像被吞进了巨人的肚子。")
+            # char.msg("房间里一片漆黑！你感觉好像被吞进了巨人的肚子。")
 
     def is_valid(self):
         "is valid only as long as noone in the room has lit the lantern."
@@ -360,6 +363,7 @@ class DarkRoom(TutorialRoom):
                 if not health:
                     health = 20
                 character.db.health = health
+            character.ndb.is_first_look = True
         self.scripts.validate()
 
     def at_object_leave(self, character, target_location):
@@ -370,6 +374,14 @@ class DarkRoom(TutorialRoom):
         character.cmdset.delete(DarkCmdSet)  # in case we are teleported away
         self.scripts.validate()
 
+    def return_appearance(self, caller):
+        if caller.ndb.is_first_look:
+            # disabled the first look
+            caller.ndb.is_first_look = False
+            caller.display_available_cmds()
+            return
+        
+        return super(DarkRoom, self).return_appearance(caller)
 
 #------------------------------------------------------------
 #
@@ -436,6 +448,10 @@ class TeleportRoom(TutorialRoom):
         character.execute_cmd("look")
         character.location = results[0]  # stealth move
         character.location.at_object_receive(character, self)
+
+    def return_appearance(self, caller):
+        return self.db.desc
+
 
 #------------------------------------------------------------
 #

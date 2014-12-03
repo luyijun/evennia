@@ -293,6 +293,8 @@ class CmdDiscardObject(MuxCommand):
             caller.msg("发生错误：%s无法丢弃。" % objname)
             return
         
+        caller.select_weapon()
+        
         caller.msg("\n%s已被丢弃。" % objname)
         commands = caller.get_available_cmd_desc(caller)
         if commands:
@@ -405,7 +407,7 @@ class CmdInventory(MuxCommand):
 
                 table += "\n %s%s%s" % (name, space, desc)
                 
-            string = " {c=============================================================={n"
+            string = "\n {c=============================================================={n"
             string += "\n {c你携带着{n"
             string += "\n {c=============================================================={n"
             string += "\n%s" % table
@@ -683,18 +685,19 @@ class CmdAttack(MuxCommand):
         """
         """
         caller = self.caller
+        
+        string = "\n "
+        tstring = "\n "
+        ostring = "\n "
+            
         if select == 3:
             # defend
-            string = "你举起武器摆出了防御的姿势，准备格挡敌人的下一次攻击。"
+            string += "你举起武器摆出了防御的姿势，准备格挡敌人的下一次攻击。"
             caller.msg(string)
             caller.db.combat_parry_mode = True
             caller.location.msg_contents("%s摆出了防御姿态。" % self.caller, exclude=[self.caller])
             return
         elif select == 1 or select == 2:
-            string = ""
-            tstring = ""
-            ostring = ""
-            
             target = caller.ndb.target
             weapon = caller.ndb.weapon
             hit = weapon.db.hit
@@ -703,21 +706,21 @@ class CmdAttack(MuxCommand):
                 # stab
                 hit *= 0.7  # modified due to stab
                 damage *= 2  # modified due to stab
-                string = "你用%s刺去。" % weapon.key
-                tstring = "%s用%s刺向你。" % (caller.key, weapon.key)
-                ostring = "%s用%s刺向%s。" % (caller.key, weapon.key, target.key)
+                string += "你用%s刺去。" % weapon.key
+                tstring += "%s用%s刺向你。" % (caller.key, weapon.key)
+                ostring += "%s用%s刺向%s。" % (caller.key, weapon.key, target.key)
                 self.caller.db.combat_parry_mode = False
             elif select == 2:
                 # slash
                 # un modified due to slash
-                string = "你用%s砍去。" % weapon.key
-                tstring = "%s用%s砍向你。" % (caller.key, weapon.key)
-                ostring = "%s用%s砍向%s。" % (caller.key, weapon.key, target.key)
+                string += "你用%s砍去。" % weapon.key
+                tstring += "%s用%s砍向你。" % (caller.key, weapon.key)
+                ostring += "%s用%s砍向%s。" % (caller.key, weapon.key, target.key)
                 self.caller.db.combat_parry_mode = False
 
             if target.db.combat_parry_mode:
                 # target is defensive; even harder to hit!
-                target.msg("{G你进行防御，想努力躲开攻击。{n")
+                target.msg("\n {G你进行防御，想努力躲开攻击。{n")
                 hit *= 0.5
 
             if random.random() <= hit:
@@ -741,8 +744,8 @@ class CmdAttack(MuxCommand):
                 self.caller.location.msg_contents(ostring + "没有击中。", exclude=[target, caller])
         else:
             # no choice
-            self.caller.msg("你拿着武器不知所措，不知是该刺、砍还是格挡……")
-            self.caller.location.msg_contents("%s拿着武器不知所措。" % caller.key)
+            self.caller.msg("\n 你拿着武器不知所措，不知是该刺、砍还是格挡……")
+            self.caller.location.msg_contents("\n %s拿着武器不知所措。" % caller.key)
             self.caller.db.combat_parry_mode = False
             return
 

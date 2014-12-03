@@ -13,6 +13,14 @@
 		30217EA31A13B85D00F00A6C /* models.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = models.py; sourceTree = "<group>"; };
 		30217EA51A13B85D00F00A6C /* tests.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tests.py; sourceTree = "<group>"; };
 		30217EA61A13B85D00F00A6C /* views.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = views.py; sourceTree = "<group>"; };
+		3034638A1A2F6572009512CB /* rooms.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = rooms.py; path = game_demo/rooms.py; sourceTree = "<group>"; };
+		3034638B1A2F6572009512CB /* objects.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = objects.py; path = game_demo/objects.py; sourceTree = "<group>"; };
+		3034638C1A2F6572009512CB /* character.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = character.py; path = game_demo/character.py; sourceTree = "<group>"; };
+		3034638D1A2F6572009512CB /* mob.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = mob.py; path = game_demo/mob.py; sourceTree = "<group>"; };
+		3034638E1A2F6572009512CB /* scripts.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = scripts.py; path = game_demo/scripts.py; sourceTree = "<group>"; };
+		3034638F1A2F661B009512CB /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = game_demo/__init__.py; sourceTree = "<group>"; };
+		303463901A2F6751009512CB /* build.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = build.ev; path = game_demo/build.ev; sourceTree = "<group>"; };
+		303463911A2F6751009512CB /* limbo.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = limbo.ev; path = game_demo/limbo.ev; sourceTree = "<group>"; };
 		30346A5D1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A621A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A631A0A915C008E65D5 /* cmdset.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cmdset.py; sourceTree = "<group>"; };
@@ -21,13 +29,9 @@
 		30346A6A1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A6B1A0A915C008E65D5 /* character.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = character.py; sourceTree = "<group>"; };
 		30346A6C1A0A915C008E65D5 /* exit.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = exit.py; sourceTree = "<group>"; };
-		30346A6D1A0A915C008E65D5 /* mob.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = mob.py; sourceTree = "<group>"; };
 		30346A6E1A0A915C008E65D5 /* object_common.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = object_common.py; sourceTree = "<group>"; };
 		30346A6F1A0A915C008E65D5 /* object_portable.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = object_portable.py; sourceTree = "<group>"; };
-		30346A701A0A915C008E65D5 /* objects.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = objects.py; sourceTree = "<group>"; };
 		30346A711A0A915C008E65D5 /* room.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = room.py; sourceTree = "<group>"; };
-		30346A721A0A915C008E65D5 /* rooms.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = rooms.py; sourceTree = "<group>"; };
-		30346A731A0A915C008E65D5 /* scripts.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = scripts.py; sourceTree = "<group>"; };
 		30346A761A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
 		30346A771A0A915C008E65D5 /* defines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = defines.py; sourceTree = "<group>"; };
 		30346A781A0A915C008E65D5 /* menusystem.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = menusystem.py; sourceTree = "<group>"; };
@@ -46,6 +50,21 @@
 			path = data;
 			sourceTree = "<group>";
 		};
+		303463891A2F6554009512CB /* game_demo */ = {
+			isa = PBXGroup;
+			children = (
+				303463901A2F6751009512CB /* build.ev */,
+				303463911A2F6751009512CB /* limbo.ev */,
+				3034638F1A2F661B009512CB /* __init__.py */,
+				3034638C1A2F6572009512CB /* character.py */,
+				3034638D1A2F6572009512CB /* mob.py */,
+				3034638B1A2F6572009512CB /* objects.py */,
+				3034638A1A2F6572009512CB /* rooms.py */,
+				3034638E1A2F6572009512CB /* scripts.py */,
+			);
+			name = game_demo;
+			sourceTree = "<group>";
+		};
 		30346A4F1A0A8EC5008E65D5 = {
 			isa = PBXGroup;
 			children = (
@@ -59,6 +78,7 @@
 				30346A5D1A0A915C008E65D5 /* __init__.py */,
 				30346A611A0A915C008E65D5 /* commands */,
 				30217E971A13B85D00F00A6C /* data */,
+				303463891A2F6554009512CB /* game_demo */,
 				30346A691A0A915C008E65D5 /* objects */,
 				30346A751A0A915C008E65D5 /* utils */,
 			);
@@ -82,14 +102,10 @@
 				30346A6A1A0A915C008E65D5 /* __init__.py */,
 				30346A6B1A0A915C008E65D5 /* character.py */,
 				30346A6C1A0A915C008E65D5 /* exit.py */,
-				30346A6D1A0A915C008E65D5 /* mob.py */,
 				30346A6E1A0A915C008E65D5 /* object_common.py */,
 				301F3E721A0BC99E0072C86C /* object_creator.py */,
 				30346A6F1A0A915C008E65D5 /* object_portable.py */,
-				30346A701A0A915C008E65D5 /* objects.py */,
 				30346A711A0A915C008E65D5 /* room.py */,
-				30346A721A0A915C008E65D5 /* rooms.py */,
-				30346A731A0A915C008E65D5 /* scripts.py */,
 			);
 			path = objects;
 			sourceTree = "<group>";
