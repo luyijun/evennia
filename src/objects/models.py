@@ -245,7 +245,6 @@ class ObjectDB(TypedObject):
                 except ObjectDoesNotExist:
                     # maybe it is just a name that happens to look like a dbid
                     pass
-    
         try:
             def is_loc_loop(loc, depth=0):
                 "Recursively traverse target location, trying to catch a loop."
@@ -260,18 +259,6 @@ class ObjectDB(TypedObject):
                 is_loc_loop(location)
             except RuntimeWarning:
                 pass
-
-            # set contents_dirty flag
-            location_src = _GA(self, "location")
-            if location_src:
-                location_src = _GA(location_src, "dbobj")
-                _SA(location_src, "contents_dirty", True)
-
-            location_trg = location
-            if location_trg:
-                location_trg = _GA(location_trg, "dbobj")
-                _SA(location_trg, "contents_dirty", True)
-
             # actually set the field
             _SA(_GA(self, "dbobj"), "db_location", _GA(location, "dbobj") if location else location)
             _GA(_GA(self, "dbobj"), "save")(update_fields=["db_location"])
@@ -286,12 +273,6 @@ class ObjectDB(TypedObject):
 
     def __location_del(self):
         "Cleanly delete the location reference"
-        # set contents_dirty flag
-        location_src = _GA(self, "location")
-        if location_src:
-            location_src = _GA(location_src, "dbobj")
-            _SA(location_src, "contents_dirty", True)
-    
         _SA(_GA(self, "dbobj"), "db_location", None)
         _GA(_GA(self, "dbobj"), "save")(upate_fields=["db_location"])
     location = property(__location_get, __location_set, __location_del)
@@ -334,8 +315,7 @@ class ObjectDB(TypedObject):
     is_superuser = property(__is_superuser_get)
 
     # contents
-    contents_cache = []
-    contents_dirty = True
+
     def contents_get(self, exclude=None):
         """
         Returns the contents of this object, i.e. all
@@ -344,14 +324,10 @@ class ObjectDB(TypedObject):
 
         exclude is one or more objects to not return
         """
-        if _GA(self, "contents_dirty"):
-            _SA(self, "contents_cache", ObjectDB.objects.get_contents(self))
-            _SA(self, "contents_dirty", False)
-            
         if exclude:
-            exclude = make_iter(exclude)
-            return [obj for obj in _GA(self, "contents_cache") if obj not in exclude]
-        return _GA(self, "contents_cache")
+            exclude = [obj.dbobj for obj in make_iter(exclude)]
+            return ObjectDB.objects.get_contents(self, excludeobj=exclude)
+        return ObjectDB.objects.get_contents(self)
     contents = property(contents_get)
 
     #@property
@@ -413,9 +389,10 @@ class ObjectDB(TypedObject):
                       equal to searchdata. A special use is to search for
                       "key" here if you want to do a key-search without
                       including aliases.
-        quiet (bool) - don't display default error messages - return multiple
-                      matches as a list and no matches as None. If not
-                      set (default), will echo error messages and return None.
+        quiet (bool) - don't display default error messages - this tells the
+                      search method that the user wants to handle all errors
+                      themselves. It also changes the return value type, see
+                      below.
         exact (bool) - if unset (default) - prefers to match to beginning of
                       string rather than not matching at all. If set, requires
                       exact mathing of entire string.
@@ -429,10 +406,7 @@ class ObjectDB(TypedObject):
                 match:
                     a unique object match
             quiet=True:
-                no match or multimatch:
-                    returns None or list of multi-matches
-                match:
-                    a unique object match
+                returns a list of 0, 1 or more matches
 
         """
         is_string = isinstance(searchdata, basestring)
@@ -694,7 +668,6 @@ class ObjectDB(TypedObject):
         # Perform move
         try:
             #print "move_to location:", destination
-            _SA(self, "contents_dirty", True)
             _SA(self, "location", destination)
         except Exception:
             emit_to_obj.msg(errtxt % "location change")

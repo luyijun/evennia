@@ -118,7 +118,7 @@ class ObjectCommon(DefaultObject):
         return string
 
         
-    def available_cmd_list(self, pobject):
+    def available_cmd_list(self, caller):
         """
         This returns a list of available commands.
         """
@@ -151,5 +151,5 @@ class ObjectCommon(DefaultObject):
         """
         Show available commands.
         """
-        desc = self.get_available_cmd_desc(None)
+        desc = self.get_available_cmd_desc(self)
         self.msg(desc)

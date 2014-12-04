@@ -192,11 +192,16 @@ class ObjectSelector(ObjectCreator):
             if select > 0:
                 obj_id = self.ndb.obj_list[select - 1]
                 self.give_object(menu_node.caller, obj_id)
+                return
+
+        string = menu_node.caller.get_available_cmd_desc(menu_node.caller)
+        menu_node.caller.msg(string)
                     
                     
     def give_object(self, caller, obj_id):
         """
         """
+        string = ""
         matches = Object_Type_List.objects.filter(db_key=obj_id)
         if matches:
             info = matches[0]
@@ -209,13 +214,10 @@ class ObjectSelector(ObjectCreator):
                 if not new_obj.move_to(caller, quiet=True, emit_to_obj=caller):
                     new_obj.delete()
                 else:
-                    caller.msg("你拿起了{w[%s]{n" % new_obj.key)
+                    string += "你拿起了{w[%s]{n" % new_obj.key
 
-        commands = caller.get_available_cmd_desc(caller)
-        if commands:
-            caller.msg(commands + "\n")
-        else:
-            caller.msg("\n")
+        string += "\n " + caller.get_available_cmd_desc(caller)
+        caller.msg(string)
             
 
     def give(self, caller):
@@ -223,7 +225,9 @@ class ObjectSelector(ObjectCreator):
         """
         if not self.ndb.obj_list:
             # no objects
-            caller.msg("没有可以获取的物品")
+            string = "没有可以获取的物品。\n"
+            string += caller.get_available_cmd_desc(caller)
+            caller.msg(string)
         elif len(self.ndb.obj_list) == 1:
             # only one object
             self.give_object(caller, self.obj_list[0])

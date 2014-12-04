@@ -381,7 +381,7 @@ class CmdInventory(MuxCommand):
         caller = self.caller
         items = caller.contents
         if not items:
-            string = " {c=============================================================={n"
+            string = "\n {c=============================================================={n"
             string += "\n {c你没有携带任何东西。{n"
             string += "\n {c=============================================================={n"
         else:

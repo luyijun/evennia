@@ -480,7 +480,7 @@ class CmdShiftRoot(Command):
                 return
 
         # no valid choice
-        string = self.caller.get_available_cmd_desc(None)
+        string = self.caller.get_available_cmd_desc(self.caller)
         self.caller.msg(string)
         return
         
@@ -520,7 +520,7 @@ class CmdShiftRoot(Command):
                     return
 
         # no valid choice
-        string = self.caller.get_available_cmd_desc(None)
+        string = self.caller.get_available_cmd_desc(self.caller)
         self.caller.msg(string)
         return
 
@@ -580,7 +580,7 @@ class CmdShiftRoot(Command):
         
         if not self.color in root_pos:
             string += "没有这样的树根。"
-            string += self.caller.get_available_cmd_desc(None)
+            string += self.caller.get_available_cmd_desc(self.caller)
             self.caller.msg(string)
             return
 
@@ -659,7 +659,7 @@ class CmdShiftRoot(Command):
             string += "\n" + "\n 动作：" + "  ".join(commands)
         else:
             string += "\n" + self.obj.get_roots_desc()
-            string += "\n" + self.obj.get_available_cmd_desc(None)
+            string += "\n" + self.obj.get_available_cmd_desc(self.obj)
             
         self.caller.msg(string)
 
@@ -686,7 +686,7 @@ class CmdPressButton(Command):
         string = "\n 你把手放进这个可疑的凹陷中，用力地推了一下。"
         string += "\n 一开始什么都没发生，但紧接着传来一阵隆隆声，一条{w密道{n露了出来。"
         string += "\n 随着墙的移动，墙上的鹅卵石也纷纷落下。"
-        string += "\n" + self.caller.get_available_cmd_desc(None)
+        string += "\n" + self.caller.get_available_cmd_desc(self.caller)
 
         # we are done - this will make the exit traversable!
         self.caller.db.crumbling_wall_found_exit = True
@@ -903,7 +903,7 @@ class WeaponBarrel(ObjectSelector):
         if weapons:
             caller.msg("\n 酒保微笑着对你说：“朋友，别太贪心了，你已经有一把武器了。”")
 
-            commands = caller.get_available_cmd_desc(None)
+            commands = caller.get_available_cmd_desc(caller)
             if commands:
                 caller.msg(commands + "\n")
             else:
@@ -938,7 +938,7 @@ class CmdGetWeapon(Command):
         if self.caller.ndb.weapon:
             # we don't allow a player to take more than one weapon from rack.
             string = "\n 你已经有一把武器了。"
-            string += self.caller.get_available_cmd_desc(None)
+            string += self.caller.get_available_cmd_desc(self.caller)
             self.caller.msg(string)
         else:
             dmg, name, aliases, desc, magic = self.obj.randomize_type()
@@ -1010,7 +1010,7 @@ class WeaponRack(TutorialObject):
         if caller.ndb.weapon:
             # we don't allow a player to take more than one weapon from rack.
             string += "你已经有一把武器了。\n"
-            string += caller.get_available_cmd_desc(None)
+            string += caller.get_available_cmd_desc(caller)
             caller.msg(string)
             return
         
@@ -1027,11 +1027,11 @@ class WeaponRack(TutorialObject):
         
         ostring = self.db.get_text
         if not ostring:
-            ostring = "你拿起了%s。\n"
+            ostring = "你拿起了%s。"
         if '%s' in ostring:
             ostring = ostring % name
-        string += ostring
-        string += caller.get_available_cmd_desc(None)
+        string += ostring + "\n"
+        string += caller.get_available_cmd_desc(caller)
         caller.msg(string)
         
         destination = search_object("tut#17")

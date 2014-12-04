@@ -580,7 +580,7 @@ class CmdLookBridge(Command):
                 string += "\n 你想尽力抓住相邻的木板，但只是改变了你坠落的方向。你正摔向西面的悬崖。这"
                 string += "\n 次肯定要受伤了……"
                 string += "\n ……整个世界一片黑暗……{n\n"
-                string += self.caller.get_available_cmd_desc(None)
+                string += self.caller.get_available_cmd_desc(self.caller)
                 # note that we move silently so as to not call look hooks (this is a little trick to leave
                 # the player with the "world goes dark ..." message, giving them ample time to read it. They
                 # have to manually call look to find out their new location). Thus we also call the

@@ -260,7 +260,7 @@ class Enemy(Mob):
                 if not tstring:
                     tstring = "你被幽灵缠绕着，意识渐渐变得模糊了……你重重地摔倒在地上。\n"
                     tstring += "整个世界变得一片漆黑……\n"
-                    tstring += target.get_available_cmd_desc(None)
+                    tstring += target.get_available_cmd_desc(target)
                 target.msg(tstring)
                 ostring = self.db.defeat_text_room
                 if tloc:
