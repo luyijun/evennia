@@ -1058,7 +1058,7 @@ stairs down
 
  这里给出的游戏只展现了Evennia的一部分功能。本游戏侧重于展示技术，而不是
  讲述故事或挑战游戏。本游戏的内容基于Evennia的"世界教程"，想了解更多信息
- 可以访问Evennia中文站 www.evenniacn.com 。
+ 可以访问Evennia中文站 http://www.evenniacn.com 。
 
  之后你可以选择退出游戏，也可以继续探索城堡。在新的探索中，你可以尝试先前
  没有做过的选择、进入没有进过的房间。现在你的武器的攻击效果要比之前的任何
@@ -1070,6 +1070,6 @@ stairs down
 #
 # Tie this back to Limbo
 #
-@open 回到起点;exit back to Limbo;limbo;exit;back = #2
+@open 回到起点;exit back to Limbo;limbo;exit;back;tut#18 = #2
 #
 @tel #2
