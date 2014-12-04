@@ -464,15 +464,25 @@ class CmdShiftRoot(Command):
             select = int(menu_node.key)
             if select == 1:
                 self.color = "blue"
+                self.choose_direction()
+                return
             elif select == 2:
                 self.color = "green"
+                self.choose_direction()
+                return
             elif select == 3:
                 self.color = "red"
+                self.choose_direction()
+                return
             elif select == 4:
                 self.color = "yellow"
-            else:
+                self.choose_direction()
                 return
-            self.choose_direction()
+
+        # no valid choice
+        string = self.caller.get_available_cmd_desc(None)
+        self.caller.msg(string)
+        return
         
     
     def choose_root(self):
@@ -493,22 +503,27 @@ class CmdShiftRoot(Command):
             if select == 1:
                 if self.color == "blue" or self.color == "red":
                     self.direction = "left"
+                    self.shift_root()
+                    return
                 elif self.color == "green" or self.color == "yellow":
                     self.direction = "up"
-                else:
+                    self.shift_root()
                     return
-                self.shift_root()
             elif select == 2:
                 if self.color == "blue" or self.color == "red":
                     self.direction = "right"
+                    self.shift_root()
+                    return
                 elif self.color == "green" or self.color == "yellow":
                     self.direction = "down"
-                else:
+                    self.shift_root()
                     return
-                self.shift_root()
-            else:
-                return
-        
+
+        # no valid choice
+        string = self.caller.get_available_cmd_desc(None)
+        self.caller.msg(string)
+        return
+
     
     def choose_direction(self):
         "Choose a direction."
@@ -1012,10 +1027,11 @@ class WeaponRack(TutorialObject):
         
         ostring = self.db.get_text
         if not ostring:
-            ostring = "你拿起了%s。"
+            ostring = "你拿起了%s。\n"
         if '%s' in ostring:
             ostring = ostring % name
         string += ostring
+        string += caller.get_available_cmd_desc(None)
         caller.msg(string)
         
         destination = search_object("tut#17")

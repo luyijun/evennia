@@ -526,9 +526,13 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
         def _errorcmd(self):
             self.caller.msg("只能选择提供的选项。")
     else:
-        def _errorcmd(self):
-            self.caller.msg("没有选择。")
-            self.caller.cmdset.delete('menucmdset')
+        if choicefunc:
+            errorcmd.choicefunc = choicefunc
+            def _errorcmd(self):
+                self.caller.msg("没有选择。")
+                self.caller.cmdset.delete('menucmdset')
+                del self.caller.db._menu_data
+                self.choicefunc(self)
     errorcmd.callback = MethodType(_errorcmd, errorcmd, CmdMenuNode)
     
     defaultcmd = CmdMenuNode(key=CMD_NOINPUT)
@@ -536,9 +540,13 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
         def _defaultcmd(self):
             caller.msg(prompt)
     else:
-        def _defaultcmd(self):
-            self.caller.msg("没有选择。")
-            self.caller.cmdset.delete('menucmdset')
+        if choicefunc:
+            defaultcmd.choicefunc = choicefunc
+            def _defaultcmd(self):
+                self.caller.msg("没有选择。")
+                self.caller.cmdset.delete('menucmdset')
+                del self.caller.db._menu_data
+                self.choicefunc(self)
     defaultcmd.callback = MethodType(_defaultcmd, defaultcmd, CmdMenuNode)
     
     # creating cmdset (this will already have look/help commands)

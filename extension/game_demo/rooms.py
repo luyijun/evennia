@@ -576,15 +576,16 @@ class CmdLookBridge(Command):
             # we fall on 5% of the times.
             fexit = search_object(self.obj.db.fall_exit)
             if fexit:
-                string = "\n 突然，你脚下的木板断开了！你掉下去了！"
+                string = "\n {r突然，你脚下的木板断开了！你掉下去了！"
                 string += "\n 你想尽力抓住相邻的木板，但只是改变了你坠落的方向。你正摔向西面的悬崖。这"
                 string += "\n 次肯定要受伤了……"
-                string += "\n ……整个世界一片黑暗……\n"
+                string += "\n ……整个世界一片黑暗……{n\n"
+                string += self.caller.get_available_cmd_desc(None)
                 # note that we move silently so as to not call look hooks (this is a little trick to leave
                 # the player with the "world goes dark ..." message, giving them ample time to read it. They
                 # have to manually call look to find out their new location). Thus we also call the
                 # at_object_leave hook manually (otherwise this is done by move_to()).
-                self.caller.msg("{r%s{n" % string)
+                self.caller.msg(string)
                 self.obj.at_object_leave(self.caller, fexit)
                 self.caller.location = fexit[0] # stealth move, without any other hook calls.
                 self.obj.msg_contents("一块木板在%s的脚下断开了，他摔下桥了！" % self.caller.key)
