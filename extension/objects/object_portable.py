@@ -17,7 +17,12 @@ from extension.utils.defines import OBJ_CATEGORY
 #------------------------------------------------------------
 class ObjectPortable(Object):
     """
-    This is the baseclass for bandable objects.
+    This is the baseclass for portable objects. Players can carry
+    this kind of object with them.
+    
+    bind_type:  BIND ON PICKUP, BIND ON EQUIP, or NO BIND.
+    is_unique:  Whether the player can carry more than one object of this kind.
+    is_bound:   Whether the object is bound.
     """
 
     def at_object_creation(self):

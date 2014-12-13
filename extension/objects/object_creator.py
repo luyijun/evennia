@@ -93,6 +93,7 @@ class ObjectProvider(ObjectCreator):
 
     def give(self, caller):
         """
+        Give objects to the caller.
         """
         
         caller.msg(self.ndb.question)
@@ -134,7 +135,7 @@ class ObjectProvider(ObjectCreator):
 
 class ObjectSelector(ObjectCreator):
     """
-    Selec an object on the list
+    Selec an object on the list.
     """
     def load_type_data(self):
         "Set object data from db."
@@ -186,6 +187,7 @@ class ObjectSelector(ObjectCreator):
     
     def menu_selected(self, menu_node):
         """
+        Choose an object.
         """
         if menu_node.key.isdigit():
             select = int(menu_node.key)
@@ -200,6 +202,7 @@ class ObjectSelector(ObjectCreator):
                     
     def give_object(self, caller, obj_id):
         """
+        Give an object to the caller.
         """
         string = ""
         matches = Object_Type_List.objects.filter(db_key=obj_id)
@@ -222,6 +225,7 @@ class ObjectSelector(ObjectCreator):
 
     def give(self, caller):
         """
+        Give an object to the caller. If there are several objects, ask the caller to choose one.
         """
         if not self.ndb.obj_list:
             # no objects

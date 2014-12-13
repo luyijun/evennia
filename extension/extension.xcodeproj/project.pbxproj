@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
+		3007F4701A3BEA55000142C8 /* menusystem.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = menusystem.py; path = upload/menusystem.py; sourceTree = "<group>"; };
 		30103A3E1A349FD000C4C569 /* connection_screens.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = connection_screens.py; path = game_demo/connection_screens.py; sourceTree = "<group>"; };
 		30103A3F1A349FD000C4C569 /* settings.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = settings.py; path = game_demo/settings.py; sourceTree = "<group>"; };
 		30103A401A349FD000C4C569 /* data_object_type_list.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = data_object_type_list.dat; path = game_demo/data_object_type_list.dat; sourceTree = "<group>"; };
@@ -43,6 +44,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		3007F46F1A3BEA3A000142C8 /* upload */ = {
+			isa = PBXGroup;
+			children = (
+				3007F4701A3BEA55000142C8 /* menusystem.py */,
+			);
+			name = upload;
+			sourceTree = "<group>";
+		};
 		30217E971A13B85D00F00A6C /* data */ = {
 			isa = PBXGroup;
 			children = (
@@ -91,6 +100,7 @@
 				303463891A2F6554009512CB /* game_demo */,
 				30346A691A0A915C008E65D5 /* objects */,
 				30346A751A0A915C008E65D5 /* utils */,
+				3007F46F1A3BEA3A000142C8 /* upload */,
 			);
 			name = extension;
 			sourceTree = "<group>";
