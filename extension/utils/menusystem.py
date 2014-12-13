@@ -517,9 +517,10 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
         
         commands.append(cmdfunc)
         
-    prompt = question + choices + "\n请选择。"
     if not force_choose:
-        prompt += "  {lc{lt[不选择]{le"
+        choices += "\n{lc{lt[不选择]{le"
+    
+    prompt = question + choices + "\n请选择。"
 
     errorcmd = CmdMenuNode(key=CMD_NOMATCH)
     if force_choose:

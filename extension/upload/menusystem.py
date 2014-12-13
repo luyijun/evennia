@@ -470,9 +470,9 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
     # assign cmdset and ask question
     caller.cmdset.add(yesnocmdset)
     if default == "Y":
-        prompt = "[Y]/N"
+        prompt = "{lcY{lt[Y]{le/{lcN{ltN{le"
     else:
-        prompt = "Y/[N]"
+        prompt = "{lcY{ltY{le/{lcN{lt[N]{le"
     prompt = "%s %s: " % (question, prompt)
     caller.msg(prompt)
 
