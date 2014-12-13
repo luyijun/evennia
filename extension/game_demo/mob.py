@@ -47,11 +47,11 @@ class Mob(DefaultCharacter):
 
     def announce_move_from(self, destination):
         "Called just before moving"
-        self.location.msg_contents("带着一阵寒意，%s向%s移动过去。" % (self.key, destination.key))
+        self.location.msg_contents("\n带着一阵寒意，%s向%s移动过去。" % (self.key, destination.key))
 
     def announce_move_to(self, source_location):
         "Called just after arriving"
-        self.location.msg_contents("随着一声哀号，%s从%s出现了。" % (self.key, source_location.key))
+        self.location.msg_contents("\n随着一声哀号，%s从%s出现了。" % (self.key, source_location.key))
 
     def update_irregular(self):
         "Called at irregular intervals. Moves the mob."
@@ -361,14 +361,14 @@ class Enemy(Mob):
                 string = self.db.win_text
                 if not string:
                     string = "在你最后一击之后，%s蜷缩了起来，渐渐地消散了。" % self.key
-                    string += "过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
-                    string += "但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
+                    string += "\n过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
+                    string += "\n但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
                 attacker.msg(string)
                 string = self.db.win_text_room
                 if not string:
                     string = "在%s最后一击之后，%s蜷缩了起来，渐渐地消散了。" % (attacker.name, self.key)
-                    string += "过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
-                    string += "但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
+                    string += "\n过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
+                    string += "\n但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
                 self.location.msg_contents(string, exclude=[attacker])
 
                 # put mob in dead mode and hide it from view.

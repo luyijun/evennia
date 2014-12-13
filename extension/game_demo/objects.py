@@ -1010,6 +1010,7 @@ class WeaponRack(TutorialObject):
         if caller.ndb.weapon:
             # we don't allow a player to take more than one weapon from rack.
             string += "你已经有一把武器了。\n"
+            string += "（你要先丢弃行囊中的武器才能拿取新武器）\n"
             string += caller.get_available_cmd_desc(caller)
             caller.msg(string)
             return
