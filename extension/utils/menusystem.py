@@ -489,14 +489,15 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
 
 def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choose=False):
     """
-        This sets up a simple choice questionnaire. Question will be
-        asked, followed by a serie of prompts. Note that this isn't
-        making use of the menu node system.
-        
-        prompts - prompts of choices
-        funcs - functions callback to be called as func(self) when make choice (self.caller is available)
-        no_choice - user can make no choice and exit
-        """
+    This sets up a simple choice questionnaire. Question will be
+    asked, followed by a serie of prompts. Note that this isn't
+    making use of the menu node system.
+    
+    prompts - prompts of choices
+    choicefunc - functions callback to be called as func(self) when make choice (self.caller is available)
+                 The function's definision should be like func(self, menu_node), and menu_node.key is user's choice.
+    force_choose - force user to make a choice or not
+    """
     
     # creating and defining commands
     count = 0
