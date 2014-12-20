@@ -338,6 +338,7 @@ class EvCell(object):
                            than the cell growing vertically.
         """
 
+        self.formatted = None
         padwidth = kwargs.get("pad_width", None)
         padwidth = int(padwidth) if padwidth is not None else None
         self.pad_left = int(kwargs.get("pad_left", padwidth if padwidth is not None else 1))
@@ -392,6 +393,10 @@ class EvCell(object):
         self.raw_width = max(len(line) for line in self.data)
         self.raw_height = len(self.data)
 
+        # this is extra trimming required for cels in the middle of a table only
+        self.trim_horizontal = 0
+        self.trim_vertical = 0
+
         # width/height is given without left/right or top/bottom padding
         if "width" in kwargs:
             width = kwargs.pop("width")
@@ -409,7 +414,7 @@ class EvCell(object):
             self.height = self.raw_height
 
         # prepare data
-        self.formatted = self._reformat()
+        #self.formatted = self._reformat()
 
     def _crop(self, text, width):
         "Apply cropping of text"
@@ -451,7 +456,7 @@ class EvCell(object):
                     adjusted_data[-1] = adjusted_data[-1][:-2] + ".."
             elif excess < 0:
                 # too few lines. Fill to height.
-                adjusted_data.extend(["" for i in range(excess)])
+                adjusted_data.extend(["" for i in xrange(excess)])
 
         return adjusted_data
 
@@ -495,11 +500,11 @@ class EvCell(object):
             return data
         # only care if we need to add new lines
         if valign == 't':
-            return data + [padline for i in range(excess)]
+            return data + [padline for i in xrange(excess)]
         elif valign == 'b':
-            return [padline for i in range(excess)] + data
+            return [padline for i in xrange(excess)] + data
         else: # center
-            narrowside = [padline  for i in range(excess // 2)]
+            narrowside = [padline  for i in xrange(excess // 2)]
             widerside = narrowside + [padline]
             if excess % 2:
                 # uneven padding
@@ -516,8 +521,8 @@ class EvCell(object):
         left = self.hpad_char * self.pad_left
         right = self.hpad_char * self.pad_right
         vfill = (self.width + self.pad_left + self.pad_right) * self.vpad_char
-        top = [vfill for i in range(self.pad_top)]
-        bottom = [vfill for i in range(self.pad_bottom)]
+        top = [vfill for i in xrange(self.pad_top)]
+        bottom = [vfill for i in xrange(self.pad_bottom)]
         return top + [left + line + right for line in data] + bottom
 
     def _border(self, data):
@@ -532,12 +537,12 @@ class EvCell(object):
         vfill = self.corner_top_left_char if left else ""
         vfill += cwidth * self.border_top_char
         vfill += self.corner_top_right_char if right else ""
-        top = [vfill for i in range(self.border_top)]
+        top = [vfill for i in xrange(self.border_top)]
 
         vfill = self.corner_bottom_left_char if left else ""
         vfill += cwidth * self.border_bottom_char
         vfill += self.corner_bottom_right_char if right else ""
-        bottom = [vfill for i in range(self.border_bottom)]
+        bottom = [vfill for i in xrange(self.border_bottom)]
 
         return top + [left + line + right for line in data] + bottom
 
@@ -557,11 +562,11 @@ class EvCell(object):
 
     def get_height(self):
         "Get natural height of cell, including padding"
-        return len(self.formatted)
+        return len(self.formatted) #if self.formatted else 0
 
     def get_width(self):
         "Get natural width of cell, including padding"
-        return len(self.formatted[0]) if self.formatted else 0
+        return len(self.formatted[0]) #if self.formatted else 0
 
     def replace_data(self, data, **kwargs):
         """
@@ -623,6 +628,11 @@ class EvCell(object):
         self.corner_bottom_left_char = kwargs.pop("corner_bottom_left", corner_char if corner_char is not None else self.corner_bottom_left_char)
         self.corner_bottom_right_char = kwargs.pop("corner_bottom_right", corner_char if corner_char is not None else self.corner_bottom_right_char)
 
+        # this is used by the table to adjust size of cells with borders in the middle
+        # of the table
+        self.trim_horizontal = kwargs.pop("trim_horizontal", self.trim_horizontal)
+        self.trim_vertical = kwargs.pop("trim_vertical", self.trim_vertical)
+
         # fill all other properties
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -630,12 +640,12 @@ class EvCell(object):
         # Handle sizes
         if "width" in kwargs:
             width = kwargs.pop("width")
-            self.width = width - self.pad_left - self.pad_right - self.border_left - self.border_right
+            self.width = width - self.pad_left - self.pad_right - self.border_left - self.border_right + self.trim_horizontal
             if self.width <= 0:
                 raise Exception("Cell width too small, no room for data.")
         if "height" in kwargs:
             height = kwargs.pop("height")
-            self.height = height - self.pad_top - self.pad_bottom - self.border_top - self.border_bottom
+            self.height = height - self.pad_top - self.pad_bottom - self.border_top - self.border_bottom + self.trim_vertical
             if self.height <= 0:
                 raise Exception("Cell height too small, no room for data.")
 
@@ -646,17 +656,21 @@ class EvCell(object):
         """
         Get data, padded and aligned in the form of a list of lines.
         """
+        self.formatted = self._reformat()
         return self.formatted
 
     def __repr__(self):
+        self.formatted = self._reformat()
         return unicode(ANSIString("EvCel<%s>" % self.formatted))
 
     def __str__(self):
         "returns cell contents on string form"
+        self.formatted = self._reformat()
         return str(unicode(ANSIString("\n").join(self.formatted)))
 
     def __unicode__(self):
         "returns cell contents"
+        self.formatted = self._reformat()
         return unicode(ANSIString("\n").join(self.formatted))
 
 
@@ -683,7 +697,7 @@ class EvColumn(object):
         """
         self.options = kwargs  # column-specific options
         self.column = [EvCell(data, **kwargs) for data in args]
-        self._balance()
+        #self._balance()
 
     def _balance(self, **kwargs):
         """
@@ -694,7 +708,9 @@ class EvColumn(object):
         col = self.column
         kwargs.update(self.options)
         # use fixed width or adjust to the largest cell
-        kwargs["width"] = kwargs.get("width") or max(cell.get_width() for cell in col) if col else 0
+        if not "width" in kwargs:
+            [cell.reformat() for cell in col] # this is necessary to get initial widths of all cells
+            kwargs["width"] = max(cell.get_width() for cell in col) if col else 0
         [cell.reformat(**kwargs) for cell in col]
 
     def add_rows(self, *args, **kwargs):
@@ -704,7 +720,7 @@ class EvColumn(object):
         of the rest of the column's cells (use update to change
         options).
 
-        Args:j
+        Args:
             data for the new cells
         Keywords:
             ypos - index position in table before which to insert the
@@ -721,7 +737,7 @@ class EvColumn(object):
             ypos = min(len(self.column)-1, max(0, int(ypos)))
             new_cells = [EvCell(data, **self.options) for data in args]
             self.column = self.column[:ypos] + new_cells + self.column[ypos:]
-        self._balance(**kwargs)
+        #self._balance(**kwargs)
 
     def reformat(self, **kwargs):
         """
@@ -834,10 +850,10 @@ class EvTable(object):
                 excess = len(header) - len(table)
                 if excess > 0:
                     # header bigger than table
-                    self.table.extend([] for i in range(excess))
+                    self.table.extend([] for i in xrange(excess))
                 elif excess < 0:
                     # too short header
-                    header.extend(_to_ansi(["" for i in range(abs(excess))]))
+                    header.extend(_to_ansi(["" for i in xrange(abs(excess))]))
                 for ix, heading in enumerate(header):
                     table[ix].insert(0, heading)
             else:
@@ -873,9 +889,9 @@ class EvTable(object):
         if self.maxwidth and self.width and self.maxwidth < self.width:
             raise Exception("table maxwidth < table width!")
         # size in cell cols/rows
-        self.ncols = 0
-        self.nrows = 0
-        # size in characters
+        self.ncols = len(table)
+        self.nrows = max(len(col) for col in table) if table else 0
+        # size in characters (gets set when _balance is called)
         self.nwidth = 0
         self.nheight = 0
         # save options
@@ -888,18 +904,25 @@ class EvTable(object):
         self.worktable = None
 
         # balance the table
-        self._balance()
+        #self._balance()
 
     def _cellborders(self, ix, iy, nx, ny, kwargs):
         """
         Adds borders to the table by adjusting the input
-        kwarg to instruct cells to build a border in
+        kwarg to instjruct cells to build a border in
         the right positions. Returns a copy of the
         kwarg to return to the cell. This is called
         by self._borders.
         """
 
         ret = kwargs.copy()
+
+        # handle the various border modes
+        border = self.border
+        header = self.header
+
+        bwidth = self.border_width
+        headchar = self.header_line_char
 
         def corners(ret):
             "Handle corners of table"
@@ -917,24 +940,28 @@ class EvTable(object):
             "add vertical border along left table edge"
             if ix == 0:
                 ret["border_left"] = bwidth
+                ret["trim_horizontal"] = bwidth
             return ret
 
         def top_edge(ret):
             "add border along top table edge"
             if iy == 0:
                 ret["border_top"] = bwidth
+                #ret["trim_vertical"] = bwidth
             return ret
 
         def right_edge(ret):
             "add vertical border along right table edge"
             if ix == nx:# and 0 < iy < ny:
                 ret["border_right"] = bwidth
+                #ret["trim_horizontal"] = 0
             return ret
 
         def bottom_edge(ret):
             "add border along bottom table edge"
             if iy == ny:
                 ret["border_bottom"] = bwidth
+                #ret["trim_vertical"] = bwidth
             return ret
 
         def cols(ret):
@@ -956,14 +983,6 @@ class EvTable(object):
                 ret["border_bottom"] = bwidth
                 ret["border_bottom_char"] = headchar
             return ret
-
-
-        # handle the various border modes
-        border = self.border
-        header = self.header
-
-        bwidth = self.border_width
-        headchar = self.header_line_char
 
         # use the helper functions to define various
         # table "styles"
@@ -1006,13 +1025,15 @@ class EvTable(object):
         options = copy(self.options)
 
         # balance number of rows to make a rectangular table
+        # column by column
         ncols = len(self.worktable)
         nrows = [len(col) for col in self.worktable]
         nrowmax = max(nrows) if nrows else 0
         for icol, nrow in enumerate(nrows):
+            self.worktable[icol].reformat(**options)
             if nrow < nrowmax:
                 # add more rows to too-short columns
-                empty_rows = ["" for i in range(nrowmax-nrow)]
+                empty_rows = ["" for i in xrange(nrowmax-nrow)]
                 self.worktable[icol].add_rows(*empty_rows)
         self.ncols = ncols
         self.nrows = nrowmax
@@ -1021,6 +1042,9 @@ class EvTable(object):
         self._borders()
 
         # equalize widths within each column
+        #print [col.options for col in self.worktable]
+        #print [[cell.get_width() for cell in col] for col in self.worktable]
+        #print [[cell.get_height() for cell in col] for col in self.worktable]
         cwidths = [max(cell.get_width() for cell in col) for col in self.worktable]
 
         if self.width or self.maxwidth and self.maxwidth < sum(cwidths):
@@ -1042,14 +1066,14 @@ class EvTable(object):
                 excess = width - cwmin
                 if self.evenwidth:
                     # make each collumn of equal width
-                    for i in range(excess):
+                    for i in xrange(excess):
                         # flood-fill the minimum table starting with the smallest collumns
                         ci = cwidths_min.index(min(cwidths_min))
                         cwidths_min[ci] += 1
                     cwidths = cwidths_min
                 else:
                     # make each collumn expand more proportional to their data size
-                    for i in range(excess):
+                    for i in xrange(excess):
                         # fill wider collumns first
                         ci = cwidths.index(max(cwidths))
                         cwidths_min[ci] += 1
@@ -1065,14 +1089,14 @@ class EvTable(object):
                 raise #Exception ("Error in horizontal allign:\n %s" % msg)
 
         # equalize heights for each row (we must do this here, since it may have changed to fit new widths)
-        cheights = [max(cell.get_height() for cell in (col[iy] for col in self.worktable)) for iy in range(nrowmax)]
+        cheights = [max(cell.get_height() for cell in (col[iy] for col in self.worktable)) for iy in xrange(nrowmax)]
 
         if self.height:
             # if we are fixing the table height, it means cells must crop text instead of resizing.
             if nrowmax:
 
                 # get minimum possible cell heights for each collumn
-                cheights_min = [max(cell.get_min_height() for cell in (col[iy] for col in self.worktable)) for iy in range(nrowmax)]
+                cheights_min = [max(cell.get_min_height() for cell in (col[iy] for col in self.worktable)) for iy in xrange(nrowmax)]
                 chmin = sum(cheights_min)
                 #print "cheights_min:", cheights_min
 
@@ -1086,7 +1110,7 @@ class EvTable(object):
 
                 excess = self.height - chmin
                 even = self.height % 2 == 0
-                for i in range(excess):
+                for i in xrange(excess):
                     # expand the cells with the most rows first
                     if 0 <= i < nrowmax and nrowmax > 1:
                         # avoid adding to header first round (looks bad on very small tables)
@@ -1122,15 +1146,15 @@ class EvTable(object):
         """
         Generates lines across all columns
         (each cell may contain multiple lines)
-        Before calling, the table must be
-        balanced.
+        This will also balance the table.
         """
-        for iy in range(self.nrows):
+        self._balance()
+        for iy in xrange(self.nrows):
             cell_row = [col[iy] for col in self.worktable]
             # this produces a list of lists, each of equal length
             cell_data = [cell.get() for cell in cell_row]
             cell_height = min(len(lines) for lines in cell_data)
-            for iline in range(cell_height):
+            for iline in xrange(cell_height):
                 yield ANSIString("").join(_to_ansi(celldata[iline] for celldata in cell_data))
 
     def add_header(self, *args, **kwargs):
@@ -1166,18 +1190,21 @@ class EvTable(object):
 
         xpos = kwargs.get("xpos", None)
         column = EvColumn(*args, **options)
+        wtable = self.ncols
         htable = self.nrows
-        excess = self.ncols - htable
+        excess = len(column) - htable
 
         if excess > 0:
             # we need to add new rows to table
             for col in self.table:
-                empty_rows = ["" for i in range(excess)]
+                empty_rows = ["" for i in xrange(excess)]
                 col.add_rows(*empty_rows, **options)
+            self.nrows += excess
         elif excess < 0:
             # we need to add new rows to new column
-            empty_rows = ["" for i in range(abs(excess))]
+            empty_rows = ["" for i in xrange(abs(excess))]
             column.add_rows(*empty_rows, **options)
+            self.nrows -= excess
 
         header = kwargs.get("header", None)
         if header:
@@ -1186,14 +1213,15 @@ class EvTable(object):
         elif self.header:
             # we have a header already. Offset
             column.add_rows("", ypos=0, **options)
-        if xpos is None or xpos > len(self.table) - 1:
+        if xpos is None or xpos > wtable - 1:
             # add to the end
             self.table.append(column)
         else:
             # insert column
-            xpos = min(len(self.table)-1, max(0, int(xpos)))
+            xpos = min(wtable-1, max(0, int(xpos)))
             self.table.insert(xpos, column)
-        self._balance()
+        self.ncols += 1
+        #self._balance()
 
     def add_row(self, *args, **kwargs):
         """
@@ -1216,16 +1244,19 @@ class EvTable(object):
         options = dict(self.options.items() + kwargs.items())
 
         ypos = kwargs.get("ypos", None)
-        htable = len(self.table[0]) if len(self.table)>0 else 0 # assuming balanced table
-        excess = len(row) - len(self.table)
+        wtable = self.ncols
+        htable = self.nrows
+        excess = len(row) - wtable
 
         if excess > 0:
             # we need to add new empty columns to table
-            empty_rows = ["" for i in range(htable)]
-            self.table.extend([EvColumn(*empty_rows, **options) for i in range(excess)])
+            empty_rows = ["" for i in xrange(htable)]
+            self.table.extend([EvColumn(*empty_rows, **options) for i in xrange(excess)])
+            self.ncols += excess
         elif excess < 0:
             # we need to add more cells to row
-            row.extend(["" for i in range(abs(excess))])
+            row.extend(["" for i in xrange(abs(excess))])
+            self.ncols -= excess
 
         if ypos is None or ypos > htable - 1:
             # add new row to the end
@@ -1236,7 +1267,8 @@ class EvTable(object):
             ypos = min(htable-1, max(0, int(ypos)))
             for icol, col in enumerate(self.table):
                 col.add_rows(row[icol], ypos=ypos, **options)
-        self._balance()
+        self.nrows += 1
+        #self._balance()
 
     def reformat(self, **kwargs):
         """
@@ -1261,7 +1293,7 @@ class EvTable(object):
         self.corner_bottom_right_char = _to_ansi(kwargs.pop("corner_bottom_right_char", self.corner_char))
 
         self.options.update(kwargs)
-        self._balance()
+        #self._balance()
 
     def reformat_column(self, index, **kwargs):
         """
@@ -1272,7 +1304,7 @@ class EvTable(object):
             raise Exception("Not a valid column index")
         self.table[index].options.update(kwargs)
         self.table[index].reformat(**kwargs)
-        self._balance()
+        #self._balance()
 
     def get(self):
         """
@@ -1281,7 +1313,7 @@ class EvTable(object):
         return [line for line in self._generate_lines()]
 
     def __str__(self):
-        "print table"
+        "print table (this also balances it)"
         return  str(unicode(ANSIString("\n").join([line for line in self._generate_lines()])))
 
     def __unicode__(self):
