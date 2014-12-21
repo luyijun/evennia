@@ -7,37 +7,57 @@
 无法支持该游戏，如TinTin++，建议使用网页客户端或MUSHClient。在Windows
 中建议选择GBK模式。
 
-二  安装
-1.  安装evennia最新版
-    （请参见 http://www.evenniacn.com/wiki/getting_started.html）
-2.  将 extension/game_demo/settings.py 拷贝至 game/ 目录中
+二  全新安装
+如果你想在一个全新的目录中安装游戏，可以按以下步骤操作：
+
+1.  移动当前目录到你想要安装游戏的地方。
+2.  执行
+    git clone https://github.com/luyijun/evennia.git 或
+    git clone git@github.com:luyijun/evennia.git
+3.  执行 python manage.py
+4.  将 evennia/extension/game_demo/settings.py 中的内容添加到 evennia/game/settings.py 中
     其中的 WEBSOCKET_CLIENT_URL 需要按实际的ip地址调整
-3.  将 extension/game_demo/connection_screens.py 拷贝至 game/gamesrc/conf/ 目录中
-4.  进入 game/ 目录
-    执行 python manage.py makemigrations 创建数据迁移记录
-    执行 python manage.py migrate 生成数据表
-5.  将 extension/game_demo/ 目录中的
-    data_object_creator_types.dat
-    data_object_type_list.dat
-    data_portable_object_types.dat 拷贝至 game/ 目录中
-6.  进入 game/ 目录，执行 python manage.py dbshell
-7.  执行
-    .import data_object_creator_types.dat data_object_creator_types
-    .import data_object_creator_types.dat data_object_creator_types
-    .import data_object_creator_types.dat data_object_creator_types
-    将文件中的数据导入数据库
+5.  进入 evennia/game/ 目录
+6.  执行 python manage.py migrate
+7.  执行 python manage.py dbshell 启动数据库交互环境
 8.  执行
-    .quit
-    退出数据库管理
-9.  执行 python evennia.py start 启动游戏
-10. 在游戏中以管理员身份执行
+    .import data_object_creator_types.dat data_object_creator_types
+    .import data_object_type_list.dat data_object_type_list
+    .import data_portable_object_types.dat data_portable_object_types
+    将文件中的数据导入数据库
+    （如果没有以上的表，请执行 .quit 退出，执行 python manage.py makemigrations，然后再回到第6步）
+9.  执行 .quit 退出数据库管理
+10. 执行 python evennia.py start 启动游戏
+11. 在游戏中以管理员身份执行
     @batchcmd limbo
     @batchcmd build
     创建游戏内容
 
-（可选）
-11. 可将 extension/other/models.py 拷贝到 src/objects/ 中
-    它对物品包含关系进行了缓存，可以显著提高服务端的运行效率，但可靠性尚未经过充分测试。
+三  添加到现有游戏中
+如果你已经安装好了evennia，想将游戏添加到现有的环境中，可以按以下步骤操作：
+
+1.  将 evennia/extension/game_demo/settings.py 中的内容添加到 evennia/game/settings.py 中
+    其中的 WEBSOCKET_CLIENT_URL 需要按实际的ip地址调整
+2.  将 evennia/extension/game_demo/connection_screens.py 拷贝至 evennia/game/gamesrc/conf/ 目录中
+3.  将 evennia/extension/game_demo/ 目录中的
+    data_object_creator_types.dat
+    data_object_type_list.dat
+    data_portable_object_types.dat 拷贝至 evennia/game/ 目录中
+4.  进入 evennia/game/ 目录
+    执行 python manage.py makemigrations 生成数据迁移文件
+    执行 python manage.py migrate 生成数据表
+5.  执行 python manage.py dbshell 启动数据库交互环境
+6.  执行
+    .import data_object_creator_types.dat data_object_creator_types
+    .import data_object_type_list.dat data_object_type_list
+    .import data_portable_object_types.dat data_portable_object_types
+    将文件中的数据导入数据库
+7.  执行 .quit 退出数据库管理
+8.  执行 python evennia.py start 启动游戏
+9.  在游戏中以管理员身份执行
+    @batchcmd limbo
+    @batchcmd build
+    创建游戏内容
    
-三  更多内容
+四  更多内容
     如果在安装过程中遇到了问题或想了解更多内容，请访问www.evenniacn.com
