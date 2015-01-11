@@ -40,7 +40,13 @@ BASE_BATCHPROCESS_PATHS = ['game.gamesrc.world', 'extension.game_demo']
 
 
 ######################################################################
-# Evennia components
+# Django web features
 ######################################################################
 
-INSTALLED_APPS += ("extension.data",)
+ROOT_URLCONF = 'game.gamesrc.web.urls'
+
+
+######################################################################
+# Evennia components
+######################################################################
+INSTALLED_APPS += ("extension.client", "extension.data")

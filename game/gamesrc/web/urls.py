@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'^favicon\.ico$',  RedirectView.as_view(url='/media/images/favicon.ico')),
 
     # ajax stuff
-    url(r'^webclient/', include('game.gamesrc.web.webclient.urls', namespace='webclient', app_name='webclient')),
+    url(r'^client/', include('extension.client.urls', namespace='client', app_name='client')),
 
     # Front page
     url(r'^$', 'game.gamesrc.web.views.page_index', name="index"),
