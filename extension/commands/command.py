@@ -295,12 +295,14 @@ class CmdDiscardObject(MuxCommand):
         
         caller.select_weapon()
         
-        caller.msg("\n%s已被丢弃。" % objname)
+        ostring = "\n%s已被丢弃。" % objname
         commands = caller.get_available_cmd_desc(caller)
         if commands:
-            caller.msg(commands + "\n")
+            ostring += "\n" + commands + "\n"
         else:
-            caller.msg("\n")
+            ostring += "\n"
+
+        caller.msg(ostring, clear_links=True)
 
         return
         
@@ -311,12 +313,14 @@ class CmdDiscardObject(MuxCommand):
         """
         caller = self.caller
         
-        caller.msg("没有丢弃。")
+        ostring = "没有丢弃。"
         commands = caller.get_available_cmd_desc(caller)
         if commands:
-            caller.msg(commands + "\n")
+            ostring += "\n" + commands + "\n"
         else:
-            caller.msg("\n")
+            ostring += "\n"
+            
+        caller.msg(ostring, clear_links=True)
 
     
     def func(self):
@@ -381,9 +385,9 @@ class CmdInventory(MuxCommand):
         caller = self.caller
         items = caller.contents
         if not items:
-            string = "\n {c=============================================================={n"
-            string += "\n {c你没有携带任何东西。{n"
-            string += "\n {c=============================================================={n"
+            string = "\n{c=============================================================={n"
+            string += "\n{c你没有携带任何东西。{n"
+            string += "\n{c=============================================================={n"
         else:
             max_width = len(utils.to_str(utils.to_unicode("物品"), encoding = "gbk"))
             widths = [max_width]
@@ -405,20 +409,20 @@ class CmdInventory(MuxCommand):
                 index += 1
                 space = " " * (max_width - widths[index] + 2)
 
-                table += "\n %s%s%s" % (name, space, desc)
+                table += "\n%s%s%s" % (name, space, desc)
                 
-            string = "\n {c=============================================================={n"
-            string += "\n {c你携带着{n"
-            string += "\n {c=============================================================={n"
+            string = "\n{c=============================================================={n"
+            string += "\n{c你携带着{n"
+            string += "\n{c=============================================================={n"
             string += "\n%s" % table
 
-        caller.msg(string)
-        
         commands = caller.get_available_cmd_desc(caller)
         if commands:
-            caller.msg(commands + "\n")
+            string += "\n" + commands + "\n"
         else:
-            caller.msg("\n")
+            string += "\n"
+            
+        caller.msg(string, clear_links=True)
         
         
 #------------------------------------------------------------
@@ -472,8 +476,36 @@ class CmdLook(default_cmds.CmdLook):
     Set CMD_NOINPUT to look.
     """
     aliases = ["l", "ls", syscmdkeys.CMD_NOINPUT]
-                                                   
-                                                   
+    
+    def func(self):
+        """
+        Handle the looking.
+        """
+        caller = self.caller
+        args = self.args
+        if args:
+            # Use search to handle duplicate/nonexistant results.
+            looking_at_obj = caller.search(args, use_nicks=True)
+            if not looking_at_obj:
+                return
+        else:
+            looking_at_obj = caller.location
+            if not looking_at_obj:
+                caller.msg("You have no location to look at!")
+                return
+
+        if not hasattr(looking_at_obj, 'return_appearance'):
+            # this is likely due to us having a player instead
+            looking_at_obj = looking_at_obj.character
+        if not looking_at_obj.access(caller, "view"):
+            caller.msg("Could not find '%s'." % args)
+            return
+        # get object's appearance
+        ostring = looking_at_obj.return_appearance(caller)
+        if ostring:
+            caller.msg(ostring, clear_links=True)
+        # the object's at_desc() method.
+        looking_at_obj.at_desc(looker=caller)
                                                    
                                                    
 #------------------------------------------------------------
@@ -667,7 +699,7 @@ class CmdAttack(MuxCommand):
             prompt_choice(caller,
                           question="如何战斗？",
                           prompts=["刺", "砍", "防御"],
-                          choicefunc=self.menu_selected)
+                          callback_func=self.menu_selected)
         else:
             if action == "stab":
                 self.fight(1)
@@ -686,9 +718,9 @@ class CmdAttack(MuxCommand):
         """
         caller = self.caller
         
-        string = "\n "
-        tstring = "\n "
-        ostring = "\n "
+        string = "\n"
+        tstring = "\n"
+        ostring = "\n"
             
         if select == 3:
             # defend
@@ -720,7 +752,7 @@ class CmdAttack(MuxCommand):
 
             if target.db.combat_parry_mode:
                 # target is defensive; even harder to hit!
-                target.msg("\n {G你进行防御，想努力躲开攻击。{n")
+                target.msg("\n{G你进行防御，想努力躲开攻击。{n")
                 hit *= 0.5
 
             if random.random() <= hit:
@@ -744,8 +776,8 @@ class CmdAttack(MuxCommand):
                 self.caller.location.msg_contents(ostring + "没有击中。", exclude=[target, caller])
         else:
             # no choice
-            self.caller.msg("\n 你拿着武器不知所措，不知是该刺、砍还是格挡……")
-            self.caller.location.msg_contents("\n %s拿着武器不知所措。" % caller.key)
+            self.caller.msg("\n你拿着武器不知所措，不知是该刺、砍还是格挡……")
+            self.caller.location.msg_contents("\n%s拿着武器不知所措。" % caller.key)
             self.caller.db.combat_parry_mode = False
             return
 

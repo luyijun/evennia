@@ -55,6 +55,9 @@ class ObjectCommon(DefaultObject):
 
     def load_type_data(self):
         "Load object data from db. Called on init."
+        if not self.db.type_id:
+            return False
+
         if self.db.type_id == 0:
             return False
             
@@ -79,13 +82,13 @@ class ObjectCommon(DefaultObject):
             return
             
         # get description, build string
-        string = "\n {c=============================================================={n"
-        string += "\n {c%s{n" % self.key
-        string += "\n {c=============================================================={n"
+        string = "\n{c=============================================================={n"
+        string += "\n{c%s{n" % self.key
+        string += "\n{c=============================================================={n"
         
         desc = self.get_object_desc()
         if desc:
-            string += "\n %s" % desc
+            string += "\n%s" % desc
         
         string += "\n "
         
@@ -104,11 +107,11 @@ class ObjectCommon(DefaultObject):
                     things.append("{lclook %s{lt%s{le" % (cont.dbref, cont.name))
 
             if things:
-                string += "\n 看见：" + "  ".join(things)
+                string += "\n看见：" + " ".join(things)
             if users:
-                string += "\n 遇到：" + "  ".join(users)
+                string += "\n遇到：" + " ".join(users)
             if exits:
-                string += "\n 出口：" + "  ".join(exits)
+                string += "\n出口：" + " ".join(exits)
 
         commands = self.get_available_cmd_desc(caller)
         if commands:
@@ -124,7 +127,6 @@ class ObjectCommon(DefaultObject):
         """
         commands = ["{lclook{lt观察周围{le",
                     "{lcinventory{lt查看行囊{le",
-                    "{lchelp{lt帮助信息{le",
                     "{lc@quit{lt退出游戏{le"]
         return commands
         
@@ -136,7 +138,7 @@ class ObjectCommon(DefaultObject):
         string = ""
         commands = self.available_cmd_list(caller)
         if commands:
-            string = "\n 动作：" + "  ".join(commands)
+            string = "\n动作：" + " ".join(commands)
         return string
 
         
@@ -152,4 +154,4 @@ class ObjectCommon(DefaultObject):
         Show available commands.
         """
         desc = self.get_available_cmd_desc(self)
-        self.msg(desc)
+        self.msg(desc, clear_links=True)

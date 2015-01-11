@@ -171,7 +171,9 @@ class CmdLookDark(Command):
             caller.display_available_cmds()
             return
         
-        string = ""
+        string = "\n{c=============================================================={n"
+        string += "\n{c摸索{n"
+        string += "\n{c=============================================================={n"
         # we don't have light, grasp around blindly.
         messages = ("周围一片漆黑。你四处摸索，但无法找到任何东西。",
                     "你看不到任何东西。你摸索着周围，手指突然重重地撞上了某个物体。哎哟！",
@@ -183,22 +185,22 @@ class CmdLookDark(Command):
                     "你什么都看不到。周围的空气很潮湿，你感觉像是在深深的地下。")
         irand = random.randint(0, 10)
         if irand < len(messages):
-            string += "\n " + messages[irand]
+            string += "\n" + messages[irand]
             commands = caller.available_cmd_list(None)
             if commands:
-                string += "\n\n 动作：" + "  ".join(commands)
-            caller.msg(string)
+                string += "\n\n动作：" + "  ".join(commands)
+            caller.msg(string, clear_links=True)
         else:
             # check so we don't already carry a lightsource.
             carried_lights = [obj for obj in caller.contents
                                        if utils.inherits_from(obj, LightSource)]
             
             if carried_lights:
-                string += "\n 你不想继续在黑暗中摸索了。你已经找到了所需的东西，点亮它吧！"
+                string += "\n你不想继续在黑暗中摸索了。你已经找到了所需的东西，点亮它吧！"
                 
                 commands = ["{lclight{lt点燃木片{le"] + caller.available_cmd_list(None)
-                string += "\n\n 动作：" + "  ".join(commands)
-                caller.msg(string)
+                string += "\n\n动作：" + "  ".join(commands)
+                caller.msg(string, clear_links=True)
                 return
 
             #if we are lucky, we find the light source.
@@ -211,12 +213,12 @@ class CmdLookDark(Command):
                 lightsource = create_object(LightSource, key="木片")
 
             lightsource.location = caller
-            string += "\n 在角落里，你的手指碰到了一些木片。它们还带着树脂的香味，而且比较干燥，应该可以点燃！"
-            string += "\n 你把它捡起来，紧紧地握手里。现在，你只需要用随身携带的火石{w点着{n它就行了。"
+            string += "\n在角落里，你的手指碰到了一些木片。它们还带着树脂的香味，而且比较干燥，应该可以点燃！"
+            string += "\n你把它捡起来，紧紧地握手里。现在，你只需要用随身携带的火石{w点着{n它就行了。"
             
             commands = ["{lclight{lt点燃木片{le"] + caller.available_cmd_list(None)
-            string += "\n\n 动作：" + "  ".join(commands)
-            caller.msg(string)
+            string += "\n\n动作：" + "  ".join(commands)
+            caller.msg(string, clear_links=True)
 
 
 class CmdDarkHelp(Command):
@@ -334,20 +336,25 @@ class DarkRoom(TutorialRoom):
         characters in room to see if they carry an active object of
         type LightSource.
         """
-        return any([any([True for obj in char.contents
-                         if utils.inherits_from(obj, LightSource) and obj.db.is_active])
-                                 for char in self.contents if char.has_player])
+        return True
+        #return any([any([True for obj in char.contents
+        #                 if utils.inherits_from(obj, LightSource) and obj.db.is_active])
+        #                         for char in self.contents if char.has_player])
 
     def at_object_creation(self):
         "Called when object is first created."
         super(DarkRoom, self).at_object_creation()
         self.db.tutorial_info = "This is a room with custom command sets on itself."
+        
+        #set this room always light
+        self.db.is_dark = False;
+        
         # this variable is set by the scripts. It makes for an easy flag to
         # look for by other game elements (such as the crumbling wall in
         # the tutorial)
-        self.db.is_dark = True
+        #self.db.is_dark = True
         # the room starts dark.
-        self.scripts.add(DarkState)
+        #self.scripts.add(DarkState)
 
     def at_object_receive(self, character, source_location):
         """
@@ -355,8 +362,8 @@ class DarkRoom(TutorialRoom):
         sure scripts are synced.
         """
         if character.has_player:
-            if not self.is_lit() and not character.is_superuser:
-                character.cmdset.add(DarkCmdSet)
+            #if not self.is_lit() and not character.is_superuser:
+            #    character.cmdset.add(DarkCmdSet)
             if character.db.health and character.db.health <= 0:
                 # heal character coming here from being defeated by mob.
                 health = character.db.health_max
@@ -364,15 +371,15 @@ class DarkRoom(TutorialRoom):
                     health = 20
                 character.db.health = health
             character.ndb.is_first_look = True
-        self.scripts.validate()
+        #self.scripts.validate()
 
     def at_object_leave(self, character, target_location):
         """
         In case people leave with the light, we make sure to update the
         states accordingly.
         """
-        character.cmdset.delete(DarkCmdSet)  # in case we are teleported away
-        self.scripts.validate()
+        #character.cmdset.delete(DarkCmdSet)  # in case we are teleported away
+        #self.scripts.validate()
 
     def return_appearance(self, caller):
         if caller.ndb.is_first_look:
@@ -483,9 +490,9 @@ class CmdEast(Command):
         "move forward"
         caller = self.caller
 
-        bridge_step = min(5, caller.db.tutorial_bridge_position + 1)
+        bridge_step = min(3, caller.db.tutorial_bridge_position + 1)
 
-        if bridge_step > 4:
+        if bridge_step > 2:
             # we have reached the far east end of the bridge.
             # Move to the east room.
             eexit = search_object(self.obj.db.east_exit)
@@ -542,11 +549,8 @@ class CmdLookBridge(Command):
         "Looking around, including a chance to fall."
         bridge_position = self.caller.db.tutorial_bridge_position
 
-
         messages =("你正站在吊桥上，{w离西面的出口很近{n。如果你向西走可以回到坚实的大地上……",
-                   "吊桥向东延伸，从这里到桥的中间点是一段下坡路。",
                    "你已经在这座不太牢固的桥上走了{w一半{n的路程了。",
-                   "吊桥向西延伸，从这里到桥的中间点是一段下坡路。",
                    "你正站在吊桥上，{w离东面的出口很近{n。如果你向东走可以回到坚实的大地上……")
         moods = ("桥在风中摇晃着。",
                  "吊桥在嘎嘎作响，让你感到有些害怕。",
@@ -559,16 +563,16 @@ class CmdLookBridge(Command):
                  "你脚下的一块木板松脱了，翻滚着坠落下去。你的半个身子悬在了空中……",
                  "你手中握着的绳索部分断裂开了，你摇摆着努力恢复平衡。")
 
-        message = "\n {c=============================================================={n"
-        message += "\n {c%s{n" % self.obj.key
-        message += "\n {c=============================================================={n"
+        message = "\n{c=============================================================={n"
+        message += "\n{c%s{n" % self.obj.key
+        message += "\n{c=============================================================={n"
         message += "\n" + messages[bridge_position] + "\n" + moods[random.randint(0, len(moods) - 1)]
         chars = [obj for obj in self.obj.contents if obj != self.caller and obj.has_player]
         if chars:
-            message += "\n 你看见：%s" % ", ".join("{c%s{n" % char.key for char in chars)
+            message += "\n你看见：%s" % ", ".join("{c%s{n" % char.key for char in chars)
 
-        message += "\n {lceast{lt向东走{le  {lcwest{lt向西走{le"
-        self.caller.msg(message)
+        message += "\n{lceast{lt向东走{le  {lcwest{lt向西走{le"
+        self.caller.msg(message, clear_links=True)
 
         # there is a chance that we fall if we are on the western or central
         # part of the bridge.
@@ -576,16 +580,15 @@ class CmdLookBridge(Command):
             # we fall on 5% of the times.
             fexit = search_object(self.obj.db.fall_exit)
             if fexit:
-                string = "\n {r突然，你脚下的木板断开了！你掉下去了！"
-                string += "\n 你想尽力抓住相邻的木板，但只是改变了你坠落的方向。你正摔向西面的悬崖。这"
-                string += "\n 次肯定要受伤了……"
-                string += "\n ……整个世界一片黑暗……{n\n"
+                string = "\n{r突然，你脚下的木板断开了！你掉下去了！"
+                string += "\n你想尽力抓住相邻的木板，但只是改变了你坠落的方向。你正摔向西面的悬崖。这次肯定要受伤了……"
+                string += "\n……整个世界一片黑暗……{n\n"
                 string += self.caller.get_available_cmd_desc(self.caller)
                 # note that we move silently so as to not call look hooks (this is a little trick to leave
                 # the player with the "world goes dark ..." message, giving them ample time to read it. They
                 # have to manually call look to find out their new location). Thus we also call the
                 # at_object_leave hook manually (otherwise this is done by move_to()).
-                self.caller.msg(string)
+                self.caller.msg(string, clear_links=True)
                 self.obj.at_object_leave(self.caller, fexit)
                 self.caller.location = fexit[0] # stealth move, without any other hook calls.
                 self.obj.msg_contents("一块木板在%s的脚下断开了，他摔下桥了！" % self.caller.key)
@@ -692,7 +695,7 @@ class BridgeRoom(TutorialRoom):
                 character.db.tutorial_bridge_position = 0
                 return
             if source_location == eexit[0]:
-                character.db.tutorial_bridge_position = 4
+                character.db.tutorial_bridge_position = 2
             else:
                 character.db.tutorial_bridge_position = 0
 

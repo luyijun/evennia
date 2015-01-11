@@ -183,7 +183,7 @@ class ObjectDB(TypedObject):
         "We must initialize the parent first - important!"
         super(ObjectDB, self).__init__(*args, **kwargs)
         location = kwargs.get("db_location", None)
-        if location in kwargs:
+        if location:
             _SA(location, "contents_dirty", True)
 
     # lazy-load handlers

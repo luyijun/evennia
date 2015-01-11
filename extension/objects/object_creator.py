@@ -240,6 +240,6 @@ class ObjectSelector(ObjectCreator):
             prompt_choice(caller,
                           question=self.ndb.question,
                           prompts=self.prompts,
-                          choicefunc=self.menu_selected)
+                          callback_func=self.menu_selected)
 
                          

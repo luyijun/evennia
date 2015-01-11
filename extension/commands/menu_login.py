@@ -41,7 +41,7 @@ from ev import syscmdkeys
 from src.server.models import ServerConfig
 from src.objects.models import ObjectDB
 
-from extension.utils.menusystem import MenuNode, MenuTree
+from extension.utils.menusystem import MenuNode, MenuTree, prompt_choice, prompt_inputtext
 
 CMD_LOGINSTART = syscmdkeys.CMD_LOGINSTART
 CMD_NOINPUT = syscmdkeys.CMD_NOINPUT
@@ -62,245 +62,292 @@ CONNECTION_SCREEN_MODULE = settings.CONNECTION_SCREEN_MODULE
 
 # Menu entry 1a - Entering a Username
 
-class CmdBackToStart(Command):
+class CmdUnloggedinLogin(Command):
     """
-    Step back to node0
+    Login
     """
-    key = CMD_NOINPUT
+    key = "login"
     locks = "cmd:all()"
-
+    username = None
+    password = None
+    
     def func(self):
         "Execute the command"
-        self.menutree.goto("START")
-
-
-class CmdUsernameSelect(Command):
-    """
-    Handles the entering of a username and
-    checks if it exists.
-    """
-    key = CMD_NOMATCH
-    locks = "cmd:all()"
-
-    def func(self):
-        "Execute the command"
-        player = managers.players.get_player_from_name(self.args)
-        # store the player so next step can find it
-        self.menutree.player = player
-        self.caller.msg(echo=False)
-        self.menutree.goto("node1b")
-
-
-# Menu entry 1b - Entering a Password
-
-class CmdPasswordSelectBack(Command):
-    """
-    Steps back from the Password selection
-    """
-    key = CMD_NOINPUT
-    locks = "cmd:all()"
-
-    def func(self):
-        "Execute the command"
-        self.menutree.goto("node1a")
-        self.caller.msg(echo=True)
-
-
-class CmdPasswordSelect(Command):
-    """
-    Handles the entering of a password and logs into the game.
-    """
-    key = CMD_NOMATCH
-    locks = "cmd:all()"
-
-    def func(self):
-        "Execute the command"
-        self.caller.msg(echo=True)
-        if not hasattr(self.menutree, "player"):
-            self.caller.msg("{r发生错误，请重新登录。{n")
-            self.menutree.goto("node1a")
+        prompt_inputtext(self.caller,
+                         question="请输入{w用户名{n",
+                         callback_func=self.username_input)
+    
+    def username_input(self, menu_node):
+        "Root selected"
+        caller = self.caller
+        if not caller:
             return
-
-        player = self.menutree.player
         
-        if not player:
-            self.caller.msg("{r用户名或密码错误！{n")
-            self.menutree.goto("node1a")
+        if not menu_node:
+            caller.msg("\n在登录中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
             return
 
-        if not player.check_password(self.args):
-            self.caller.msg("{r用户名或密码错误！{n")
-            self.menutree.goto("node1a")
-            return
-
-        # before going on, check eventual bans
-        bans = ServerConfig.objects.conf("server_bans")
-        if bans and (any(tup[0]==player.name.lower() for tup in bans)
-                     or
-                     any(tup[2].match(self.caller.address) for tup in bans if tup[2])):
-            # this is a banned IP or name!
-            string = "{r您的帐号已被封，如有疑问可与管理员联系。{x"
-            self.caller.msg(string)
-            self.caller.sessionhandler.disconnect(self.caller, "再见！正在断开连接……")
-            return
-
-        # we are ok, log us in.
-        self.caller.msg("{g欢迎%s！正在登入游戏……{n" % player.key)
-        #self.caller.session_login(player)
-        self.caller.sessionhandler.login(self.caller, player)
-
-        # abort menu, do cleanup.
-        self.menutree.goto("END")
-
-
-# Menu entry 2a - Creating a Username
-
-class CmdUsernameCreate(Command):
-    """
-    Handle the creation of a valid username
-    """
-    key = CMD_NOMATCH
-    locks = "cmd:all()"
-
-    def func(self):
-        "Execute the command"
-        playername = self.args
-
-        # sanity check on the name
-        if not re.findall('^[\w]+$', playername) or not (3 <= len(playername) <= 30):
-            # this echoes the restrictions made by django's auth module.
-            self.caller.msg("\n\r {r用户名必须包含3到30个字符，只能使用英文字母、数字和下划线。{n")
-            self.menutree.goto("node2a")
-            return
-        if managers.players.get_player_from_name(playername):
-            self.caller.msg("\n\r {r用户名“%s”已有人使用。{n" % playername)
-            self.menutree.goto("node2a")
-            return
-        # store the name for the next step
-        self.menutree.playername = playername
-        self.caller.msg(echo=False)
-        self.menutree.goto("node2b")
-
-
-# Menu entry 2b - Creating a Password
-
-class CmdPasswordInputBack(Command):
-    "Step back from the password creation"
-    key = CMD_NOINPUT
-    locks = "cmd:all()"
-
-    def func(self):
-        "Execute the command"
-        self.caller.msg(echo=True)
-        self.menutree.goto("node2a")
-
-
-class CmdPasswordInput(Command):
-    "Handle the creation of a password. This also creates the actual Player/User object."
-    key = CMD_NOMATCH
-    locks = "cmd:all()"
-
-    def func(self):
-        "Execute  the command"
-        password = self.args
+        key = menu_node.key
+        args = menu_node.args
+        raw = menu_node.raw_string
         
-        if len(password) < 3:
-            # too short password
-            string = "{r您输入的密码必须至少包含3个字符！"
-            string += "\n\r为了提高安全性，建议至少包含8个以上的字符，"
-            string += "并且应避免使用单词和数字的组合。{n"
-            self.caller.msg(string)
-            self.menutree.goto("node2a")
+        if not key:
+            caller.msg("\n在登录中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
+            return
+
+        if key == CMD_NOINPUT and raw == CMD_NOINPUT:
+            # user canceled
+            caller.msg(_create_menu(caller))
+            return
+        
+        if not args:
+            caller.msg("\n{r用户名为空！{n", type="text")
+            caller.msg(_create_menu(caller))
             return
             
-        self.menutree.password = password
-        self.caller.msg(echo=False)
-        self.menutree.goto("node2c")
+        self.username = args
+        prompt_inputtext(caller,
+                         question="请输入{w密码{n",
+                         callback_func=self.password_input,
+                         type="input_password")
 
+    def password_input(self, menu_node):
+        "Root selected"
+        caller = self.caller
+        if not caller:
+            return
+
+        if not menu_node:
+            caller.msg("\n在登录中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
+            return
+
+        key = menu_node.key
+        args = menu_node.args
+        raw = menu_node.raw_string
+
+        if not key:
+            caller.msg("\n在登录中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
+            return
+
+        if key == CMD_NOINPUT and raw == CMD_NOINPUT:
+            # user canceled
+            caller.msg(_create_menu(caller))
+            return
+            
+        if not args:
+            caller.msg("\n{r密码为空！{n", type="text")
+            caller.msg(_create_menu(caller))
+            return
+
+        self.password = args
+        _login(caller, self.username, self.password)
+
+
+def _login(caller, username, password):
+    ""
+    if not caller:
+        return
+    
+    if not username:
+        return
+
+    if not password:
+        return
+
+    player = managers.players.get_player_from_name(username)
         
-class CmdPasswordConfirmBack(Command):
-    "Step back from the password creation"
-    key = CMD_NOINPUT
-    locks = "cmd:all()"
+    if not player:
+        caller.msg("\n{r用户名或密码错误！{n", type="text")
+        caller.msg(_create_menu(caller))
+        return
 
+    if not player.check_password(password):
+        caller.msg("\n{r用户名或密码错误！{n", type="text")
+        caller.msg(_create_menu(caller))
+        return
+
+    # before going on, check eventual bans
+    bans = ServerConfig.objects.conf("server_bans")
+    if bans and (any(tup[0]==player.name.lower() for tup in bans)
+                 or
+                 any(tup[2].match(caller.address) for tup in bans if tup[2])):
+        # this is a banned IP or name!
+        caller.msg("\n{r您的帐号已被封，如有疑问可与管理员联系。{n", type="text")
+        caller.msg(_create_menu(caller))
+        return
+
+    # we are ok, log us in.
+    caller.msg("\n{g欢迎%s！正在登入游戏……{n" % player.key)
+    #caller.session_login(player)
+    caller.sessionhandler.login(caller, player)
+
+
+class CmdUnloggedinRegister(Command):
+    """
+    Register
+    """
+    key = "register"
+    locks = "cmd:all()"
+    username = None
+    password = None
+    
     def func(self):
         "Execute the command"
-        self.caller.msg(echo=False)
-        self.menutree.goto("node2b")
-        
-        
-class CmdPasswordConfirm(Command):
-    "Handle the creation of a password. This also creates the actual Player/User object."
-    key = CMD_NOMATCH
-    locks = "cmd:all()"
-
-    def func(self):
-        "Execute  the command"
-        password = self.args
-
-        self.caller.msg(echo=False)
-        if not hasattr(self.menutree, 'playername'):
-            self.caller.msg("{r发生错误，请重新登录。{n")
-            self.menutree.goto("node2a")
+        prompt_inputtext(self.caller,
+                         question="请输入{w用户名{n",
+                         callback_func=self.username_input)
+    
+    def username_input(self, menu_node):
+        "Root selected"
+        caller = self.caller
+        if not caller:
             return
-        playername = self.menutree.playername
         
-        if not hasattr(self.menutree, 'password'):
-            self.caller.msg("{r发生错误，请重新注册。{n")
-            self.menutree.goto("node2a")
-            return
-        if password != self.menutree.password:
-            self.caller.msg("{r密码不一致，请重新输入密码。{n")
-            self.menutree.goto("node2b")
+        if not menu_node:
+            caller.msg("\n在注册中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
             return
 
-        # everything's ok. Create the new player account. Don't create
-        # a Character here.
-        try:
-            permissions = settings.PERMISSION_PLAYER_DEFAULT
-            typeclass = settings.BASE_PLAYER_TYPECLASS
-            new_player = create_player(playername, None, password,
-                                       typeclass=typeclass,
-                                       permissions=permissions)
-            if not new_player:
-                self.msg("在注册中有错误发生，该错误已被记录，请与管理员联系。")
-                self.menutree.goto("START")
-                return
+        key = menu_node.key
+        args = menu_node.args
+        raw = menu_node.raw_string
 
-            utils.init_new_player(new_player)
+        if not key:
+            caller.msg("\n在注册中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
+            return
 
-            if settings.MULTISESSION_MODE < 2:
-                session = self.caller
-                default_home = ObjectDB.objects.get_id(settings.DEFAULT_HOME)
-                character_typeclass = settings.BASE_CHARACTER_TYPECLASS
-                start_location = ObjectDB.objects.get_id(settings.START_LOCATION)
-                
-                _create_character(session, new_player, character_typeclass, start_location,
-                                default_home, permissions)
+        if key == CMD_NOINPUT and raw == CMD_NOINPUT:
+            # user canceled
+            caller.msg(_create_menu(caller))
+            return
+        
+        if not args:
+            caller.msg("\n{r用户名为空！{n", type="text")
+            caller.msg(_create_menu(caller))
+            return
+            
+        username = args
+        if not re.findall('^[\w]+$', username) or not (3 <= len(username) <= 30):
+            # this echoes the restrictions made by django's auth module.
+            caller.msg("\n{r用户名必须包含3到30个字符，只能使用英文字母、数字和下划线。{n", type="text")
+            caller.msg(_create_menu(caller))
+            return
+        
+        if managers.players.get_player_from_name(username):
+            caller.msg("\n{r用户名“%s”已有人使用。{n" % username, type="text")
+            caller.msg(_create_menu(caller))
+            return
+            
+        self.username = username
+        prompt_inputtext(caller,
+                         question="请输入{w密码{n",
+                         callback_func=self.password_input,
+                         type="input_password")
 
-            # join the new player to the public channel
-            pchanneldef = settings.CHANNEL_PUBLIC
-            if pchanneldef:
-                pchannel = managers.channels.get_channel(pchanneldef[0])
-                if not pchannel.connect(new_player):
-                    string = "新玩家“%s”无法连接到公共频道！" % new_player.key
-                    logger.log_errmsg(string)
+    def password_input(self, menu_node):
+        "Root selected"
+        caller = self.caller
+        if not caller:
+            return
+        
+        if not menu_node:
+            caller.msg("\n在注册中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
+            return
 
-            # tell the caller everything went well.
-            string = "{g新账号“%s”已建立，正在登入……{n"
-            self.caller.msg(string % (playername))
-            #self.caller.session_login(player)
-            self.caller.sessionhandler.login(self.caller, new_player)
-            # abort menu, do cleanup.
-            self.menutree.goto("END")
+        key = menu_node.key
+        args = menu_node.args
+        raw = menu_node.raw_string
 
-        except Exception:
-            # We are in the middle between logged in and -not, so we have
-            # to handle tracebacks ourselves at this point. If we don't, we
-            # won't see any errors at all.
-            string = "%s\n有错误发生，请与管理员联系。"
-            self.caller.msg(string % (traceback.format_exc()))
-            logger.log_errmsg(traceback.format_exc())
+        if not key:
+            caller.msg("\n在注册中发生错误，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
+            return
+        
+        if key == CMD_NOINPUT and raw == CMD_NOINPUT:
+            # user canceled
+            caller.msg(_create_menu(caller))
+            return
+            
+        if not args:
+            caller.msg("\n{r密码为空！{n", type="text");
+            caller.msg(_create_menu(caller))
+            return
+
+        password = args
+        if len(password) < 3:
+            # too short password
+            string = "\n{r您输入的密码必须至少包含3个字符！" +\
+                     "\n为了提高安全性，建议至少包含8个以上的字符，" +\
+                     "\n并且应避免使用单词和数字的组合。{n"
+            caller.msg(string)
+            caller.msg(_create_menu(caller))
+            return
+
+        self.password = password
+        _register(caller, self.username, password)
+
+        
+def _register(caller, username, password):
+    # Create the new player account and character here.
+    if not caller:
+        return
+    
+    if not username:
+        return
+
+    if not password:
+        return
+
+    try:
+        permissions = settings.PERMISSION_PLAYER_DEFAULT
+        typeclass = settings.BASE_PLAYER_TYPECLASS
+        new_player = create_player(username, None, password,
+                                   typeclass=typeclass,
+                                   permissions=permissions)
+        if not new_player:
+            caller.msg("\n在注册中有错误发生，该错误已被记录，请与管理员联系。", type="text")
+            caller.msg(_create_menu(caller))
+            return
+
+        utils.init_new_player(new_player)
+
+        if settings.MULTISESSION_MODE < 2:
+            session = caller
+            default_home = ObjectDB.objects.get_id(settings.DEFAULT_HOME)
+            character_typeclass = settings.BASE_CHARACTER_TYPECLASS
+            start_location = ObjectDB.objects.get_id(settings.START_LOCATION)
+            
+            _create_character(session, new_player, character_typeclass, start_location,
+                              default_home, permissions)
+
+        # join the new player to the public channel
+        pchanneldef = settings.CHANNEL_PUBLIC
+        if pchanneldef:
+            pchannel = managers.channels.get_channel(pchanneldef[0])
+            if not pchannel.connect(new_player):
+                string = "\n新玩家“%s”无法连接到公共频道！" % new_player.key
+                logger.log_errmsg(string)
+
+        # tell the caller everything went well.
+        string = "\n{g新账号“%s”已建立，正在登入……{n" % username
+        caller.msg(string)
+        #caller.session_login(player)
+        caller.sessionhandler.login(caller, new_player)
+
+    except Exception:
+        # We are in the middle between logged in and -not, so we have
+        # to handle tracebacks ourselves at this point. If we don't, we
+        # won't see any errors at all.
+        string = "\n%s\n有错误发生，请与管理员联系。"
+        caller.msg(string % (traceback.format_exc()))
+        logger.log_errmsg(traceback.format_exc())
+        caller.msg(_create_menu(caller))
 
 
 # Menu entry 3
@@ -311,13 +358,12 @@ class CmdUnloggedinQuit(Command):
     here for unconnected players for the sake of simplicity. The logged in
     version is a bit more complicated.
     """
-    key = "3"
-    aliases = ["quit", "qu", "q"]
+    key = "quit"
+    aliases = ["qu", "q"]
     locks = "cmd:all()"
 
     def func(self):
         "Simply close the connection."
-        self.menutree.goto("END")
         self.caller.sessionhandler.disconnect(self.caller, "再见！正在断开连接……")
 
         
@@ -325,8 +371,7 @@ class CmdUnloggedinQuit(Command):
 
 class CmdUnloggedinEncodingUTF8(Command):
     "Handle the creation of a password. This also creates the actual Player/User object."
-    key = "4"
-    aliases = ["utf-8"]
+    key = "utf-8"
     locks = "cmd:all()"
 
     def func(self):
@@ -340,17 +385,18 @@ class CmdUnloggedinEncodingUTF8(Command):
 
 class CmdUnloggedinEncodingGBK(Command):
     "Handle the creation of a password. This also creates the actual Player/User object."
-    key = "4"
-    aliases = ["gbk"]
+    key = "gbk"
     locks = "cmd:all()"
 
     def func(self):
-        session = self.caller
+        caller = self.caller
+        session = caller
         if not session:
             return
             
         if session.protocol_key == "websocket":
-            self.caller.msg("网页客户端不能使用GBK编码。")
+            caller.msg("\n{r网页客户端不能使用GBK编码。{n")
+            caller.msg(_create_menu(caller))
             return
 
         session.encoding = "gbk"
@@ -383,7 +429,7 @@ LOGIN_SCREEN_HELP = \
 
 
 # The login menu tree, using the commands above
-
+"""
 node1a = MenuNode("node1a", text="请输入您的用户名（直接按回车键可返回上一步）：",
                   links=["START", "node1b"],
                   helptext=["输入您注册时所使用的用户名。"],
@@ -419,7 +465,7 @@ node3 = MenuNode("node3", text=LOGIN_SCREEN_HELP,
                  helptext="",
                  keywords=[CMD_NOINPUT],
                  selectcmds=[CmdBackToStart])
-
+"""
 
 # access commands
 
@@ -431,6 +477,11 @@ class UnloggedInCmdSet(CmdSet):
     def at_cmdset_creation(self):
         "Called when cmdset is first created"
         self.add(CmdUnloggedinLook())
+        self.add(CmdUnloggedinLogin())
+        self.add(CmdUnloggedinRegister())
+        self.add(CmdUnloggedinQuit())
+        self.add(CmdUnloggedinEncodingUTF8())
+        self.add(CmdUnloggedinEncodingGBK())
 
 
 class CmdUnloggedinLook(default_cmds.MuxCommand):
@@ -440,47 +491,36 @@ class CmdUnloggedinLook(default_cmds.MuxCommand):
     to the menu's own look command..
     """
     key = CMD_LOGINSTART
-    aliases = [CMD_NOINPUT]
+    # aliases = [CMD_NOINPUT]
     locks = "cmd:all()"
     arg_regex = r"^$"
 
     def func(self):
         "Execute the menu"
-        _look_menu(self.caller)
-
-
-def _look_menu(caller):
-    "Define the start node."
-    
-    session = caller
-    if session:
-        desc = "UTF-8" 
-        cmd = CmdUnloggedinEncodingUTF8
-
-        if session.encoding == "utf-8":
-            desc = "GBK"
-            cmd = CmdUnloggedinEncodingGBK
+        # check if it is called by cancel
+        caller = self.caller
+        session = caller
         
-        start = MenuNode("START", text=utils.random_string_from_module(CONNECTION_SCREEN_MODULE),
-                         links=["node1a", "node2a", "END", "START"],
-                         linktexts=["登入已有帐号",
-                                    "注册新账号",
-                                    "退出游戏",
-                                     desc],
-                         selectcmds=[None, None, CmdUnloggedinQuit, cmd])
-    else:
-        start = MenuNode("START", text=utils.random_string_from_module(CONNECTION_SCREEN_MODULE),
-                         links=["node1a", "node2a", "END"],
-                         linktexts=["登入已有帐号",
-                                    "注册新账号",
-                                    "退出游戏"],
-                         selectcmds=[None, None, CmdUnloggedinQuit])
+        ostring = utils.random_string_from_module(CONNECTION_SCREEN_MODULE)
+        question = _create_menu(caller)
+    
+        caller.msg(ostring + "\n" + question)
 
-    "Execute the menu"
-    menu = MenuTree(caller, nodes=(start, node1a, node1b,
-                                   node2a, node2b, node2c),
-                                   exec_end=None)
-    menu.start()
+
+def _create_menu(session):
+    "create connection menu"
+    question = "请选择：" +\
+               "\n{lclogin{lt[1]{le登入已有帐号" +\
+               "\n{lcregister{lt[2]{le注册新账号" +\
+               "\n{lcquit{lt[3]{le退出游戏"
+
+    if session:
+        if session.encoding == "utf-8":
+            question += "\n{lcgbk{lt[4]{leGBK"
+        else:
+            question += "\n{lcutf-8{lt[4]{leUTF-8"
+
+    return question
 
 
 def _create_character(session, new_player, typeclass, start_location, home, permissions):

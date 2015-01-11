@@ -466,8 +466,8 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
     yesnocmdset.add(CmdMenuHelp())
 
     # assinging menu data flags to caller.
-    caller.db._menu_data = {"help": "请选择 Y(是) 或 N(否)。",
-                            "look": prompt}
+    # caller.db._menu_data = {"help": "请选择 Y(是) 或 N(否)。",
+    #                         "look": prompt}
     # assign cmdset and ask question
     caller.cmdset.add(yesnocmdset)
     
@@ -476,8 +476,8 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
         prompt = "{lcY{lt[Y] (默认){le / {lcN{lt[N]{le"
     else:
         prompt = "{lcY{lt[Y]{le / {lcN{lt[N] (默认){le"
-    prompt = "%s %s: " % (question, prompt)
-    caller.msg(prompt)
+    prompt = "\n%s %s: " % (question, prompt)
+    caller.msg(prompt, type="input_yn", clear_links=True)
 
 
 #
@@ -486,7 +486,7 @@ def prompt_yesno(caller, question="", yesfunc=None, nofunc=None, yescode="", noc
 # make use the node system since there is only one level of choice.
 #
 
-def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choose=False):
+def prompt_choice(caller, question="", prompts=None, callback_func=None):
     """
     This sets up a simple choice questionnaire. Question will be
     asked, followed by a serie of prompts. Note that this isn't
@@ -495,11 +495,10 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
     caller - the object calling and being offered the choice
     question - text describing the offered choice
     prompts - list of choices
-    choicefunc - functions callback to be called as func(self) when
-                 make choice (self.caller is available) The function's definision
-                 should be like func(self, menu_node), and menu_node.key is user's
-                 choice.
-    force_choose - force user to make a choice or not
+    callback_func - functions callback to be called as func(self) when
+                    make choice (self.caller is available) The function's definision
+                    should be like func(self, menu_node), and menu_node.key is user's
+                    choice.
     """
 
     # creating and defining commands
@@ -512,47 +511,37 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
         choices += "\n{lc%d{lt[%d]{le %s" % (count, count, choice)
 
         cmdfunc = CmdMenuNode(key="%d" % count)
-        if choicefunc:
-            cmdfunc.choicefunc = choicefunc
-            def _choicefunc(self):
+        if callback_func:
+            cmdfunc.callback_func = callback_func
+            def _callback_func(self):
+                self.caller.msg(clear_links=True)
                 self.caller.cmdset.delete('menucmdset')
                 del self.caller.db._menu_data
-                self.choicefunc(self)
-            cmdfunc.callback = MethodType(_choicefunc, cmdfunc, CmdMenuNode)
+                self.callback_func(self)
+            cmdfunc.callback = MethodType(_callback_func, cmdfunc, CmdMenuNode)
 
         commands.append(cmdfunc)
-
-    if not force_choose:
-        choices += "\n{lc{lt[不选择]{le"
     
-    prompt = question + choices + "\n请选择。"
+    prompt = "\n"+ question + choices
 
     errorcmd = CmdMenuNode(key=CMD_NOMATCH)
-    if force_choose:
+    if callback_func:
+        errorcmd.callback_func = callback_func
         def _errorcmd(self):
-            self.caller.msg("只能选择提供的选项。")
-    else:
-        if choicefunc:
-            errorcmd.choicefunc = choicefunc
-            def _errorcmd(self):
-                self.caller.msg("没有选择。")
-                self.caller.cmdset.delete('menucmdset')
-                del self.caller.db._menu_data
-                self.choicefunc(self)
+            self.caller.msg("没有选择。", clear_links=True)
+            self.caller.cmdset.delete('menucmdset')
+            del self.caller.db._menu_data
+            self.callback_func(self)
     errorcmd.callback = MethodType(_errorcmd, errorcmd, CmdMenuNode)
 
     defaultcmd = CmdMenuNode(key=CMD_NOINPUT)
-    if force_choose:
+    if callback_func:
+        defaultcmd.callback_func = callback_func
         def _defaultcmd(self):
-            caller.msg(prompt)
-    else:
-        if choicefunc:
-            defaultcmd.choicefunc = choicefunc
-            def _defaultcmd(self):
-                self.caller.msg("没有选择。")
-                self.caller.cmdset.delete('menucmdset')
-                del self.caller.db._menu_data
-                self.choicefunc(self)
+            self.caller.msg("没有选择。", clear_links=True)
+            self.caller.cmdset.delete('menucmdset')
+            del self.caller.db._menu_data
+            self.callback_func(self)
     defaultcmd.callback = MethodType(_defaultcmd, defaultcmd, CmdMenuNode)
 
     # creating cmdset (this will already have look/help commands)
@@ -564,12 +553,59 @@ def prompt_choice(caller, question="", prompts=None, choicefunc=None, force_choo
     choicecmdset.add(CmdMenuHelp())
 
     # assinging menu data flags to caller.
-    caller.db._menu_data = {"help": "Please select.",
-                            "look": prompt}
+    # caller.db._menu_data = {"help": "Please select.",
+    #                         "look": prompt}
 
     # assign cmdset and ask question
     caller.cmdset.add(choicecmdset)
-    caller.msg(prompt)
+    caller.msg(prompt, type="input_link", clear_links=True)
+
+
+def prompt_inputtext(caller, question="", callback_func=None, type=None):
+    """
+    This sets up a simple choice questionnaire. Question will be
+    asked, followed by a serie of prompts. Note that this isn't
+    making use of the menu node system.
+
+    caller - the object calling and being offered the choice
+    question - text describing the offered input
+    prompts - list of inputs
+    callback_func - functions callback to be called as func(self) when
+                    make choice (self.caller is available) The function's definision
+                    should be like func(self, menu_node), and menu_node.key is user's
+                    choice.
+    """
+
+    # creating and defining commands
+    cmdfunc = CmdMenuNode(key=CMD_NOMATCH)
+    if callback_func:
+        cmdfunc.callback_func = callback_func
+        def _callback_func(self):
+            self.caller.cmdset.delete('menucmdset')
+            # del self.caller.db._menu_data
+            self.callback_func(self)
+        cmdfunc.callback = MethodType(_callback_func, cmdfunc, CmdMenuNode)
+    
+    defaultcmd = CmdMenuNode(key=CMD_NOINPUT)
+    if callback_func:
+        defaultcmd.callback_func = callback_func
+        def _defaultcmd(self):
+            self.caller.cmdset.delete('menucmdset')
+            # del self.caller.db._menu_data
+            self.callback_func(self)
+        defaultcmd.callback = MethodType(_defaultcmd, defaultcmd, CmdMenuNode)
+
+    # creating cmdset (this will already have look/help commands)
+    inputcmdset = MenuCmdSet()
+    inputcmdset.add(cmdfunc)
+    inputcmdset.add(defaultcmd)
+
+    # assign cmdset and ask question
+    caller.cmdset.add(inputcmdset)
+    
+    if not type:
+        type = "input_text"
+    caller.msg(question, type=type, clear_links=True)
 
 
 #

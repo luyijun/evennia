@@ -94,15 +94,16 @@ class CmdRead(Command):
         # we want an attribute read_text to be defined.
         readtext = obj.db.readable_text
         if readtext:
-            string = "\n {c%s{n上写着：\n  %s" % (obj.key, readtext)
+            string = "\n{c%s{n上写着：\n  %s" % (obj.key, readtext)
         else:
             string = " %s上没有可阅读的内容。" % obj.key
 
-        string += "\n "
+        string += "\n"
         commands = self.caller.available_cmd_list(self.caller)
-        string += "\n 动作：" + "  ".join(commands)
-        string += "\n "
-        self.caller.msg(string)
+        string += "\n动作：" + "  ".join(commands)
+        string += "\n"
+        
+        self.caller.msg(string, clear_links=True)
 
 
 class CmdSetReadable(CmdSet):
@@ -167,15 +168,14 @@ class CmdClimb(Command):
         ostring = " \n"
         ostring += self.obj.db.climb_text
         if not ostring:
-            ostring += "\n {c=============================================================={n"
-            ostring += "\n {c攀爬{n"
-            ostring += "\n {c=============================================================={n"
-            ostring += "\n 你爬上%s，向四处张望了一下，又爬了下来。" % self.obj.name
+            ostring += "\n{c=============================================================={n"
+            ostring += "\n{c攀爬{n"
+            ostring += "\n{c=============================================================={n"
+            ostring += "\n你爬上%s，向四处张望了一下，又爬了下来。" % self.obj.name
 
         commands = self.caller.available_cmd_list(self.caller)
-        ostring += "\n\n动作：" + ", ".join(commands)
-        ostring += "\n"
-        self.caller.msg(ostring)
+        ostring += "\n\n动作：" + ", ".join(commands) + "\n"
+        self.caller.msg(ostring, clear_links=True)
         self.caller.db.last_climbed = self.obj
 
 
@@ -481,19 +481,19 @@ class CmdShiftRoot(Command):
 
         # no valid choice
         string = self.caller.get_available_cmd_desc(self.caller)
-        self.caller.msg(string)
+        self.caller.msg(string, clear_links=True)
         return
         
     
     def choose_root(self):
         "Choose a root."
         prompt_choice(self.caller,
-                      question="\n 你想移动哪条树根？",
+                      question="你想移动哪条树根？",
                       prompts=["{c蓝色{n的树根",
                                "{g绿色{n的树根",
                                "{r红色{n的树根",
                                "{y黄色{n的树根"],
-                      choicefunc=self.root_selected)
+                      callback_func=self.root_selected)
     
     
     def direction_selected(self, menu_node):
@@ -521,7 +521,7 @@ class CmdShiftRoot(Command):
 
         # no valid choice
         string = self.caller.get_available_cmd_desc(self.caller)
-        self.caller.msg(string)
+        self.caller.msg(string, clear_links=True)
         return
 
     
@@ -535,9 +535,9 @@ class CmdShiftRoot(Command):
             return
         
         prompt_choice(self.caller,
-                      question="\n 你想哪个方向移动？",
+                      question="你想哪个方向移动？",
                       prompts=choices,
-                      choicefunc=self.direction_selected)
+                      callback_func=self.direction_selected)
 
 
     def func(self):
@@ -573,10 +573,10 @@ class CmdShiftRoot(Command):
         color = self.color
         direction = self.direction
 
-        string = "\n {c=============================================================={n"
-        string += "\n {c%s{n" % self.obj.key
-        string += "\n {c=============================================================={n"
-        string += "\n "
+        string = "\n{c=============================================================={n"
+        string += "\n{c%s{n" % self.obj.key
+        string += "\n{c=============================================================={n"
+        string += "\n"
         
         if not self.color in root_pos:
             string += "没有这样的树根。"
@@ -656,12 +656,12 @@ class CmdShiftRoot(Command):
             self.caller.db.crumbling_wall_found_button = True
             string += "\n把树根移开之后，你注意到后面有什么东西……"
             commands = ["{lclook %s{lt观察墙壁{le" % self.obj.dbref] + self.obj.available_cmd_list(None)
-            string += "\n" + "\n 动作：" + "  ".join(commands)
+            string += "\n" + "\n动作：" + "  ".join(commands)
         else:
             string += "\n" + self.obj.get_roots_desc()
             string += "\n" + self.obj.get_available_cmd_desc(self.obj)
             
-        self.caller.msg(string)
+        self.caller.msg(string, clear_links=True)
 
 
 class CmdPressButton(Command):
@@ -683,9 +683,9 @@ class CmdPressButton(Command):
             return
 
         # pushing the button
-        string = "\n 你把手放进这个可疑的凹陷中，用力地推了一下。"
-        string += "\n 一开始什么都没发生，但紧接着传来一阵隆隆声，一条{w密道{n露了出来。"
-        string += "\n 随着墙的移动，墙上的鹅卵石也纷纷落下。"
+        string = "\n你把手放进这个可疑的凹陷中，用力地推了一下。"
+        string += "一开始什么都没发生，但紧接着传来一阵隆隆声，一条{w密道{n露了出来。"
+        string += "随着墙的移动，墙上的鹅卵石也纷纷落下。"
         string += "\n" + self.caller.get_available_cmd_desc(self.caller)
 
         # we are done - this will make the exit traversable!
@@ -696,7 +696,7 @@ class CmdPressButton(Command):
             self.caller.msg("这个出口没有通往任何地方，在它后面是更多的石头……")
             return
         self.obj.destination = eloc
-        self.caller.msg(string)
+        self.caller.msg(string, clear_links=True)
 
 
 class CmdSetCrumblingWall(CmdSet):
@@ -771,9 +771,9 @@ class CrumblingWall(TutorialObject, Exit):
                  1: "墙的{w底部{n堆积着"}
 
         if root in ("yellow", "green"):
-            string = rootnames[root] + hpos[ipos]
+            string = hpos[ipos] + rootnames[root]
         else:
-            string = rootnames[root] + vpos[ipos]
+            string = vpos[ipos] + rootnames[root]
         return string
 
     def return_appearance(self, caller):
@@ -782,12 +782,12 @@ class CrumblingWall(TutorialObject, Exit):
         current root positions.
         """
         if caller.db.crumbling_wall_found_button:
-            string =  "移开所有的树根之后，你发现在墙壁正中先前被植物遮蔽的地方有一个奇怪的方形\n"
-            string += "凹陷。如果是在很久以前你肯定无法发现它，因为它伪装成了墙壁的一部分，但现\n"
+            string =  "移开所有的树根之后，你发现在墙壁正中先前被植物遮蔽的地方有一个奇怪的方形"
+            string += "凹陷。如果是在很久以前你肯定无法发现它，因为它伪装成了墙壁的一部分，但现"
             string += "在覆盖在它上面的石头早已破碎，很容易就能认出这是个按钮。"
         else:
-            string =  "墙壁很古老。根系从石缝间伸展进来（也可能是藤蔓，因为有些还长着不知名的小\n"
-            string += "花。），在墙上纵横交错，使你很难看清墙壁的石头表面。\n"
+            string =  "墙壁很古老。根系从石缝间伸展进来（也可能是藤蔓，因为有些还长着不知名的小花。），"
+            string += "在墙上纵横交错，使你很难看清墙壁的石头表面。\n"
             for key, pos in self.db.root_pos.items():
                 string += "\n" + self._translate_position(key, pos)
         self.db.desc = string
@@ -901,14 +901,15 @@ class WeaponBarrel(ObjectSelector):
         contents = caller.contents;
         weapons = [cont for cont in contents if cont.db.type_id in [1, 2, 3]]
         if weapons:
-            caller.msg("\n 酒保微笑着对你说：“朋友，别太贪心了，你已经有一把武器了。”")
+            string = "\n酒保微笑着对你说：“朋友，别太贪心了，你已经有一把武器了。”"
 
             commands = caller.get_available_cmd_desc(caller)
             if commands:
-                caller.msg(commands + "\n")
+                string += "\n" + commands + "\n"
             else:
-                caller.msg("\n")
+                string += "\n"
 
+            caller.msg(string, clear_links=True)
             return
 
         super(WeaponBarrel, self).give(caller)
@@ -937,9 +938,9 @@ class CmdGetWeapon(Command):
 
         if self.caller.ndb.weapon:
             # we don't allow a player to take more than one weapon from rack.
-            string = "\n 你已经有一把武器了。"
+            string = "\n你已经有一把武器了。\n"
             string += self.caller.get_available_cmd_desc(self.caller)
-            self.caller.msg(string)
+            self.caller.msg(string, clear_links=True)
         else:
             dmg, name, aliases, desc, magic = self.obj.randomize_type()
             new_weapon = create_object(Weapon, key=name, aliases=aliases, location=self, home=self)
@@ -956,9 +957,10 @@ class CmdGetWeapon(Command):
             if not ostring:
                 ostring = "你拿起了%s。"
             if '%s' in ostring:
-                self.caller.msg(ostring % name)
-            else:
-                self.caller.msg(ostring)
+                ostring = ostring % name
+
+            ostring += "\n" + self.caller.get_available_cmd_desc(self.caller)
+            caller.msg(ostring, clear_links=True)
 
 
 class CmdSetWeaponRack(CmdSet):
@@ -1002,17 +1004,17 @@ class WeaponRack(TutorialObject):
     
     def give(self, caller):
         "Give weapon"
-        string = "\n {c=============================================================={n"
-        string += "\n {c取走武器{n"
-        string += "\n {c=============================================================={n"
-        string += "\n "
+        string = "\n{c=============================================================={n"
+        string += "\n{c取走武器{n"
+        string += "\n{c=============================================================={n"
+        string += "\n"
         
         if caller.ndb.weapon:
             # we don't allow a player to take more than one weapon from rack.
             string += "你已经有一把武器了。\n"
             string += "（你要先丢弃行囊中的武器才能拿取新武器）\n"
             string += caller.get_available_cmd_desc(caller)
-            caller.msg(string)
+            caller.msg(string, clear_links=True)
             return
         
         dmg, name, aliases, desc, magic = self.randomize_type()
@@ -1033,7 +1035,7 @@ class WeaponRack(TutorialObject):
             ostring = ostring % name
         string += ostring + "\n"
         string += caller.get_available_cmd_desc(caller)
-        caller.msg(string)
+        caller.msg(string, clear_links=True)
         
         destination = search_object("tut#17")
         if not destination:

@@ -39,10 +39,10 @@ urlpatterns = [
     url(r'^favicon\.ico$',  RedirectView.as_view(url='/media/images/favicon.ico')),
 
     # ajax stuff
-    url(r'^webclient/', include('src.web.webclient.urls', namespace='webclient', app_name='webclient')),
+    url(r'^webclient/', include('game.gamesrc.web.webclient.urls', namespace='webclient', app_name='webclient')),
 
     # Front page
-    url(r'^$', settings.GAME_MODULE + '.web.views.page_index', name="index"),
+    url(r'^$', 'game.gamesrc.web.views.page_index', name="index"),
 
     # Django original admin page. Make this URL is always available, whether
     # we've chosen to use Evennia's custom admin or not.

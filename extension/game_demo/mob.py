@@ -362,13 +362,13 @@ class Enemy(Mob):
                 if not string:
                     string = "在你最后一击之后，%s蜷缩了起来，渐渐地消散了。" % self.key
                     string += "\n过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
-                    string += "\n但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
+                    string += "但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
                 attacker.msg(string)
                 string = self.db.win_text_room
                 if not string:
                     string = "在%s最后一击之后，%s蜷缩了起来，渐渐地消散了。" % (attacker.name, self.key)
                     string += "\n过了一会儿，那里已经什么都不剩了，只有它的尖啸声还在回响着。"
-                    string += "\n但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
+                    string += "但你觉得它只是被暂时削弱了，你担心要不了多久它就会在别的地方重现。"
                 self.location.msg_contents(string, exclude=[attacker])
 
                 # put mob in dead mode and hide it from view.
