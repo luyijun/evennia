@@ -511,14 +511,13 @@ def _create_menu(session):
     "create connection menu"
     question = "请选择：" +\
                "\n{lclogin{lt[1]{le登入已有帐号" +\
-               "\n{lcregister{lt[2]{le注册新账号" +\
-               "\n{lcquit{lt[3]{le退出游戏"
+               "\n{lcregister{lt[2]{le注册新账号"
 
     if session:
         if session.encoding == "utf-8":
-            question += "\n{lcgbk{lt[4]{leGBK"
+            question += "\n{lcgbk{lt[3]{leGBK"
         else:
-            question += "\n{lcutf-8{lt[4]{leUTF-8"
+            question += "\n{lcutf-8{lt[3]{leUTF-8"
 
     return question
 

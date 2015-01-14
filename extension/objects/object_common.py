@@ -126,8 +126,7 @@ class ObjectCommon(DefaultObject):
         This returns a list of available commands.
         """
         commands = ["{lclook{lt观察周围{le",
-                    "{lcinventory{lt查看行囊{le",
-                    "{lc@quit{lt退出游戏{le"]
+                    "{lcinventory{lt查看行囊{le"]
         return commands
         
         
