@@ -40,6 +40,7 @@ urlpatterns = [
 
     # ajax stuff
     url(r'^client/', include('extension.client.urls', namespace='client', app_name='client')),
+    url(r'^webclient/', include('extension.client.urls', namespace='webclient', app_name='client')),
 
     # Front page
     url(r'^$', 'game.gamesrc.web.views.page_index', name="index"),
