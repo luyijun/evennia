@@ -1,0 +1,309 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		3007F4701A3BEA55000142C8 /* menusystem.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = menusystem.py; path = upload/menusystem.py; sourceTree = "<group>"; };
+		30103A3E1A349FD000C4C569 /* connection_screens.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = connection_screens.py; path = game_demo/connection_screens.py; sourceTree = "<group>"; };
+		30103A3F1A349FD000C4C569 /* settings.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = settings.py; path = game_demo/settings.py; sourceTree = "<group>"; };
+		30103A401A349FD000C4C569 /* data_object_type_list.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = data_object_type_list.dat; path = game_demo/data_object_type_list.dat; sourceTree = "<group>"; };
+		30103A411A349FD000C4C569 /* data_object_creator_types.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = data_object_creator_types.dat; path = game_demo/data_object_creator_types.dat; sourceTree = "<group>"; };
+		30103A421A349FD000C4C569 /* data_portable_object_types.dat */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = data_portable_object_types.dat; path = game_demo/data_portable_object_types.dat; sourceTree = "<group>"; };
+		301F3E721A0BC99E0072C86C /* object_creator.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = object_creator.py; sourceTree = "<group>"; };
+		30217E981A13B85D00F00A6C /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		30217E9A1A13B85D00F00A6C /* admin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = admin.py; sourceTree = "<group>"; };
+		30217EA31A13B85D00F00A6C /* models.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = models.py; sourceTree = "<group>"; };
+		30217EA51A13B85D00F00A6C /* tests.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = tests.py; sourceTree = "<group>"; };
+		30217EA61A13B85D00F00A6C /* views.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = views.py; sourceTree = "<group>"; };
+		3034638A1A2F6572009512CB /* rooms.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = rooms.py; path = game_demo/rooms.py; sourceTree = "<group>"; };
+		3034638B1A2F6572009512CB /* objects.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = objects.py; path = game_demo/objects.py; sourceTree = "<group>"; };
+		3034638C1A2F6572009512CB /* character.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = character.py; path = game_demo/character.py; sourceTree = "<group>"; };
+		3034638D1A2F6572009512CB /* mob.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = mob.py; path = game_demo/mob.py; sourceTree = "<group>"; };
+		3034638E1A2F6572009512CB /* scripts.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = scripts.py; path = game_demo/scripts.py; sourceTree = "<group>"; };
+		3034638F1A2F661B009512CB /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = game_demo/__init__.py; sourceTree = "<group>"; };
+		303463901A2F6751009512CB /* build.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = build.ev; path = game_demo/build.ev; sourceTree = "<group>"; };
+		303463911A2F6751009512CB /* limbo.ev */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = limbo.ev; path = game_demo/limbo.ev; sourceTree = "<group>"; };
+		30346A5D1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		30346A621A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		30346A631A0A915C008E65D5 /* cmdset.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = cmdset.py; sourceTree = "<group>"; };
+		30346A641A0A915C008E65D5 /* command.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = command.py; sourceTree = "<group>"; };
+		30346A651A0A915C008E65D5 /* menu_login.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = menu_login.py; sourceTree = "<group>"; };
+		30346A6A1A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		30346A6B1A0A915C008E65D5 /* character.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = character.py; sourceTree = "<group>"; };
+		30346A6C1A0A915C008E65D5 /* exit.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = exit.py; sourceTree = "<group>"; };
+		30346A6E1A0A915C008E65D5 /* object_common.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = object_common.py; sourceTree = "<group>"; };
+		30346A6F1A0A915C008E65D5 /* object_portable.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = object_portable.py; sourceTree = "<group>"; };
+		30346A711A0A915C008E65D5 /* room.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = room.py; sourceTree = "<group>"; };
+		30346A761A0A915C008E65D5 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = __init__.py; sourceTree = "<group>"; };
+		30346A771A0A915C008E65D5 /* defines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = defines.py; sourceTree = "<group>"; };
+		30346A781A0A915C008E65D5 /* menusystem.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = menusystem.py; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		3007F46F1A3BEA3A000142C8 /* upload */ = {
+			isa = PBXGroup;
+			children = (
+				3007F4701A3BEA55000142C8 /* menusystem.py */,
+			);
+			name = upload;
+			sourceTree = "<group>";
+		};
+		30217E971A13B85D00F00A6C /* data */ = {
+			isa = PBXGroup;
+			children = (
+				30217E981A13B85D00F00A6C /* __init__.py */,
+				30217E9A1A13B85D00F00A6C /* admin.py */,
+				30217EA31A13B85D00F00A6C /* models.py */,
+				30217EA51A13B85D00F00A6C /* tests.py */,
+				30217EA61A13B85D00F00A6C /* views.py */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
+		303463891A2F6554009512CB /* game_demo */ = {
+			isa = PBXGroup;
+			children = (
+				30103A401A349FD000C4C569 /* data_object_type_list.dat */,
+				30103A411A349FD000C4C569 /* data_object_creator_types.dat */,
+				30103A421A349FD000C4C569 /* data_portable_object_types.dat */,
+				303463901A2F6751009512CB /* build.ev */,
+				303463911A2F6751009512CB /* limbo.ev */,
+				3034638F1A2F661B009512CB /* __init__.py */,
+				3034638C1A2F6572009512CB /* character.py */,
+				30103A3E1A349FD000C4C569 /* connection_screens.py */,
+				3034638D1A2F6572009512CB /* mob.py */,
+				3034638B1A2F6572009512CB /* objects.py */,
+				3034638A1A2F6572009512CB /* rooms.py */,
+				3034638E1A2F6572009512CB /* scripts.py */,
+				30103A3F1A349FD000C4C569 /* settings.py */,
+			);
+			name = game_demo;
+			sourceTree = "<group>";
+		};
+		30346A4F1A0A8EC5008E65D5 = {
+			isa = PBXGroup;
+			children = (
+				30346A5C1A0A914A008E65D5 /* extension */,
+			);
+			sourceTree = "<group>";
+		};
+		30346A5C1A0A914A008E65D5 /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				30346A5D1A0A915C008E65D5 /* __init__.py */,
+				30346A611A0A915C008E65D5 /* commands */,
+				30217E971A13B85D00F00A6C /* data */,
+				303463891A2F6554009512CB /* game_demo */,
+				30346A691A0A915C008E65D5 /* objects */,
+				30346A751A0A915C008E65D5 /* utils */,
+				3007F46F1A3BEA3A000142C8 /* upload */,
+			);
+			name = extension;
+			sourceTree = "<group>";
+		};
+		30346A611A0A915C008E65D5 /* commands */ = {
+			isa = PBXGroup;
+			children = (
+				30346A621A0A915C008E65D5 /* __init__.py */,
+				30346A631A0A915C008E65D5 /* cmdset.py */,
+				30346A641A0A915C008E65D5 /* command.py */,
+				30346A651A0A915C008E65D5 /* menu_login.py */,
+			);
+			path = commands;
+			sourceTree = "<group>";
+		};
+		30346A691A0A915C008E65D5 /* objects */ = {
+			isa = PBXGroup;
+			children = (
+				30346A6A1A0A915C008E65D5 /* __init__.py */,
+				30346A6B1A0A915C008E65D5 /* character.py */,
+				30346A6C1A0A915C008E65D5 /* exit.py */,
+				30346A6E1A0A915C008E65D5 /* object_common.py */,
+				301F3E721A0BC99E0072C86C /* object_creator.py */,
+				30346A6F1A0A915C008E65D5 /* object_portable.py */,
+				30346A711A0A915C008E65D5 /* room.py */,
+			);
+			path = objects;
+			sourceTree = "<group>";
+		};
+		30346A751A0A915C008E65D5 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				30346A761A0A915C008E65D5 /* __init__.py */,
+				30346A771A0A915C008E65D5 /* defines.py */,
+				30346A781A0A915C008E65D5 /* menusystem.py */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		30346A541A0A8EC5008E65D5 /* extension */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 30346A571A0A8EC5008E65D5 /* Build configuration list for PBXLegacyTarget "extension" */;
+			buildPhases = (
+			);
+			buildToolPath = /Users/kellysmile27/Python/evenniaevn/bin/python;
+			dependencies = (
+			);
+			name = extension;
+			passBuildSettingsInEnvironment = 1;
+			productName = game_demo;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		30346A501A0A8EC5008E65D5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Lu Yijun";
+				TargetAttributes = {
+					30346A541A0A8EC5008E65D5 = {
+						CreatedOnToolsVersion = 6.0.1;
+					};
+				};
+			};
+			buildConfigurationList = 30346A531A0A8EC5008E65D5 /* Build configuration list for PBXProject "extension" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 30346A4F1A0A8EC5008E65D5;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				30346A541A0A8EC5008E65D5 /* extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		30346A551A0A8EC5008E65D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		30346A561A0A8EC5008E65D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		30346A581A0A8EC5008E65D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = extension;
+			};
+			name = Debug;
+		};
+		30346A591A0A8EC5008E65D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = extension;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		30346A531A0A8EC5008E65D5 /* Build configuration list for PBXProject "extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30346A551A0A8EC5008E65D5 /* Debug */,
+				30346A561A0A8EC5008E65D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		30346A571A0A8EC5008E65D5 /* Build configuration list for PBXLegacyTarget "extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				30346A581A0A8EC5008E65D5 /* Debug */,
+				30346A591A0A8EC5008E65D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 30346A501A0A8EC5008E65D5 /* Project object */;
+}

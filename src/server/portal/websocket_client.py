@@ -105,7 +105,7 @@ class WebSocketClient(Protocol, Session):
         """
         self.sessionhandler.data_in(self, text=text, **kwargs)
 
-    def data_out(self, text=None, **kwargs):
+    def data_out(self, text=None, nomarkup=False, raw=False, **kwargs):
         """
         Data Evennia -> Player.
         generic hook method for engine to call in order to send data
@@ -115,21 +115,23 @@ class WebSocketClient(Protocol, Session):
             oob=<string> - supply an Out-of-Band instruction.
             raw=True - no parsing at all (leave ansi-to-html markers unparsed)
             nomarkup=True - clean out all ansi/html markers and tokens
+            type=<string> - the type of the message
         """
         try:
             text = to_str(text if text else "", encoding=self.encoding)
         except Exception, e:
             self.sendLine(str(e))
+        
         if "oob" in kwargs:
-            oobstruct = self.sessionhandler.oobstruct_parser(kwargs.pop("oob"))
-            #print "oob data_out:", "OOB" + json.dumps(oobstruct)
-            self.sendLine("OOB" + json.dumps(oobstruct))
-        raw = kwargs.get("raw", False)
-        nomarkup = kwargs.get("nomarkup", False)
-        if "prompt" in kwargs:
-            self.sendLine("PROMPT" + parse_html(kwargs["prompt"], strip_ansi=nomarkup))
+            kwargs["oob"] = self.sessionhandler.oobstruct_parser(kwargs["oob"])
+
         if raw:
-            self.sendLine(text)
+            kwargs["text"] = text
         else:
-            self.sendLine(parse_html(text, strip_ansi=nomarkup))
+            kwargs["text"] = parse_html(text, strip_ansi=nomarkup)
+            if "prompt" in kwargs:
+                kwargs["prompt"] = parse_html(kwargs["prompt"], strip_ansi=nomarkup)
+
+        data = json.dumps(kwargs, sort_keys=True)
+        self.sendLine(data)
 

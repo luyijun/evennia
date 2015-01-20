@@ -340,7 +340,6 @@ class Object(TypeClass):
         sessid: optional session target. If sessid=0, the session will
                 default to self.sessid or from_obj.sessid.
         """
-
         self.dbobj.msg(text=text, from_obj=from_obj, sessid=sessid, **kwargs)
 
     def msg_contents(self, text=None, exclude=None, from_obj=None, **kwargs):
